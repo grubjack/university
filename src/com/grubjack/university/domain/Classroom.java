@@ -11,7 +11,7 @@ public class Classroom {
     public Classroom() {
     }
 
-    public Classroom(String number, String location, Integer size) {
+    public Classroom(String number, String location, int size) {
         this.number = number;
         this.location = location;
         this.size = size;
