@@ -1,14 +1,24 @@
 package com.grubjack.university.domain;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+
+import java.lang.reflect.Field;
 
 /**
  * Created by grubjack on 31.10.2016.
  */
 public class UniversityTest {
 
-    University university = new University();
+    University university = University.getInstance();
+
+    @Before
+    public void resetSingleton() throws Exception {
+        Field instance = University.class.getDeclaredField("instance");
+        instance.setAccessible(true);
+        instance.set(null, null);
+    }
 
     @Test
     public void testNoRooms() {
@@ -80,8 +90,11 @@ public class UniversityTest {
         Faculty faculty1 = new Faculty("FEL");
         university.createFaculty(faculty1);
         university.createFaculty(faculty1);
+        for (Faculty faculty : university.getFaculties())
+            System.out.println(faculty.getName());
         Assert.assertEquals(1, university.getFaculties().size());
     }
+
 
     @Test
     public void testCreateNullFaculty() {

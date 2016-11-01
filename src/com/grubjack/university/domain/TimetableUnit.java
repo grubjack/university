@@ -14,13 +14,7 @@ public class TimetableUnit {
     }
 
 
-    public List<Lesson> getLessons() {
-        return lessons;
-    }
 
-    public void setLessons(List<Lesson> lessons) {
-        this.lessons = lessons;
-    }
 
     public void createLesson(Lesson lesson) {
         if (lesson != null && !lessons.contains(lesson))
@@ -37,5 +31,13 @@ public class TimetableUnit {
             lessons.remove(lesson);
             lessons.add(index, lesson);
         }
+    }
+
+    public List<Lesson> getLessons() {
+        return lessons;
+    }
+
+    public void setLessons(List<Lesson> lessons) {
+        this.lessons = lessons;
     }
 }

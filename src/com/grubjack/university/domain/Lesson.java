@@ -12,11 +12,8 @@ public class Lesson {
     public Lesson() {
     }
 
-    public Lesson(String subject, Classroom classroom, Teacher teacher, Group group) {
+    public Lesson(String subject) {
         this.subject = subject;
-        this.classroom = classroom;
-        this.teacher = teacher;
-        this.group = group;
     }
 
     public String getSubject() {

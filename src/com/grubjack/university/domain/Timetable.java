@@ -20,21 +20,7 @@ public class Timetable {
         units = new HashMap<>();
     }
 
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Map<DayOfWeek, TimetableUnit> getUnits() {
-        return units;
-    }
-
-    public void setUnits(Map<DayOfWeek, TimetableUnit> units) {
-        this.units = units;
-    }
 
     public void createUnit(DayOfWeek dayOfWeek, TimetableUnit unit) {
         if (unit != null && dayOfWeek != null && !units.containsKey(dayOfWeek)) {
@@ -65,5 +51,21 @@ public class Timetable {
         }
 
         return new TimetableUnit();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Map<DayOfWeek, TimetableUnit> getUnits() {
+        return units;
+    }
+
+    public void setUnits(Map<DayOfWeek, TimetableUnit> units) {
+        this.units = units;
     }
 }

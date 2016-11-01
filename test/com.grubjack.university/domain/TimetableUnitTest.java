@@ -20,7 +20,10 @@ public class TimetableUnitTest {
         Classroom room = new Classroom("140a", "1 floor", 50);
         Teacher teacher = new Teacher("Petr", "Ivanov", 20000);
         Group group = new Group("FEL-322");
-        Lesson lesson = new Lesson("Mathematics", room, teacher, group);
+        Lesson lesson = new Lesson("Mathematics");
+        lesson.setClassroom(room);
+        lesson.setTeacher(teacher);
+        lesson.setGroup(group);
         unit.createLesson(lesson);
         unit.createLesson(lesson);
         Assert.assertEquals(1, unit.getLessons().size());
@@ -58,8 +61,14 @@ public class TimetableUnitTest {
         Teacher teacher2 = new Teacher("Eduard", "Chuiko", 15000);
         Group group1 = new Group("FEL-322");
         Group group2 = new Group("VITI-321");
-        Lesson lesson1 = new Lesson("Mathematics", room1, teacher1, group1);
-        Lesson lesson2 = new Lesson("English", room2, teacher2, group2);
+        Lesson lesson1 = new Lesson("Mathematics");
+        lesson1.setClassroom(room1);
+        lesson1.setTeacher(teacher1);
+        lesson1.setGroup(group1);
+        Lesson lesson2 = new Lesson("English");
+        lesson2.setClassroom(room2);
+        lesson2.setTeacher(teacher2);
+        lesson2.setGroup(group2);
         unit.createLesson(lesson1);
         unit.createLesson(lesson2);
         lesson1.setSubject("Art");
@@ -75,13 +84,20 @@ public class TimetableUnitTest {
         Teacher teacher2 = new Teacher("Eduard", "Chuiko", 15000);
         Group group1 = new Group("FEL-322");
         Group group2 = new Group("VITI-321");
-        Lesson lesson1 = new Lesson("Mathematics", room1, teacher1, group1);
-        Lesson lesson2 = new Lesson("English", room2, teacher2, group2);
+        Lesson lesson1 = new Lesson("Mathematics");
+        lesson1.setClassroom(room1);
+        lesson1.setTeacher(teacher1);
+        lesson1.setGroup(group1);
+        Lesson lesson2 = new Lesson("English");
+        lesson2.setClassroom(room2);
+        lesson2.setTeacher(teacher2);
+        lesson2.setGroup(group2);
         unit.createLesson(lesson1);
         unit.createLesson(lesson2);
         lesson1 = null;
         unit.updateLesson(lesson1);
         Assert.assertEquals(2, unit.getLessons().size());
     }
+
 
 }

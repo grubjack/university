@@ -2,7 +2,6 @@ package com.grubjack.university.domain;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by grubjack on 31.10.2016.
@@ -36,13 +35,13 @@ public class TimetableTestData {
     public static final Teacher teacher4 = new Teacher("Jenna", "Murphy", 2500);
     public static final Teacher teacher5 = new Teacher("Vivian", "Lyons", 1600);
 
-    public static final Lesson lesson1 = new Lesson("Mathematics", room1, teacher1, group1);
-    public static final Lesson lesson2 = new Lesson("Science", room2, teacher1, group3);
-    public static final Lesson lesson3 = new Lesson("Art", room3, teacher2, group1);
-    public static final Lesson lesson4 = new Lesson("Dramatics", room4, teacher2, group2);
-    public static final Lesson lesson5 = new Lesson("Reading", room1, teacher4, group2);
-    public static final Lesson lesson6 = new Lesson("English", room2, teacher5, group2);
-    public static final Lesson lesson7 = new Lesson("Algebra", room3, teacher3, group1);
+    public static final Lesson lesson1 = new Lesson("Mathematics");
+    public static final Lesson lesson2 = new Lesson("Science");
+    public static final Lesson lesson3 = new Lesson("Art");
+    public static final Lesson lesson4 = new Lesson("Dramatics");
+    public static final Lesson lesson5 = new Lesson("Reading");
+    public static final Lesson lesson6 = new Lesson("English");
+    public static final Lesson lesson7 = new Lesson("Algebra");
 
     public static final TimetableUnit unit1 = new TimetableUnit();
     public static final TimetableUnit unit2 = new TimetableUnit();
@@ -56,6 +55,7 @@ public class TimetableTestData {
         groups.add(group1);
         groups.add(group2);
         groups.add(group3);
+
 
         group1.createStudent(student1);
         group1.createStudent(student2);
@@ -71,6 +71,34 @@ public class TimetableTestData {
 
         group3.createStudent(student11);
         group3.createStudent(student12);
+
+        lesson1.setClassroom(room1);
+        lesson1.setTeacher(teacher1);
+        lesson1.setGroup(group1);
+
+        lesson2.setClassroom(room2);
+        lesson2.setTeacher(teacher1);
+        lesson2.setGroup(group3);
+
+        lesson3.setClassroom(room3);
+        lesson3.setTeacher(teacher2);
+        lesson3.setGroup(group1);
+
+        lesson4.setClassroom(room4);
+        lesson4.setTeacher(teacher2);
+        lesson4.setGroup(group2);
+
+        lesson5.setClassroom(room1);
+        lesson5.setTeacher(teacher4);
+        lesson5.setGroup(group2);
+
+        lesson6.setClassroom(room2);
+        lesson6.setTeacher(teacher5);
+        lesson6.setGroup(group2);
+
+        lesson7.setClassroom(room3);
+        lesson7.setTeacher(teacher3);
+        lesson7.setGroup(group1);
 
         unit1.createLesson(lesson1);
         unit1.createLesson(lesson2);

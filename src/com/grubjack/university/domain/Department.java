@@ -20,22 +20,6 @@ public class Department {
     }
 
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public List<Teacher> getTeachers() {
-        return teachers;
-    }
-
-    public void setTeachers(List<Teacher> teachers) {
-        this.teachers = teachers;
-    }
-
     public void createTeacher(Teacher teacher) {
         if (teacher != null && !teachers.contains(teacher)) {
             teachers.add(teacher);
@@ -48,7 +32,7 @@ public class Department {
 
     public void updateTeacher(Teacher teacher) {
         int index = teachers.indexOf(teacher);
-        if(index!=-1) {
+        if (index != -1) {
             teachers.remove(teacher);
             teachers.add(index, teacher);
         }
@@ -83,5 +67,21 @@ public class Department {
             }
         }
         return result;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<Teacher> getTeachers() {
+        return teachers;
+    }
+
+    public void setTeachers(List<Teacher> teachers) {
+        this.teachers = teachers;
     }
 }

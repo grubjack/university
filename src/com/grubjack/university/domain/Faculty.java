@@ -25,37 +25,7 @@ public class Faculty {
         groups = new ArrayList<>();
     }
 
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Timetable getTimetable() {
-        return timetable;
-    }
-
-    public void setTimetable(Timetable timetable) {
-        this.timetable = timetable;
-    }
-
-    public List<Department> getDepartments() {
-        return departments;
-    }
-
-    public void setDepartments(List<Department> departments) {
-        this.departments = departments;
-    }
-
-    public List<Group> getGroups() {
-        return groups;
-    }
-
-    public void setGroups(List<Group> groups) {
-        this.groups = groups;
-    }
 
     public void createGroup(Group group) {
         if (group != null && !groups.contains(group)) {
@@ -95,19 +65,19 @@ public class Faculty {
     }
 
 
-    public TimetableUnit findStudentTimetableUnit(Student student, DayOfWeek dayOfWeek) {
-        return findGroupTimetableUnit(findStudentGroup(student), dayOfWeek);
+    public TimetableUnit findDayTimetable(Student student, DayOfWeek dayOfWeek) {
+        return findDayTimetable(findGroup(student), dayOfWeek);
     }
 
-    public Timetable findStudentTimetable(Student student) {
-        Timetable result = findGroupTimetable(findStudentGroup(student));
+    public Timetable findTimetable(Student student) {
+        Timetable result = findTimetable(findGroup(student));
         if (student != null) {
             result.setName("Timetable " + student.getFirstName() + " " + student.getLastName());
         }
         return result;
     }
 
-    public TimetableUnit findTeacherTimetableUnit(Teacher teacher, DayOfWeek dayOfWeek) {
+    public TimetableUnit findDayTimetable(Teacher teacher, DayOfWeek dayOfWeek) {
         TimetableUnit result = new TimetableUnit();
         TimetableUnit unit = timetable.findUnit(dayOfWeek);
         if (unit != null) {
@@ -122,13 +92,13 @@ public class Faculty {
         return result;
     }
 
-    public Timetable findTeacherTimetable(Teacher teacher) {
+    public Timetable findTimetable(Teacher teacher) {
         Timetable result = new Timetable();
         if (teacher != null) {
             result.setName("Timetable " + teacher.getFirstName() + " " + teacher.getLastName());
             Map<DayOfWeek, TimetableUnit> units = new HashMap<>();
             for (DayOfWeek dayOfWeek : timetable.getUnits().keySet()) {
-                TimetableUnit unit = findTeacherTimetableUnit(teacher, dayOfWeek);
+                TimetableUnit unit = findDayTimetable(teacher, dayOfWeek);
                 if (unit.getLessons().size() > 0) {
                     units.put(dayOfWeek, unit);
                 }
@@ -138,7 +108,7 @@ public class Faculty {
         return result;
     }
 
-    public TimetableUnit findGroupTimetableUnit(Group group, DayOfWeek dayOfWeek) {
+    public TimetableUnit findDayTimetable(Group group, DayOfWeek dayOfWeek) {
         TimetableUnit result = new TimetableUnit();
         TimetableUnit unit = timetable.findUnit(dayOfWeek);
         if (group != null && unit != null) {
@@ -153,13 +123,13 @@ public class Faculty {
         return result;
     }
 
-    public Timetable findGroupTimetable(Group group) {
+    public Timetable findTimetable(Group group) {
         Timetable result = new Timetable();
         if (group != null) {
             result.setName("Timetable " + group.getName());
             Map<DayOfWeek, TimetableUnit> units = new HashMap<>();
             for (DayOfWeek dayOfWeek : timetable.getUnits().keySet()) {
-                TimetableUnit unit = findGroupTimetableUnit(group, dayOfWeek);
+                TimetableUnit unit = findDayTimetable(group, dayOfWeek);
                 if (unit.getLessons().size() > 0) {
                     units.put(dayOfWeek, unit);
                 }
@@ -169,11 +139,43 @@ public class Faculty {
         return result;
     }
 
-    public Group findStudentGroup(Student student) {
+    public Group findGroup(Student student) {
         for (Group group : groups) {
             if (group.getStudents().contains(student))
                 return group;
         }
         return null;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Timetable getTimetable() {
+        return timetable;
+    }
+
+    public void setTimetable(Timetable timetable) {
+        this.timetable = timetable;
+    }
+
+    public List<Department> getDepartments() {
+        return departments;
+    }
+
+    public void setDepartments(List<Department> departments) {
+        this.departments = departments;
+    }
+
+    public List<Group> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(List<Group> groups) {
+        this.groups = groups;
     }
 }

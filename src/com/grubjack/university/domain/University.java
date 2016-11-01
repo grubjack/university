@@ -7,37 +7,22 @@ import java.util.List;
  * Created by grubjack on 28.10.2016.
  */
 public class University {
+    private static University instance;
     private String name;
     private List<Classroom> rooms;
     private List<Faculty> faculties;
 
-    public University() {
+    private University() {
         rooms = new ArrayList<>();
         faculties = new ArrayList<>();
     }
 
-    public University(String name) {
-        this.name = name;
-        rooms = new ArrayList<>();
-        faculties = new ArrayList<>();
+    public static University getInstance() {
+        if (instance == null) {
+            instance = new University();
+        }
+        return instance;
     }
-
-    public List<Classroom> getRooms() {
-        return rooms;
-    }
-
-    public void setRooms(List<Classroom> rooms) {
-        this.rooms = rooms;
-    }
-
-    public List<Faculty> getFaculties() {
-        return faculties;
-    }
-
-    public void setFaculties(List<Faculty> faculties) {
-        this.faculties = faculties;
-    }
-
 
     public void createRoom(Classroom classroom) {
         if (classroom != null && !rooms.contains(classroom))
@@ -80,4 +65,22 @@ public class University {
     public void setName(String name) {
         this.name = name;
     }
+
+    public List<Classroom> getRooms() {
+        return rooms;
+    }
+
+    public void setRooms(List<Classroom> rooms) {
+        this.rooms = rooms;
+    }
+
+    public List<Faculty> getFaculties() {
+        return faculties;
+    }
+
+    public void setFaculties(List<Faculty> faculties) {
+        this.faculties = faculties;
+    }
+
+
 }

@@ -134,7 +134,7 @@ public class FacultyTest {
         faculty.setGroups(TimetableTestData.groups);
         faculty.setTimetable(TimetableTestData.timetable);
         Student student = TimetableTestData.student2;
-        Assert.assertEquals(2, faculty.findStudentTimetable(student).getUnits().size());
+        Assert.assertEquals(2, faculty.findTimetable(student).getUnits().size());
     }
 
     @Test
@@ -142,14 +142,15 @@ public class FacultyTest {
         faculty.setGroups(TimetableTestData.groups);
         faculty.setTimetable(TimetableTestData.timetable);
         Student student = new Student();
-        Assert.assertEquals(0, faculty.findStudentTimetable(student).getUnits().size());
+        Assert.assertEquals(0, faculty.findTimetable(student).getUnits().size());
     }
 
     @Test
     public void testFindNullStudentTimetable() {
         faculty.setGroups(TimetableTestData.groups);
         faculty.setTimetable(TimetableTestData.timetable);
-        Assert.assertEquals(0, faculty.findStudentTimetable(null).getUnits().size());
+        Student student = null;
+        Assert.assertEquals(0, faculty.findTimetable(student).getUnits().size());
     }
 
 
@@ -158,7 +159,7 @@ public class FacultyTest {
         faculty.setGroups(TimetableTestData.groups);
         faculty.setTimetable(TimetableTestData.timetable);
         Teacher teacher = TimetableTestData.teacher3;
-        Assert.assertEquals(1, faculty.findTeacherTimetable(teacher).getUnits().size());
+        Assert.assertEquals(1, faculty.findTimetable(teacher).getUnits().size());
     }
 
     @Test
@@ -166,14 +167,15 @@ public class FacultyTest {
         faculty.setGroups(TimetableTestData.groups);
         faculty.setTimetable(TimetableTestData.timetable);
         Teacher teacher = new Teacher();
-        Assert.assertEquals(0, faculty.findTeacherTimetable(teacher).getUnits().size());
+        Assert.assertEquals(0, faculty.findTimetable(teacher).getUnits().size());
     }
 
     @Test
     public void testFindNullTeacherTimetable() {
         faculty.setGroups(TimetableTestData.groups);
         faculty.setTimetable(TimetableTestData.timetable);
-        Assert.assertEquals(0, faculty.findTeacherTimetable(null).getUnits().size());
+        Teacher teacher = null;
+        Assert.assertEquals(0, faculty.findTimetable(teacher).getUnits().size());
     }
 
     @Test
@@ -181,7 +183,7 @@ public class FacultyTest {
         faculty.setGroups(TimetableTestData.groups);
         faculty.setTimetable(TimetableTestData.timetable);
         Group group = TimetableTestData.group1;
-        Assert.assertEquals(2, faculty.findGroupTimetable(group).getUnits().size());
+        Assert.assertEquals(2, faculty.findTimetable(group).getUnits().size());
     }
 
     @Test
@@ -189,84 +191,88 @@ public class FacultyTest {
         faculty.setGroups(TimetableTestData.groups);
         faculty.setTimetable(TimetableTestData.timetable);
         Group group = new Group();
-        Assert.assertEquals(0, faculty.findGroupTimetable(group).getUnits().size());
+        Assert.assertEquals(0, faculty.findTimetable(group).getUnits().size());
     }
 
     @Test
     public void testFindNullGroupTimetable() {
         faculty.setGroups(TimetableTestData.groups);
         faculty.setTimetable(TimetableTestData.timetable);
-        Assert.assertEquals(0, faculty.findGroupTimetable(null).getUnits().size());
+        Group group = null;
+        Assert.assertEquals(0, faculty.findTimetable(group).getUnits().size());
     }
 
 
     @Test
-    public void testFindGroupTimetableUnit() {
+    public void testFindGroupDayTimetable() {
         faculty.setGroups(TimetableTestData.groups);
         faculty.setTimetable(TimetableTestData.timetable);
         Group group = TimetableTestData.group1;
-        Assert.assertEquals(2, faculty.findGroupTimetableUnit(group, DayOfWeek.MONDAY).getLessons().size());
+        Assert.assertEquals(2, faculty.findDayTimetable(group, DayOfWeek.MONDAY).getLessons().size());
     }
 
     @Test
-    public void testFindNewGroupTimetableUnit() {
+    public void testFindNewGroupDayTimetable() {
         faculty.setGroups(TimetableTestData.groups);
         faculty.setTimetable(TimetableTestData.timetable);
         Group group = new Group();
-        Assert.assertEquals(0, faculty.findGroupTimetableUnit(group, DayOfWeek.MONDAY).getLessons().size());
+        Assert.assertEquals(0, faculty.findDayTimetable(group, DayOfWeek.MONDAY).getLessons().size());
     }
 
     @Test
-    public void testFindNullGroupTimetableUnit() {
+    public void testFindNullGroupDayTimetable() {
         faculty.setGroups(TimetableTestData.groups);
         faculty.setTimetable(TimetableTestData.timetable);
-        Assert.assertEquals(0, faculty.findGroupTimetableUnit(null, DayOfWeek.MONDAY).getLessons().size());
+        Group group = null;
+        Assert.assertEquals(0, faculty.findDayTimetable(group, DayOfWeek.MONDAY).getLessons().size());
     }
 
     @Test
-    public void testFindStudentTimetableUnit() {
+    public void testFindStudentDayTimetable() {
         faculty.setGroups(TimetableTestData.groups);
         faculty.setTimetable(TimetableTestData.timetable);
         Student student = TimetableTestData.student2;
-        Assert.assertEquals(1, faculty.findStudentTimetableUnit(student, DayOfWeek.THURSDAY).getLessons().size());
+        Assert.assertEquals(1, faculty.findDayTimetable(student, DayOfWeek.THURSDAY).getLessons().size());
     }
 
     @Test
-    public void testFindNewStudentTimetableUnit() {
+    public void testFindNewStudentDayTimetable() {
         faculty.setGroups(TimetableTestData.groups);
         faculty.setTimetable(TimetableTestData.timetable);
         Student student = new Student();
-        Assert.assertEquals(0, faculty.findStudentTimetableUnit(student, DayOfWeek.THURSDAY).getLessons().size());
+        Assert.assertEquals(0, faculty.findDayTimetable(student, DayOfWeek.THURSDAY).getLessons().size());
     }
 
     @Test
-    public void testFindNullStudentTimetableUnit() {
+    public void testFindNullStudentDayTimetable() {
         faculty.setGroups(TimetableTestData.groups);
         faculty.setTimetable(TimetableTestData.timetable);
-        Assert.assertEquals(0, faculty.findStudentTimetableUnit(null, DayOfWeek.THURSDAY).getLessons().size());
+        Student student = null;
+        Assert.assertEquals(0, faculty.findDayTimetable(student, DayOfWeek.THURSDAY).getLessons().size());
     }
 
     @Test
-    public void testFindTeacherTimetableUnit() {
+    public void testFindTeacherDayTimetable() {
         faculty.setGroups(TimetableTestData.groups);
         faculty.setTimetable(TimetableTestData.timetable);
         Teacher teacher = TimetableTestData.teacher2;
-        Assert.assertEquals(1, faculty.findTeacherTimetableUnit(teacher, DayOfWeek.MONDAY).getLessons().size());
+        Assert.assertEquals(1, faculty.findDayTimetable(teacher, DayOfWeek.MONDAY).getLessons().size());
     }
 
     @Test
-    public void testFindNewTeacherTimetableUnit() {
+    public void testFindNewTeacherDayTimetable() {
         faculty.setGroups(TimetableTestData.groups);
         faculty.setTimetable(TimetableTestData.timetable);
         Teacher teacher = new Teacher();
-        Assert.assertEquals(0, faculty.findTeacherTimetableUnit(teacher, DayOfWeek.MONDAY).getLessons().size());
+        Assert.assertEquals(0, faculty.findDayTimetable(teacher, DayOfWeek.MONDAY).getLessons().size());
     }
 
     @Test
-    public void testFindNullTeacherTimetableUnit() {
+    public void testFindNullTeacherDayTimetable() {
         faculty.setGroups(TimetableTestData.groups);
         faculty.setTimetable(TimetableTestData.timetable);
-        Assert.assertEquals(0, faculty.findTeacherTimetableUnit(null, DayOfWeek.MONDAY).getLessons().size());
+        Teacher teacher = null;
+        Assert.assertEquals(0, faculty.findDayTimetable(teacher, DayOfWeek.MONDAY).getLessons().size());
     }
 
     @Test
@@ -274,7 +280,7 @@ public class FacultyTest {
         faculty.setGroups(TimetableTestData.groups);
         faculty.setTimetable(TimetableTestData.timetable);
         Student student = TimetableTestData.student2;
-        Assert.assertEquals(TimetableTestData.group1.getName(), faculty.findStudentGroup(student).getName());
+        Assert.assertEquals(TimetableTestData.group1.getName(), faculty.findGroup(student).getName());
     }
 
     @Test
@@ -282,14 +288,14 @@ public class FacultyTest {
         faculty.setGroups(TimetableTestData.groups);
         faculty.setTimetable(TimetableTestData.timetable);
         Student student = new Student();
-        Assert.assertNull(faculty.findStudentGroup(student));
+        Assert.assertNull(faculty.findGroup(student));
     }
 
     @Test
     public void testNullStudentGroup() {
         faculty.setGroups(TimetableTestData.groups);
         faculty.setTimetable(TimetableTestData.timetable);
-        Assert.assertNull(faculty.findStudentGroup(null));
+        Assert.assertNull(faculty.findGroup(null));
     }
 
 
