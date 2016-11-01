@@ -176,11 +176,4 @@ public class Faculty {
         }
         return null;
     }
-
-    @Override
-    public String toString() {
-        return "Faculty{" +
-                "name='" + name + '\'' +
-                '}';
-    }
 }

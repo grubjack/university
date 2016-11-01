@@ -22,13 +22,4 @@ public class Teacher extends Person {
     public void setSalary(int salary) {
         this.salary = salary;
     }
-
-    @Override
-    public String toString() {
-        return "Teacher{" +
-                "firstName='" + getFirstName() + "'," +
-                "lastName='" + getLastName() + "'," +
-                "salary='" + salary +
-                '}';
-    }
 }

@@ -84,11 +84,4 @@ public class Department {
         }
         return result;
     }
-
-    @Override
-    public String toString() {
-        return "Department{" +
-                "name='" + name + '\'' +
-                '}';
-    }
 }

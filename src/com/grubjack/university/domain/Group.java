@@ -84,10 +84,4 @@ public class Group {
         }
         return result;
     }
-
-    @Override
-    public String toString() {
-        return "Group{" +
-                "name='" + name + "\'}";
-    }
 }

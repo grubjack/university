@@ -50,14 +50,4 @@ public class Lesson {
     public void setGroup(Group group) {
         this.group = group;
     }
-
-    @Override
-    public String toString() {
-        return "Lesson{" +
-                "subject='" + subject + '\'' +
-                ", classroom=" + classroom +
-                ", teacher=" + teacher +
-                ", group=" + group +
-                '}';
-    }
 }

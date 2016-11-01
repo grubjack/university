@@ -80,12 +80,4 @@ public class University {
     public void setName(String name) {
         this.name = name;
     }
-
-
-    @Override
-    public String toString() {
-        return "University{" +
-                "name='" + name + '\'' +
-                '}';
-    }
 }

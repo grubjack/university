@@ -66,11 +66,4 @@ public class Timetable {
 
         return new TimetableUnit();
     }
-
-    @Override
-    public String toString() {
-        return "Timetable{" +
-                "name='" + name + '\'' +
-                '}';
-    }
 }
