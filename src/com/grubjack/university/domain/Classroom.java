@@ -17,6 +17,27 @@ public class Classroom {
         this.size = size;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Classroom classroom = (Classroom) o;
+
+        if (size != classroom.size) return false;
+        if (number != null ? !number.equals(classroom.number) : classroom.number != null) return false;
+        return location != null ? location.equals(classroom.location) : classroom.location == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = number != null ? number.hashCode() : 0;
+        result = 31 * result + (location != null ? location.hashCode() : 0);
+        result = 31 * result + size;
+        return result;
+    }
+
     public String getNumber() {
         return number;
     }

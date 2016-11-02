@@ -21,6 +21,25 @@ public class Group {
     }
 
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Group group = (Group) o;
+
+        if (name != null ? !name.equals(group.name) : group.name != null) return false;
+        return students != null ? students.equals(group.students) : group.students == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (students != null ? students.hashCode() : 0);
+        return result;
+    }
+
     public void createStudent(Student student) {
         if (student != null && !students.contains(student))
             students.add(student);

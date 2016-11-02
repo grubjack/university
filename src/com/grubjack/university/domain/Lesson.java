@@ -16,6 +16,29 @@ public class Lesson {
         this.subject = subject;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Lesson lesson = (Lesson) o;
+
+        if (subject != null ? !subject.equals(lesson.subject) : lesson.subject != null) return false;
+        if (classroom != null ? !classroom.equals(lesson.classroom) : lesson.classroom != null) return false;
+        if (teacher != null ? !teacher.equals(lesson.teacher) : lesson.teacher != null) return false;
+        return group != null ? group.equals(lesson.group) : lesson.group == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = subject != null ? subject.hashCode() : 0;
+        result = 31 * result + (classroom != null ? classroom.hashCode() : 0);
+        result = 31 * result + (teacher != null ? teacher.hashCode() : 0);
+        result = 31 * result + (group != null ? group.hashCode() : 0);
+        return result;
+    }
+
     public String getSubject() {
         return subject;
     }

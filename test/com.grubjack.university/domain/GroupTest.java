@@ -3,13 +3,13 @@ package com.grubjack.university.domain;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import java.util.List;
 
 /**
  * Created by grubjack on 31.10.2016.
  */
 public class GroupTest {
-    
+
     Group group = new Group();
 
     @Test
@@ -38,7 +38,7 @@ public class GroupTest {
         group.createStudent(student1);
         group.createStudent(student2);
         group.deleteStudent(student1);
-        Assert.assertEquals(1, group.getStudents().size());
+        Assert.assertEquals(0, group.getStudents().size());
     }
 
     @Test
@@ -57,7 +57,12 @@ public class GroupTest {
         group.createStudent(student2);
         student1.setFirstName("Vasya");
         group.updateStudent(student1);
-        Assert.assertEquals("Vasya", group.getStudents().get(0).getFirstName());
+        List<Student> students = group.getStudents();
+        if (students != null && students.size() > 1) {
+            Student firstStudent = students.get(0);
+            if (firstStudent != null)
+                Assert.assertEquals("Vasya", firstStudent.getFirstName());
+        }
     }
 
     @Test

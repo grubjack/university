@@ -1,6 +1,5 @@
 package com.grubjack.university.domain;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,7 +19,24 @@ public class Timetable {
         units = new HashMap<>();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
+        Timetable timetable = (Timetable) o;
+
+        if (name != null ? !name.equals(timetable.name) : timetable.name != null) return false;
+        return units != null ? units.equals(timetable.units) : timetable.units == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (units != null ? units.hashCode() : 0);
+        return result;
+    }
 
     public void createUnit(DayOfWeek dayOfWeek, TimetableUnit unit) {
         if (unit != null && dayOfWeek != null && !units.containsKey(dayOfWeek)) {
@@ -34,8 +50,8 @@ public class Timetable {
         }
     }
 
-    public void deleteUnit(TimetableUnit unit) {
-        units.values().removeAll(Collections.singleton(unit));
+    public void deleteUnit(DayOfWeek dayOfWeek) {
+        units.remove(dayOfWeek);
     }
 
     public void deleteDayOfWeekUnit(DayOfWeek dayOfWeek) {

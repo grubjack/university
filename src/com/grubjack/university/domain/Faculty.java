@@ -25,7 +25,28 @@ public class Faculty {
         groups = new ArrayList<>();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
+        Faculty faculty = (Faculty) o;
+
+        if (name != null ? !name.equals(faculty.name) : faculty.name != null) return false;
+        if (timetable != null ? !timetable.equals(faculty.timetable) : faculty.timetable != null) return false;
+        if (departments != null ? !departments.equals(faculty.departments) : faculty.departments != null) return false;
+        return groups != null ? groups.equals(faculty.groups) : faculty.groups == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (timetable != null ? timetable.hashCode() : 0);
+        result = 31 * result + (departments != null ? departments.hashCode() : 0);
+        result = 31 * result + (groups != null ? groups.hashCode() : 0);
+        return result;
+    }
 
     public void createGroup(Group group) {
         if (group != null && !groups.contains(group)) {
@@ -83,7 +104,7 @@ public class Faculty {
         if (unit != null) {
             List<Lesson> lessons = new ArrayList<>();
             for (Lesson lesson : unit.getLessons()) {
-                if (lesson.getTeacher() == teacher) {
+                if (lesson.getTeacher().equals(teacher)) {
                     lessons.add(lesson);
                 }
             }
@@ -114,7 +135,7 @@ public class Faculty {
         if (group != null && unit != null) {
             List<Lesson> lessons = new ArrayList<>();
             for (Lesson lesson : unit.getLessons()) {
-                if (lesson.getGroup() == group) {
+                if (lesson.getGroup().equals(group)) {
                     lessons.add(lesson);
                 }
             }

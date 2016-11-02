@@ -3,6 +3,8 @@ package com.grubjack.university.domain;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.List;
+
 /**
  * Created by grubjack on 31.10.2016.
  */
@@ -36,7 +38,7 @@ public class DepartmentTest {
         department.createTeacher(teacher1);
         department.createTeacher(teacher2);
         department.deleteTeacher(teacher1);
-        Assert.assertEquals(1, department.getTeachers().size());
+        Assert.assertEquals(0, department.getTeachers().size());
     }
 
     @Test
@@ -55,7 +57,12 @@ public class DepartmentTest {
         department.createTeacher(teacher2);
         teacher1.setSalary(30000);
         department.updateTeacher(teacher1);
-        Assert.assertEquals(30000, department.getTeachers().get(0).getSalary());
+        List<Teacher> teachers = department.getTeachers();
+        if (teachers != null && teachers.size() > 1) {
+            Teacher firstTeacher = teachers.get(0);
+            if (firstTeacher != null)
+                Assert.assertEquals(30000, firstTeacher.getSalary());
+        }
     }
 
     @Test

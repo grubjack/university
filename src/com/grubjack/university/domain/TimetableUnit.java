@@ -14,7 +14,21 @@ public class TimetableUnit {
     }
 
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
+        TimetableUnit that = (TimetableUnit) o;
+
+        return lessons != null ? lessons.equals(that.lessons) : that.lessons == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return lessons != null ? lessons.hashCode() : 0;
+    }
 
     public void createLesson(Lesson lesson) {
         if (lesson != null && !lessons.contains(lesson))

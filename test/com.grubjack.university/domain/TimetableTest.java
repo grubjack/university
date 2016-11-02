@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by grubjack on 31.10.2016.
@@ -47,8 +48,8 @@ public class TimetableTest {
         timetable.createUnit(DayOfWeek.WEDNESDAY, unit1);
         timetable.createUnit(DayOfWeek.FRIDAY, unit2);
         timetable.createUnit(DayOfWeek.SATURDAY, unit2);
-        timetable.deleteUnit(unit2);
-        Assert.assertEquals(3, timetable.getUnits().size());
+        timetable.deleteUnit(DayOfWeek.MONDAY);
+        Assert.assertEquals(4, timetable.getUnits().size());
     }
 
     @Test
@@ -76,7 +77,13 @@ public class TimetableTest {
         lessons.add(new Lesson());
         unit.setLessons(lessons);
         timetable.updateUnit(DayOfWeek.MONDAY, unit);
-        Assert.assertEquals(3, timetable.getUnits().get(DayOfWeek.MONDAY).getLessons().size());
+
+        Map<DayOfWeek, TimetableUnit> units = timetable.getUnits();
+        if (units != null && units.containsKey(DayOfWeek.MONDAY)) {
+            TimetableUnit dayUnit = units.get(DayOfWeek.MONDAY);
+            if (dayUnit != null && dayUnit.getLessons() != null)
+                Assert.assertEquals(3, dayUnit.getLessons().size());
+        }
     }
 
     @Test
@@ -98,12 +105,12 @@ public class TimetableTest {
         unit.setLessons(lessons);
         timetable.createUnit(DayOfWeek.MONDAY, unit);
         timetable.createUnit(DayOfWeek.TUESDAY, unit);
-        Assert.assertEquals(3,timetable.findUnit(DayOfWeek.MONDAY).getLessons().size());
+        Assert.assertEquals(3, timetable.findUnit(DayOfWeek.MONDAY).getLessons().size());
     }
 
     @Test
     public void testFindEmptyUnit() {
-        Assert.assertEquals(0,timetable.findUnit(DayOfWeek.MONDAY).getLessons().size());
+        Assert.assertEquals(0, timetable.findUnit(DayOfWeek.MONDAY).getLessons().size());
 
     }
 
