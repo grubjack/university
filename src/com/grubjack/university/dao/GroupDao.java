@@ -7,18 +7,10 @@ import java.util.List;
 /**
  * Created by grubjack on 02.11.2016.
  */
-public interface GroupDao {
+public interface GroupDao extends RootDao<Group> {
 
-    Group save(Group group);
+    Group findByName(String name);
 
-    boolean delete(int id);
-
-    Group get(int id);
-
-    List<Group> getAll();
-
-    Group getByName(String name);
-
-    List<Group> getAll(int facultyId);
+    List<Group> findAll(int facultyId);
 
 }

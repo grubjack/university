@@ -8,22 +8,14 @@ import java.util.List;
 /**
  * Created by grubjack on 02.11.2016.
  */
-public interface LessonDao {
+public interface LessonDao extends RootDao<Lesson> {
 
-    Lesson save(Lesson lesson);
+    List<Lesson> findAllByGroup(int groupId);
 
-    boolean delete(int id);
+    List<Lesson> findAllByTeacher(int teacherId);
 
-    Lesson get(int id);
+    List<Lesson> findAllByDayForGroup(int groupId, DayOfWeek dayOfWeek);
 
-    List<Lesson> getAll();
-
-    List<Lesson> getAllByGroup(int groupId);
-
-    List<Lesson> getAllByTeacher(int teacherId);
-
-    List<Lesson> getAllByDayForGroup(int groupId, DayOfWeek dayOfWeek);
-
-    List<Lesson> getAllByDayForTeacher(int teacherId, DayOfWeek dayOfWeek);
+    List<Lesson> findAllByDayForTeacher(int teacherId, DayOfWeek dayOfWeek);
 
 }

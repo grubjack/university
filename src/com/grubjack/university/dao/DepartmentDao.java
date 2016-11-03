@@ -7,18 +7,10 @@ import java.util.List;
 /**
  * Created by grubjack on 02.11.2016.
  */
-public interface DepartmentDao {
+public interface DepartmentDao extends RootDao<Department> {
 
-    Department save(Department department);
+    Department findByName(String name);
 
-    boolean delete(int id);
-
-    Department get(int id);
-
-    List<Department> getAll();
-
-    Department getByName(String name);
-
-    List<Department> getAll(int facultyId);
+    List<Department> findAll(int facultyId);
 
 }
