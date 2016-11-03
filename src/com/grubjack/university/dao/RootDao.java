@@ -7,7 +7,9 @@ import java.util.List;
  */
 public interface RootDao<T> {
 
-    T update(T room);
+    T create(T t);
+
+    T update(T t);
 
     boolean delete(int id);
 
