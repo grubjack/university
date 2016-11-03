@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Created by grubjack on 02.11.2016.
  */
-public interface DepartmentDao extends RootDao<Department> {
+public interface DepartmentDao extends BaseDao<Department> {
 
     Department findByName(String name);
 

@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by grubjack on 02.11.2016.
  */
-public interface LessonDao extends RootDao<Lesson> {
+public interface LessonDao extends BaseDao<Lesson> {
 
     List<Lesson> findAllByGroup(int groupId);
 

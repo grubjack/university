@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * Created by grubjack on 03.11.2016.
  */
-public interface PersonDao<T> extends RootDao<T> {
+public interface PersonDao<T> extends BaseDao<T> {
 
     List<T> findByFirstName(String firstName);
 

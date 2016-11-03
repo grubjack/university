@@ -5,7 +5,7 @@ import com.grubjack.university.domain.Faculty;
 /**
  * Created by grubjack on 02.11.2016.
  */
-public interface FacultyDao extends RootDao<Faculty> {
+public interface FacultyDao extends BaseDao<Faculty> {
 
     Faculty findByName(String name);
 
