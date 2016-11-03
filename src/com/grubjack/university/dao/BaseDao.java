@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * Created by grubjack on 03.11.2016.
  */
-public interface RootDao<T> {
+public interface BaseDao<T> {
 
     T create(T t);
 
