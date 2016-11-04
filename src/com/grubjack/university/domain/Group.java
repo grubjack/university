@@ -6,10 +6,11 @@ import java.util.List;
 /**
  * Created by grubjack on 28.10.2016.
  */
-public class Group {
+public class Group extends BaseEntity {
 
     private String name;
     private List<Student> students;
+    private Faculty faculty;
 
     public Group() {
         students = new ArrayList<>();
@@ -103,5 +104,13 @@ public class Group {
 
     public void setStudents(List<Student> students) {
         this.students = students;
+    }
+
+    public Faculty getFaculty() {
+        return faculty;
+    }
+
+    public void setFaculty(Faculty faculty) {
+        this.faculty = faculty;
     }
 }

@@ -3,18 +3,18 @@ package com.grubjack.university.domain;
 /**
  * Created by grubjack on 28.10.2016.
  */
-public class Classroom {
+public class Classroom extends BaseEntity {
     private String number;
     private String location;
-    private int size;
+    private int capacity;
 
     public Classroom() {
     }
 
-    public Classroom(String number, String location, int size) {
+    public Classroom(String number, String location, int capacity) {
         this.number = number;
         this.location = location;
-        this.size = size;
+        this.capacity = capacity;
     }
 
     @Override
@@ -24,7 +24,7 @@ public class Classroom {
 
         Classroom classroom = (Classroom) o;
 
-        if (size != classroom.size) return false;
+        if (capacity != classroom.capacity) return false;
         if (number != null ? !number.equals(classroom.number) : classroom.number != null) return false;
         return location != null ? location.equals(classroom.location) : classroom.location == null;
 
@@ -34,7 +34,7 @@ public class Classroom {
     public int hashCode() {
         int result = number != null ? number.hashCode() : 0;
         result = 31 * result + (location != null ? location.hashCode() : 0);
-        result = 31 * result + size;
+        result = 31 * result + capacity;
         return result;
     }
 
@@ -54,11 +54,11 @@ public class Classroom {
         this.location = location;
     }
 
-    public int getSize() {
-        return size;
+    public int getCapacity() {
+        return capacity;
     }
 
-    public void setSize(int size) {
-        this.size = size;
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
     }
 }

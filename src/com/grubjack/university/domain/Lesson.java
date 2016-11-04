@@ -3,11 +3,13 @@ package com.grubjack.university.domain;
 /**
  * Created by grubjack on 28.10.2016.
  */
-public class Lesson {
+public class Lesson extends BaseEntity implements Comparable<Lesson> {
     private String subject;
-    private Classroom classroom;
     private Teacher teacher;
     private Group group;
+    private Faculty faculty;
+    private Classroom classroom;
+    private DayOfWeek dayOfWeek;
 
     public Lesson() {
     }
@@ -69,5 +71,26 @@ public class Lesson {
 
     public void setGroup(Group group) {
         this.group = group;
+    }
+
+    public Faculty getFaculty() {
+        return faculty;
+    }
+
+    public void setFaculty(Faculty faculty) {
+        this.faculty = faculty;
+    }
+
+    public DayOfWeek getDayOfWeek() {
+        return dayOfWeek;
+    }
+
+    public void setDayOfWeek(DayOfWeek dayOfWeek) {
+        this.dayOfWeek = dayOfWeek;
+    }
+
+    @Override
+    public int compareTo(Lesson o) {
+        return dayOfWeek.compareTo(o.getDayOfWeek());
     }
 }

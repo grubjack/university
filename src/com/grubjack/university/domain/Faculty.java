@@ -8,11 +8,12 @@ import java.util.Map;
 /**
  * Created by grubjack on 28.10.2016.
  */
-public class Faculty {
+public class Faculty extends BaseEntity {
     private String name;
     private Timetable timetable;
     private List<Department> departments;
     private List<Group> groups;
+
 
     public Faculty() {
         departments = new ArrayList<>();
