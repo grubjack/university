@@ -1,6 +1,6 @@
 package com.grubjack.university.dao;
 
-import com.grubjack.university.dao.jdbc.*;
+import com.grubjack.university.dao.impl.*;
 import com.grubjack.university.domain.Student;
 import com.grubjack.university.domain.Teacher;
 
@@ -12,7 +12,7 @@ import java.sql.SQLException;
  * Created by grubjack on 03.11.2016.
  */
 public final class DaoFactory {
-    public static final String DB_URL = "jdbc:postgresql://localhost/university";
+    public static final String DB_URL = "impl:postgresql://localhost/university";
     public static final String DB_DRIVER = "org.postgresql.Driver";
     public static final String DB_USER = "fox";
     public static final String DB_PASS = "rootINA";
@@ -49,26 +49,26 @@ public final class DaoFactory {
 
 
     public ClassroomDao getClassroomDao() {
-        return new ClassroomDaoPlainJdbcImpl();
+        return new ClassroomDaoImpl();
     }
 
     public DepartmentDao getDepartmentDao() {
-        return new DepartmentDaoPlainJdbcImpl();
+        return new DepartmentDaoImpl();
     }
 
     public FacultyDao getFacultyDao() {
-        return new FacultyDaoPlainJdbcImpl();
+        return new FacultyDaoImpl();
     }
 
     public GroupDao getGroupDao() {
-        return new GroupDaoPlainJdbcImpl();
+        return new GroupDaoImpl();
     }
 
     public PersonDao<Student> getStudentDao() {
-        return new StudentDaoPlainJdbcImpl();
+        return new StudentDaoImpl();
     }
 
     public PersonDao<Teacher> getTeacherDao() {
-        return new TeacherDaoPlainJdbcImpl();
+        return new TeacherDaoImpl();
     }
 }

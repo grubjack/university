@@ -1,4 +1,4 @@
-package com.grubjack.university.dao.jdbc;
+package com.grubjack.university.dao.impl;
 
 import com.grubjack.university.dao.*;
 import com.grubjack.university.domain.*;
@@ -12,14 +12,14 @@ import static com.grubjack.university.dao.DaoFactory.getConnection;
 /**
  * Created by grubjack on 03.11.2016.
  */
-public class LessonDaoPlainJdbcImpl implements LessonDao {
+public class LessonDaoImpl implements LessonDao {
     private DaoFactory daoFactory = DaoFactory.getInstance();
     private ClassroomDao classroomDao;
     private PersonDao<Teacher> teacherDao;
     private GroupDao groupDao;
     private FacultyDao facultyDao;
 
-    public LessonDaoPlainJdbcImpl() {
+    public LessonDaoImpl() {
         this.classroomDao = daoFactory.getClassroomDao();
         this.teacherDao = daoFactory.getTeacherDao();
         this.groupDao = daoFactory.getGroupDao();

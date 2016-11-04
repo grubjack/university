@@ -64,13 +64,13 @@ public class UniversityTest {
         Classroom room2 = new Classroom("159", "Floor 4", 10);
         university.createRoom(room1);
         university.createRoom(room2);
-        room1.setSize(100);
+        room1.setCapacity(100);
         university.updateRoom(room1);
         List<Classroom> classrooms = university.getRooms();
         if (classrooms != null && classrooms.size() > 1) {
             Classroom firstRoom = classrooms.get(0);
             if (firstRoom != null)
-                Assert.assertEquals(100, firstRoom.getSize());
+                Assert.assertEquals(100, firstRoom.getCapacity());
         }
     }
 

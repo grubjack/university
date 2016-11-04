@@ -1,4 +1,4 @@
-package com.grubjack.university.dao.jdbc;
+package com.grubjack.university.dao.impl;
 
 import com.grubjack.university.dao.DaoFactory;
 import com.grubjack.university.dao.DepartmentDao;
@@ -16,20 +16,23 @@ import static com.grubjack.university.dao.DaoFactory.getConnection;
 /**
  * Created by grubjack on 03.11.2016.
  */
-public class TeacherDaoPlainJdbcImpl implements PersonDao<Teacher> {
+public class TeacherDaoImpl implements PersonDao<Teacher> {
     private DaoFactory daoFactory = DaoFactory.getInstance();
     private DepartmentDao departmentDao;
 
 
-    public TeacherDaoPlainJdbcImpl() {
+    public TeacherDaoImpl() {
         this.departmentDao = daoFactory.getDepartmentDao();
     }
 
     @Override
     public void create(Teacher teacher) {
+        Connection connection = null;
+        PreparedStatement statement = null;
         ResultSet resultSet = null;
-        try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement("INSERT INTO teachers (firstname, lastname, salary,department_id) VALUES (?,?,?,?)", Statement.RETURN_GENERATED_KEYS)) {
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement("INSERT INTO teachers (firstname, lastname,salary, department_id) VALUES (?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, teacher.getFirstName());
             statement.setString(2, teacher.getLastName());
             statement.setInt(3, teacher.getSalary());
@@ -49,13 +52,30 @@ public class TeacherDaoPlainJdbcImpl implements PersonDao<Teacher> {
                     e.printStackTrace();
                 }
             }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
     @Override
     public void update(Teacher teacher) {
-        try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement("UPDATE teachers SET firstname=?,lastname=?,salary=?,department_id=? WHERE id=?")) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement("UPDATE teachers SET firstname=?,lastname=?,salary=?,department_id=? WHERE id=?");
             statement.setString(1, teacher.getFirstName());
             statement.setString(2, teacher.getLastName());
             statement.setInt(3, teacher.getSalary());
@@ -64,25 +84,61 @@ public class TeacherDaoPlainJdbcImpl implements PersonDao<Teacher> {
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
     @Override
     public void delete(int id) {
-        try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement("DELETE FROM teachers WHERE id=?")) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement("DELETE FROM teachers WHERE id=?");
             statement.setInt(1, id);
             statement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
     @Override
     public Teacher find(int id) {
+        Connection connection = null;
+        PreparedStatement statement = null;
         ResultSet resultSet = null;
-        try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT firstname, lastname, salary,department_id FROM teachers WHERE id=?")) {
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement("SELECT firstname, lastname,salary, department_id FROM teachers WHERE id=?");
             statement.setInt(1, id);
             resultSet = statement.executeQuery();
             Teacher teacher = null;
@@ -106,6 +162,20 @@ public class TeacherDaoPlainJdbcImpl implements PersonDao<Teacher> {
                     e.printStackTrace();
                 }
             }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return null;
     }
@@ -113,9 +183,13 @@ public class TeacherDaoPlainJdbcImpl implements PersonDao<Teacher> {
     @Override
     public List<Teacher> findAll() {
         List<Teacher> result = new ArrayList<>();
-        try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT * FROM teachers");
-             ResultSet resultSet = statement.executeQuery()) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement("SELECT * FROM teachers");
+            resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 Teacher teacher = new Teacher();
                 teacher.setId(resultSet.getInt("id"));
@@ -128,6 +202,28 @@ public class TeacherDaoPlainJdbcImpl implements PersonDao<Teacher> {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return result;
     }
@@ -135,9 +231,12 @@ public class TeacherDaoPlainJdbcImpl implements PersonDao<Teacher> {
     @Override
     public List<Teacher> findByFirstName(String firstName) {
         List<Teacher> result = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement statement = null;
         ResultSet resultSet = null;
-        try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT * FROM teachers WHERE UPPER(firstname) LIKE UPPER(?)")) {
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement("SELECT * FROM teachers WHERE UPPER(firstname) LIKE UPPER(?)");
             statement.setString(1, firstName);
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
@@ -160,6 +259,20 @@ public class TeacherDaoPlainJdbcImpl implements PersonDao<Teacher> {
                     e.printStackTrace();
                 }
             }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return result;
     }
@@ -167,9 +280,12 @@ public class TeacherDaoPlainJdbcImpl implements PersonDao<Teacher> {
     @Override
     public List<Teacher> findByLastName(String lastName) {
         List<Teacher> result = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement statement = null;
         ResultSet resultSet = null;
-        try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT * FROM teachers WHERE UPPER(lastname) LIKE UPPER(?)")) {
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement("SELECT * FROM teachers WHERE UPPER(lastname) LIKE UPPER(?)");
             statement.setString(1, lastName);
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
@@ -192,6 +308,20 @@ public class TeacherDaoPlainJdbcImpl implements PersonDao<Teacher> {
                     e.printStackTrace();
                 }
             }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return result;
     }
@@ -199,9 +329,12 @@ public class TeacherDaoPlainJdbcImpl implements PersonDao<Teacher> {
     @Override
     public List<Teacher> findByName(String firstName, String lastName) {
         List<Teacher> result = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement statement = null;
         ResultSet resultSet = null;
-        try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT * FROM teachers WHERE UPPER(firstname) LIKE UPPER(?) AND UPPER(lastname) LIKE UPPER(?)")) {
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement("SELECT * FROM teachers WHERE UPPER(firstname) LIKE UPPER(?) AND UPPER(lastname) LIKE UPPER(?)");
             statement.setString(1, firstName);
             statement.setString(2, lastName);
             resultSet = statement.executeQuery();
@@ -225,6 +358,20 @@ public class TeacherDaoPlainJdbcImpl implements PersonDao<Teacher> {
                     e.printStackTrace();
                 }
             }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return result;
     }
@@ -232,9 +379,12 @@ public class TeacherDaoPlainJdbcImpl implements PersonDao<Teacher> {
     @Override
     public List<Teacher> findAll(int unitId) {
         List<Teacher> result = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement statement = null;
         ResultSet resultSet = null;
-        try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT * FROM teachers WHERE department_id=?")) {
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement("SELECT * FROM teachers WHERE department_id=?");
             statement.setInt(1, unitId);
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
@@ -243,7 +393,7 @@ public class TeacherDaoPlainJdbcImpl implements PersonDao<Teacher> {
                 teacher.setFirstName(resultSet.getString("firstname"));
                 teacher.setLastName(resultSet.getString("lastname"));
                 teacher.setSalary(resultSet.getInt("salary"));
-                Department department = departmentDao.find(unitId);
+                Department department = departmentDao.find(resultSet.getInt("department_id"));
                 teacher.setDepartment(department);
                 result.add(teacher);
             }
@@ -253,6 +403,20 @@ public class TeacherDaoPlainJdbcImpl implements PersonDao<Teacher> {
             if (resultSet != null) {
                 try {
                     resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }

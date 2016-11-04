@@ -1,4 +1,4 @@
-package com.grubjack.university.dao.jdbc;
+package com.grubjack.university.dao.impl;
 
 import com.grubjack.university.dao.DaoFactory;
 import com.grubjack.university.dao.DepartmentDao;
@@ -15,22 +15,25 @@ import static com.grubjack.university.dao.DaoFactory.getConnection;
 /**
  * Created by grubjack on 03.11.2016.
  */
-public class DepartmentDaoPlainJdbcImpl implements DepartmentDao {
+public class DepartmentDaoImpl implements DepartmentDao {
 
     private DaoFactory daoFactory = DaoFactory.getInstance();
     private FacultyDao facultyDao;
 
 
-    public DepartmentDaoPlainJdbcImpl() {
+    public DepartmentDaoImpl() {
         this.facultyDao = daoFactory.getFacultyDao();
     }
 
 
     @Override
     public void create(Department department) {
+        Connection connection = null;
+        PreparedStatement statement = null;
         ResultSet resultSet = null;
-        try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement("INSERT INTO departments (name, faculty_id) VALUES (?,?)", Statement.RETURN_GENERATED_KEYS)) {
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement("INSERT INTO departments (name, faculty_id) VALUES (?,?)", Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, department.getName());
             statement.setInt(2, department.getFaculty().getId());
             statement.execute();
@@ -48,38 +51,91 @@ public class DepartmentDaoPlainJdbcImpl implements DepartmentDao {
                     e.printStackTrace();
                 }
             }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
     @Override
     public void update(Department department) {
-        try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement("UPDATE departments SET name=?,faculty_id=? WHERE id=?")) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement("UPDATE departments SET name=?,faculty_id=? WHERE id=?");
             statement.setString(1, department.getName());
             statement.setInt(2, department.getFaculty().getId());
             statement.setInt(3, department.getId());
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
     @Override
     public void delete(int id) {
-        try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement("DELETE FROM departments WHERE id=?")) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement("DELETE FROM departments WHERE id=?");
             statement.setInt(1, id);
             statement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
     @Override
     public Department find(int id) {
+        Connection connection = null;
+        PreparedStatement statement = null;
         ResultSet resultSet = null;
-        try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT name, faculty_id FROM departments WHERE id=?")) {
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement("SELECT name, faculty_id FROM departments WHERE id=?");
             statement.setInt(1, id);
             resultSet = statement.executeQuery();
             Department department = null;
@@ -101,6 +157,20 @@ public class DepartmentDaoPlainJdbcImpl implements DepartmentDao {
                     e.printStackTrace();
                 }
             }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return null;
     }
@@ -108,9 +178,13 @@ public class DepartmentDaoPlainJdbcImpl implements DepartmentDao {
     @Override
     public List<Department> findAll() {
         List<Department> result = new ArrayList<>();
-        try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT * FROM departments");
-             ResultSet resultSet = statement.executeQuery()) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement("SELECT * FROM departments");
+            resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 Department department = new Department();
                 department.setId(resultSet.getInt("id"));
@@ -121,15 +195,40 @@ public class DepartmentDaoPlainJdbcImpl implements DepartmentDao {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return result;
     }
 
     @Override
     public Department findByName(String name) {
+        Connection connection = null;
+        PreparedStatement statement = null;
         ResultSet resultSet = null;
-        try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT DISTINCT * FROM departments WHERE UPPER(name) LIKE UPPER(?)")) {
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement("SELECT DISTINCT * FROM departments WHERE UPPER(name) LIKE UPPER(?)");
             statement.setString(1, name);
             resultSet = statement.executeQuery();
             Department department = null;
@@ -151,6 +250,20 @@ public class DepartmentDaoPlainJdbcImpl implements DepartmentDao {
                     e.printStackTrace();
                 }
             }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return null;
     }
@@ -158,9 +271,12 @@ public class DepartmentDaoPlainJdbcImpl implements DepartmentDao {
     @Override
     public List<Department> findAll(int facultyId) {
         List<Department> result = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement statement = null;
         ResultSet resultSet = null;
-        try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT * FROM departments WHERE faculty_id=?")) {
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement("SELECT * FROM departments WHERE faculty_id=?");
             statement.setInt(1, facultyId);
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
@@ -177,6 +293,20 @@ public class DepartmentDaoPlainJdbcImpl implements DepartmentDao {
             if (resultSet != null) {
                 try {
                     resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
