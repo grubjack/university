@@ -7,11 +7,11 @@ import java.util.List;
  */
 public interface BaseDao<T> {
 
-    T create(T t);
+    void create(T t);
 
-    T update(T t);
+    void update(T t);
 
-    boolean delete(int id);
+    void delete(int id);
 
     T find(int id);
 

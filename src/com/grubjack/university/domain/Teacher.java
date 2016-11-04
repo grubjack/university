@@ -5,6 +5,7 @@ package com.grubjack.university.domain;
  */
 public class Teacher extends Person {
     private int salary;
+    private Department department;
 
     public Teacher() {
     }
@@ -39,5 +40,13 @@ public class Teacher extends Person {
 
     public void setSalary(int salary) {
         this.salary = salary;
+    }
+
+    public Department getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
     }
 }

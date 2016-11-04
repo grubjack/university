@@ -3,7 +3,7 @@ package com.grubjack.university.domain;
 /**
  * Created by grubjack on 28.10.2016.
  */
-public class Classroom {
+public class Classroom extends BaseEntity {
     private String number;
     private String location;
     private int size;
