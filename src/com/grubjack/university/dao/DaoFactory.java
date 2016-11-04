@@ -12,7 +12,7 @@ import java.sql.SQLException;
  * Created by grubjack on 03.11.2016.
  */
 public final class DaoFactory {
-    public static final String DB_URL = "impl:postgresql://localhost/university";
+    public static final String DB_URL = "jdbc:postgresql://localhost/university";
     public static final String DB_DRIVER = "org.postgresql.Driver";
     public static final String DB_USER = "fox";
     public static final String DB_PASS = "rootINA";
