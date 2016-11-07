@@ -47,14 +47,14 @@ public class Department {
     public void createTeacher(Teacher teacher) {
         if (teacher != null && !teachers.contains(teacher)) {
             teacher.setDepartment(this);
-            teacherDao.create(teacher);
+//            teacherDao.create(teacher);
             teachers.add(teacher);
         }
     }
 
     public void deleteTeacher(Teacher teacher) {
         if (teacher != null) {
-            teacherDao.delete(teacher.getId());
+//            teacherDao.delete(teacher.getId());
             teacher.setDepartment(null);
             teachers.remove(teacher);
         }
@@ -62,18 +62,24 @@ public class Department {
 
     public void updateTeacher(Teacher teacher) {
         if (teacher != null) {
-            int index = teachers.indexOf(teacher);
-            if (index != -1) {
+            Teacher oldTeacher = null;
+            for (Teacher t : teachers) {
+                if (t.getId() == teacher.getId()) {
+                    oldTeacher = t;
+                    break;
+                }
+            }
+            if (oldTeacher != null) {
                 teacherDao.update(teacher);
-                Teacher oldTeacher = teachers.get(index);
                 oldTeacher.setFirstName(teacher.getFirstName());
                 oldTeacher.setLastName(teacher.getLastName());
                 oldTeacher.setSalary(teacher.getSalary());
                 oldTeacher.setDepartment(teacher.getDepartment());
+
             } else {
-                teacher.setDepartment(this);
-                teacherDao.create(teacher);
-                teachers.add(teacher);
+                teacherDao.delete(teacher.getId());
+                teacher.setDepartment(null);
+                teachers.remove(teacher);
             }
         }
     }
