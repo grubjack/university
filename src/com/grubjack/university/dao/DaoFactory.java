@@ -4,23 +4,29 @@ import com.grubjack.university.dao.impl.*;
 import com.grubjack.university.domain.Student;
 import com.grubjack.university.domain.Teacher;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Properties;
 
 /**
  * Created by grubjack on 03.11.2016.
  */
 public final class DaoFactory {
-    public static final String DB_URL = "jdbc:postgresql://localhost/university";
-    public static final String DB_DRIVER = "org.postgresql.Driver";
-    public static final String DB_USER = "fox";
-    public static final String DB_PASS = "rootINA";
+    private static final String PROPERTIES_FILE = "db/postgres.properties";
+    private static final Properties PROPERTIES = new Properties();
     private static DaoFactory instance;
 
     static {
+
         try {
-            Class.forName(DB_DRIVER);
+            PROPERTIES.load(ClassLoader.getSystemResourceAsStream(PROPERTIES_FILE));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            Class.forName(PROPERTIES.getProperty("database.driver"));
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -33,7 +39,10 @@ public final class DaoFactory {
     public static Connection getConnection() {
         Connection connection = null;
         try {
-            connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
+            String url = PROPERTIES.getProperty("database.url");
+            String username = PROPERTIES.getProperty("database.username");
+            String password = PROPERTIES.getProperty("database.password");
+            connection = DriverManager.getConnection(url, username, password);
         } catch (SQLException e) {
             e.printStackTrace();
         }
