@@ -277,6 +277,57 @@ public class TeacherDaoImpl implements PersonDao<Teacher> {
         return result;
     }
 
+
+    @Override
+    public List<Teacher> findByFirstName(int userId, String firstName) {
+        List<Teacher> result = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement("SELECT * FROM teachers WHERE department_id=? AND UPPER(firstname) LIKE UPPER(?)");
+            statement.setInt(1, userId);
+            statement.setString(2, firstName);
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                Teacher teacher = new Teacher();
+                teacher.setId(resultSet.getInt("id"));
+                teacher.setFirstName(resultSet.getString("firstname"));
+                teacher.setLastName(resultSet.getString("lastname"));
+                teacher.setSalary(resultSet.getInt("salary"));
+                Department department = departmentDao.find(resultSet.getInt("department_id"));
+                teacher.setDepartment(department);
+                result.add(teacher);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return result;
+    }
+
     @Override
     public List<Teacher> findByLastName(String lastName) {
         List<Teacher> result = new ArrayList<>();
@@ -327,6 +378,56 @@ public class TeacherDaoImpl implements PersonDao<Teacher> {
     }
 
     @Override
+    public List<Teacher> findByLastName(int unitId, String lastName) {
+        List<Teacher> result = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement("SELECT * FROM teachers WHERE department_id=? AND UPPER(lastname) LIKE UPPER(?)");
+            statement.setInt(1, unitId);
+            statement.setString(2, lastName);
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                Teacher teacher = new Teacher();
+                teacher.setId(resultSet.getInt("id"));
+                teacher.setFirstName(resultSet.getString("firstname"));
+                teacher.setLastName(resultSet.getString("lastname"));
+                teacher.setSalary(resultSet.getInt("salary"));
+                Department department = departmentDao.find(resultSet.getInt("department_id"));
+                teacher.setDepartment(department);
+                result.add(teacher);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return result;
+    }
+
+    @Override
     public List<Teacher> findByName(String firstName, String lastName) {
         List<Teacher> result = new ArrayList<>();
         Connection connection = null;
@@ -337,6 +438,57 @@ public class TeacherDaoImpl implements PersonDao<Teacher> {
             statement = connection.prepareStatement("SELECT * FROM teachers WHERE UPPER(firstname) LIKE UPPER(?) AND UPPER(lastname) LIKE UPPER(?)");
             statement.setString(1, firstName);
             statement.setString(2, lastName);
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                Teacher teacher = new Teacher();
+                teacher.setId(resultSet.getInt("id"));
+                teacher.setFirstName(resultSet.getString("firstname"));
+                teacher.setLastName(resultSet.getString("lastname"));
+                teacher.setSalary(resultSet.getInt("salary"));
+                Department department = departmentDao.find(resultSet.getInt("department_id"));
+                teacher.setDepartment(department);
+                result.add(teacher);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public List<Teacher> findByName(int userId, String firstName, String lastName) {
+        List<Teacher> result = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement("SELECT * FROM teachers WHERE department_id=? AND UPPER(firstname) LIKE UPPER(?) AND UPPER(lastname) LIKE UPPER(?)");
+            statement.setInt(1, userId);
+            statement.setString(2, firstName);
+            statement.setString(3, lastName);
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 Teacher teacher = new Teacher();

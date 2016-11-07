@@ -9,6 +9,11 @@ public class BaseEntity {
     public BaseEntity() {
     }
 
+    public BaseEntity(int id) {
+        this.id = id;
+    }
+
+
     public int getId() {
         return id;
     }

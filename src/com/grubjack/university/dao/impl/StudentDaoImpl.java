@@ -271,6 +271,55 @@ public class StudentDaoImpl implements PersonDao<Student> {
     }
 
     @Override
+    public List<Student> findByFirstName(int unitId, String firstName) {
+        List<Student> result = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement("SELECT * FROM students WHERE group_id=? AND UPPER(firstname) LIKE UPPER(?)");
+            statement.setInt(1, unitId);
+            statement.setString(2, firstName);
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                Student student = new Student();
+                student.setId(resultSet.getInt("id"));
+                student.setFirstName(resultSet.getString("firstname"));
+                student.setLastName(resultSet.getString("lastname"));
+                Group group = groupDao.find(resultSet.getInt("group_id"));
+                student.setGroup(group);
+                result.add(student);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return result;
+    }
+
+    @Override
     public List<Student> findByLastName(String lastName) {
         List<Student> result = new ArrayList<>();
         Connection connection = null;
@@ -280,6 +329,55 @@ public class StudentDaoImpl implements PersonDao<Student> {
             connection = getConnection();
             statement = connection.prepareStatement("SELECT * FROM students WHERE UPPER(lastname) LIKE UPPER(?)");
             statement.setString(1, lastName);
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                Student student = new Student();
+                student.setId(resultSet.getInt("id"));
+                student.setFirstName(resultSet.getString("firstname"));
+                student.setLastName(resultSet.getString("lastname"));
+                Group group = groupDao.find(resultSet.getInt("group_id"));
+                student.setGroup(group);
+                result.add(student);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public List<Student> findByLastName(int unitId, String lastName) {
+        List<Student> result = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement("SELECT * FROM students WHERE group_id=? AND UPPER(lastname) LIKE UPPER(?)");
+            statement.setInt(1, unitId);
+            statement.setString(2, lastName);
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 Student student = new Student();
@@ -366,6 +464,57 @@ public class StudentDaoImpl implements PersonDao<Student> {
         }
         return result;
     }
+
+    @Override
+    public List<Student> findByName(int unitId, String firstName, String lastName) {
+        List<Student> result = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement("SELECT * FROM students WHERE group_id=? AND UPPER(firstname) LIKE UPPER(?) AND UPPER(lastname) LIKE UPPER(?)");
+            statement.setInt(1, unitId);
+            statement.setString(2, firstName);
+            statement.setString(3, lastName);
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                Student student = new Student();
+                student.setId(resultSet.getInt("id"));
+                student.setFirstName(resultSet.getString("firstname"));
+                student.setLastName(resultSet.getString("lastname"));
+                Group group = groupDao.find(resultSet.getInt("group_id"));
+                student.setGroup(group);
+                result.add(student);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return result;
+    }
+
 
     @Override
     public List<Student> findAll(int unitId) {

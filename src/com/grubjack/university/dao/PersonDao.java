@@ -9,9 +9,15 @@ public interface PersonDao<T> extends BaseDao<T> {
 
     List<T> findByFirstName(String firstName);
 
+    List<T> findByFirstName(int unitId, String firstName);
+
     List<T> findByLastName(String lastName);
 
+    List<T> findByLastName(int unitId, String lastName);
+
     List<T> findByName(String firstName, String lastName);
+
+    List<T> findByName(int unitId, String firstName, String lastName);
 
     List<T> findAll(int unitId);
 
