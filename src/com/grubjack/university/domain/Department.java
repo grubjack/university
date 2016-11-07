@@ -47,14 +47,14 @@ public class Department {
     public void createTeacher(Teacher teacher) {
         if (teacher != null && !teachers.contains(teacher)) {
             teacher.setDepartment(this);
-//            teacherDao.create(teacher);
+            teacherDao.create(teacher);
             teachers.add(teacher);
         }
     }
 
     public void deleteTeacher(Teacher teacher) {
         if (teacher != null) {
-//            teacherDao.delete(teacher.getId());
+            teacherDao.delete(teacher.getId());
             teacher.setDepartment(null);
             teachers.remove(teacher);
         }
