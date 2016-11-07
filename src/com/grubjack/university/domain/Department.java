@@ -70,16 +70,15 @@ public class Department {
                 }
             }
             if (oldTeacher != null) {
-                teacherDao.update(teacher);
                 oldTeacher.setFirstName(teacher.getFirstName());
                 oldTeacher.setLastName(teacher.getLastName());
                 oldTeacher.setSalary(teacher.getSalary());
                 oldTeacher.setDepartment(teacher.getDepartment());
-
+                teacherDao.update(teacher);
             } else {
-                teacherDao.delete(teacher.getId());
-                teacher.setDepartment(null);
-                teachers.remove(teacher);
+                teacher.setDepartment(this);
+                teachers.add(teacher);
+                teacherDao.create(teacher);
             }
         }
     }
