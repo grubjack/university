@@ -1,5 +1,8 @@
 package com.grubjack.university.domain;
 
+import com.grubjack.university.dao.DaoFactory;
+import com.grubjack.university.dao.PersonDao;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +13,7 @@ public class Department extends BaseEntity {
     private String name;
     private List<Teacher> teachers;
     private Faculty faculty;
+    private PersonDao<Teacher> teacherDao = DaoFactory.getInstance().getTeacherDao();
 
     public Department() {
         teachers = new ArrayList<>();
@@ -41,51 +45,62 @@ public class Department extends BaseEntity {
 
     public void createTeacher(Teacher teacher) {
         if (teacher != null && !teachers.contains(teacher)) {
+            teacher.setDepartment(this);
+            teacherDao.create(teacher);
             teachers.add(teacher);
         }
     }
 
     public void deleteTeacher(Teacher teacher) {
-        teachers.remove(teacher);
+        if (teacher != null) {
+            teacherDao.delete(teacher.getId());
+            teacher.setDepartment(null);
+            teachers.remove(teacher);
+        }
     }
 
     public void updateTeacher(Teacher teacher) {
         int index = teachers.indexOf(teacher);
         if (index != -1) {
+            teacher.setDepartment(this);
+            teacherDao.update(teacher);
             teachers.remove(teacher);
             teachers.add(index, teacher);
         }
     }
 
     public List<Teacher> findTeachersByFirstName(String firstName) {
-        List<Teacher> result = new ArrayList<>();
-        for (Teacher teacher : teachers) {
-            if (teacher.getFirstName().equalsIgnoreCase(firstName)) {
-                result.add(teacher);
-            }
-        }
-        return result;
+//        List<Teacher> result = new ArrayList<>();
+//        for (Teacher teacher : teachers) {
+//            if (teacher.getFirstName().equalsIgnoreCase(firstName)) {
+//                result.add(teacher);
+//            }
+//        }
+//        return result;
+        return teacherDao.findByFirstName(id, firstName);
     }
 
     public List<Teacher> findTeachersByLastName(String lastName) {
-        List<Teacher> result = new ArrayList<>();
-        for (Teacher teacher : teachers) {
-            if (teacher.getLastName().equalsIgnoreCase(lastName)) {
-                result.add(teacher);
-            }
-        }
-        return result;
+//        List<Teacher> result = new ArrayList<>();
+//        for (Teacher teacher : teachers) {
+//            if (teacher.getLastName().equalsIgnoreCase(lastName)) {
+//                result.add(teacher);
+//            }
+//        }
+//        return result;
+        return teacherDao.findByLastName(id, lastName);
     }
 
     public List<Teacher> findTeachersByName(String firstName, String lastName) {
-        List<Teacher> result = new ArrayList<>();
-
-        for (Teacher teacher : teachers) {
-            if (teacher.getFirstName().equalsIgnoreCase(firstName) && teacher.getLastName().equalsIgnoreCase(lastName)) {
-                result.add(teacher);
-            }
-        }
-        return result;
+//        List<Teacher> result = new ArrayList<>();
+//
+//        for (Teacher teacher : teachers) {
+//            if (teacher.getFirstName().equalsIgnoreCase(firstName) && teacher.getLastName().equalsIgnoreCase(lastName)) {
+//                result.add(teacher);
+//            }
+//        }
+//        return result;
+        return teacherDao.findByName(id, firstName, lastName);
     }
 
     public String getName() {
