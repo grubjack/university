@@ -61,25 +61,12 @@ public class Department {
     }
 
     public void updateTeacher(Teacher teacher) {
-        if (teacher != null) {
-            Teacher oldTeacher = null;
-            for (Teacher t : teachers) {
-                if (t.getId() == teacher.getId()) {
-                    oldTeacher = t;
-                    break;
-                }
-            }
-            if (oldTeacher != null) {
-                oldTeacher.setFirstName(teacher.getFirstName());
-                oldTeacher.setLastName(teacher.getLastName());
-                oldTeacher.setSalary(teacher.getSalary());
-                oldTeacher.setDepartment(teacher.getDepartment());
-                teacherDao.update(teacher);
-            } else {
-                teacher.setDepartment(this);
-                teachers.add(teacher);
-                teacherDao.create(teacher);
-            }
+        Teacher oldTeacher = teacherDao.find(teacher.getId());
+        if (oldTeacher != null) {
+            teachers.remove(oldTeacher);
+            teacher.setDepartment(this);
+            teachers.add(teacher);
+            teacherDao.update(teacher);
         }
     }
 

@@ -1,5 +1,8 @@
 package com.grubjack.university.domain;
 
+import com.grubjack.university.dao.DaoFactory;
+import com.grubjack.university.dao.PersonDao;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +14,8 @@ public class Group {
     private String name;
     private List<Student> students;
     private Faculty faculty;
+
+    private PersonDao<Student> studentDao = DaoFactory.getInstance().getStudentDao();
 
     public Group() {
         students = new ArrayList<>();
@@ -42,52 +47,42 @@ public class Group {
     }
 
     public void createStudent(Student student) {
-        if (student != null && !students.contains(student))
+        if (student != null && !students.contains(student)) {
+            student.setGroup(this);
+            studentDao.create(student);
             students.add(student);
+        }
     }
 
     public void deleteStudent(Student student) {
-        students.remove(student);
+        if (student != null) {
+            studentDao.delete(student.getId());
+            student.setGroup(null);
+            students.remove(student);
+        }
     }
 
     public void updateStudent(Student student) {
-        int index = students.indexOf(student);
-        if (index != -1) {
-            students.remove(student);
-            students.add(index, student);
+        Student oldStudent = studentDao.find(student.getId());
+        if (studentDao != null) {
+            students.remove(oldStudent);
+            student.setGroup(this);
+            students.add(student);
+            studentDao.update(student);
         }
     }
 
 
     public List<Student> findStudentsByFirstName(String firstName) {
-        List<Student> result = new ArrayList<>();
-        for (Student student : students) {
-            if (student.getFirstName().equalsIgnoreCase(firstName)) {
-                result.add(student);
-            }
-        }
-        return result;
+        return studentDao.findByFirstName(firstName);
     }
 
     public List<Student> findStudentsByLastName(String lastName) {
-        List<Student> result = new ArrayList<>();
-        for (Student student : students) {
-            if (student.getLastName().equalsIgnoreCase(lastName)) {
-                result.add(student);
-            }
-        }
-        return result;
+        return studentDao.findByLastName(lastName);
     }
 
     public List<Student> findStudentsByName(String firstName, String lastName) {
-        List<Student> result = new ArrayList<>();
-
-        for (Student student : students) {
-            if (student.getFirstName().equalsIgnoreCase(firstName) && student.getLastName().equalsIgnoreCase(lastName)) {
-                result.add(student);
-            }
-        }
-        return result;
+        return studentDao.findByName(firstName, lastName);
     }
 
     public int getId() {

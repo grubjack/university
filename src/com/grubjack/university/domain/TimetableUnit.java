@@ -1,5 +1,8 @@
 package com.grubjack.university.domain;
 
+import com.grubjack.university.dao.DaoFactory;
+import com.grubjack.university.dao.LessonDao;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +11,8 @@ import java.util.List;
  */
 public class TimetableUnit {
     private List<Lesson> lessons;
+
+    private LessonDao lessonDao = DaoFactory.getInstance().getLessonDao();
 
     public TimetableUnit() {
         lessons = new ArrayList<>();
@@ -31,19 +36,25 @@ public class TimetableUnit {
     }
 
     public void createLesson(Lesson lesson) {
-        if (lesson != null && !lessons.contains(lesson))
+        if (lesson != null && !lessons.contains(lesson)) {
+            lessonDao.create(lesson);
             lessons.add(lesson);
+        }
     }
 
     public void deleteLesson(Lesson lesson) {
-        lessons.remove(lesson);
+        if (lesson != null) {
+            lessonDao.delete(lesson.getId());
+            lessons.remove(lesson);
+        }
     }
 
     public void updateLesson(Lesson lesson) {
-        int index = lessons.indexOf(lesson);
-        if (index != -1) {
-            lessons.remove(lesson);
-            lessons.add(index, lesson);
+        Lesson oldLesson = lessonDao.find(lesson.getId());
+        if (oldLesson != null) {
+            lessons.remove(oldLesson);
+            lessons.add(lesson);
+            lessonDao.update(lesson);
         }
     }
 

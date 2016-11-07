@@ -1,5 +1,9 @@
 package com.grubjack.university.domain;
 
+import com.grubjack.university.dao.ClassroomDao;
+import com.grubjack.university.dao.DaoFactory;
+import com.grubjack.university.dao.FacultyDao;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +15,9 @@ public class University {
     private String name;
     private List<Classroom> rooms;
     private List<Faculty> faculties;
+
+    private FacultyDao facultyDao = DaoFactory.getInstance().getFacultyDao();
+    private ClassroomDao classroomDao = DaoFactory.getInstance().getClassroomDao();
 
     private University() {
         rooms = new ArrayList<>();
@@ -25,36 +32,48 @@ public class University {
     }
 
     public void createRoom(Classroom classroom) {
-        if (classroom != null && !rooms.contains(classroom))
+        if (classroom != null && !rooms.contains(classroom)) {
+            classroomDao.create(classroom);
             rooms.add(classroom);
+        }
     }
 
     public void deleteRoom(Classroom classroom) {
-        rooms.remove(classroom);
+        if (classroom != null) {
+            classroomDao.delete(classroom.getId());
+            rooms.remove(classroom);
+        }
     }
 
     public void updateRoom(Classroom classroom) {
-        int index = rooms.indexOf(classroom);
-        if (index != -1) {
-            rooms.remove(classroom);
-            rooms.add(index, classroom);
+        Classroom oldRoom = classroomDao.find(classroom.getId());
+        if (oldRoom != null) {
+            rooms.remove(oldRoom);
+            rooms.add(classroom);
+            classroomDao.update(classroom);
         }
     }
 
     public void createFaculty(Faculty faculty) {
-        if (faculty != null && !faculties.contains(faculty))
+        if (faculty != null && !faculties.contains(faculty)) {
+            facultyDao.create(faculty);
             faculties.add(faculty);
+        }
     }
 
     public void deleteFaculty(Faculty faculty) {
-        faculties.remove(faculty);
+        if (faculty != null) {
+            facultyDao.delete(faculty.getId());
+            faculties.remove(faculty);
+        }
     }
 
     public void updateFaculty(Faculty faculty) {
-        int index = faculties.indexOf(faculty);
-        if (index != -1) {
-            faculties.remove(faculty);
-            faculties.add(index, faculty);
+        Faculty oldFaculty = facultyDao.find(faculty.getId());
+        if (oldFaculty != null) {
+            faculties.remove(oldFaculty);
+            faculties.add(faculty);
+            facultyDao.update(faculty);
         }
     }
 
