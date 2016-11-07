@@ -279,7 +279,7 @@ public class TeacherDaoImpl implements PersonDao<Teacher> {
 
 
     @Override
-    public List<Teacher> findByFirstName(int userId, String firstName) {
+    public List<Teacher> findByFirstName(int departmentId, String firstName) {
         List<Teacher> result = new ArrayList<>();
         Connection connection = null;
         PreparedStatement statement = null;
@@ -287,7 +287,7 @@ public class TeacherDaoImpl implements PersonDao<Teacher> {
         try {
             connection = getConnection();
             statement = connection.prepareStatement("SELECT * FROM teachers WHERE department_id=? AND UPPER(firstname) LIKE UPPER(?)");
-            statement.setInt(1, userId);
+            statement.setInt(1, departmentId);
             statement.setString(2, firstName);
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
@@ -378,7 +378,7 @@ public class TeacherDaoImpl implements PersonDao<Teacher> {
     }
 
     @Override
-    public List<Teacher> findByLastName(int unitId, String lastName) {
+    public List<Teacher> findByLastName(int departmentId, String lastName) {
         List<Teacher> result = new ArrayList<>();
         Connection connection = null;
         PreparedStatement statement = null;
@@ -386,7 +386,7 @@ public class TeacherDaoImpl implements PersonDao<Teacher> {
         try {
             connection = getConnection();
             statement = connection.prepareStatement("SELECT * FROM teachers WHERE department_id=? AND UPPER(lastname) LIKE UPPER(?)");
-            statement.setInt(1, unitId);
+            statement.setInt(1, departmentId);
             statement.setString(2, lastName);
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
@@ -478,7 +478,7 @@ public class TeacherDaoImpl implements PersonDao<Teacher> {
     }
 
     @Override
-    public List<Teacher> findByName(int userId, String firstName, String lastName) {
+    public List<Teacher> findByName(int departmentId, String firstName, String lastName) {
         List<Teacher> result = new ArrayList<>();
         Connection connection = null;
         PreparedStatement statement = null;
@@ -486,7 +486,7 @@ public class TeacherDaoImpl implements PersonDao<Teacher> {
         try {
             connection = getConnection();
             statement = connection.prepareStatement("SELECT * FROM teachers WHERE department_id=? AND UPPER(firstname) LIKE UPPER(?) AND UPPER(lastname) LIKE UPPER(?)");
-            statement.setInt(1, userId);
+            statement.setInt(1, departmentId);
             statement.setString(2, firstName);
             statement.setString(3, lastName);
             resultSet = statement.executeQuery();
@@ -529,7 +529,7 @@ public class TeacherDaoImpl implements PersonDao<Teacher> {
     }
 
     @Override
-    public List<Teacher> findAll(int unitId) {
+    public List<Teacher> findAll(int departmentId) {
         List<Teacher> result = new ArrayList<>();
         Connection connection = null;
         PreparedStatement statement = null;
@@ -537,7 +537,7 @@ public class TeacherDaoImpl implements PersonDao<Teacher> {
         try {
             connection = getConnection();
             statement = connection.prepareStatement("SELECT * FROM teachers WHERE department_id=?");
-            statement.setInt(1, unitId);
+            statement.setInt(1, departmentId);
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 Teacher teacher = new Teacher();
