@@ -3,8 +3,8 @@ package com.grubjack.university.domain;
 /**
  * Created by grubjack on 28.10.2016.
  */
-public class Person extends BaseEntity {
-
+public class Person {
+    private int id;
     private String firstName;
     private String lastName;
 
@@ -33,6 +33,14 @@ public class Person extends BaseEntity {
         int result = firstName != null ? firstName.hashCode() : 0;
         result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
         return result;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getFirstName() {

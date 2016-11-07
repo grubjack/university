@@ -71,4 +71,8 @@ public final class DaoFactory {
     public PersonDao<Teacher> getTeacherDao() {
         return new TeacherDaoImpl();
     }
+
+    public LessonDao getLessonDao() {
+        return new LessonDaoImpl();
+    }
 }

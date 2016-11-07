@@ -3,7 +3,8 @@ package com.grubjack.university.domain;
 /**
  * Created by grubjack on 28.10.2016.
  */
-public class Lesson extends BaseEntity implements Comparable<Lesson> {
+public class Lesson implements Comparable<Lesson> {
+    private int id;
     private String subject;
     private Teacher teacher;
     private Group group;
@@ -39,6 +40,14 @@ public class Lesson extends BaseEntity implements Comparable<Lesson> {
         result = 31 * result + (teacher != null ? teacher.hashCode() : 0);
         result = 31 * result + (group != null ? group.hashCode() : 0);
         return result;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getSubject() {

@@ -8,7 +8,8 @@ import java.util.Map;
 /**
  * Created by grubjack on 28.10.2016.
  */
-public class Faculty extends BaseEntity {
+public class Faculty {
+    private int id;
     private String name;
     private Timetable timetable;
     private List<Department> departments;
@@ -167,6 +168,14 @@ public class Faculty extends BaseEntity {
                 return group;
         }
         return null;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {

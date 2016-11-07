@@ -3,7 +3,8 @@ package com.grubjack.university.domain;
 /**
  * Created by grubjack on 28.10.2016.
  */
-public class Classroom extends BaseEntity {
+public class Classroom {
+    private int id;
     private String number;
     private String location;
     private int capacity;
@@ -36,6 +37,14 @@ public class Classroom extends BaseEntity {
         result = 31 * result + (location != null ? location.hashCode() : 0);
         result = 31 * result + capacity;
         return result;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getNumber() {
