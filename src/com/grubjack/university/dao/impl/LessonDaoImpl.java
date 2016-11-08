@@ -152,7 +152,7 @@ public class LessonDaoImpl implements LessonDao {
     }
 
     @Override
-    public List<Lesson> findAllByDayForFacultyGroup(int facultyId, int groupId, DayOfWeek dayOfWeek) {
+    public List<Lesson> findGroupLessons(int facultyId, int groupId, DayOfWeek dayOfWeek) {
         List<Lesson> result = new ArrayList<>();
         ResultSet resultSet = null;
         try (Connection connection = getConnection();
@@ -191,7 +191,7 @@ public class LessonDaoImpl implements LessonDao {
     }
 
     @Override
-    public List<Lesson> findAllByDayForFacultyTeacher(int facultyId, int teacherId, DayOfWeek dayOfWeek) {
+    public List<Lesson> findTeacherLessons(int facultyId, int teacherId, DayOfWeek dayOfWeek) {
         List<Lesson> result = new ArrayList<>();
         ResultSet resultSet = null;
         try (Connection connection = getConnection();

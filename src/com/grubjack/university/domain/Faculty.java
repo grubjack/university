@@ -141,7 +141,7 @@ public class Faculty {
 
     public List<Lesson> findDayTimetable(Teacher teacher, DayOfWeek dayOfWeek) {
         if (teacher != null) {
-            return lessonDao.findAllByDayForFacultyTeacher(id, teacher.getId(), dayOfWeek);
+            return lessonDao.findTeacherLessons(id, teacher.getId(), dayOfWeek);
         }
         return Collections.emptyList();
     }
@@ -156,7 +156,7 @@ public class Faculty {
 
     public List<Lesson> findDayTimetable(Group group, DayOfWeek dayOfWeek) {
         if (group != null) {
-            return lessonDao.findAllByDayForFacultyGroup(id, group.getId(), dayOfWeek);
+            return lessonDao.findGroupLessons(id, group.getId(), dayOfWeek);
         }
         return Collections.emptyList();
     }

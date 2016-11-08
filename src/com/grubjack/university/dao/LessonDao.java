@@ -10,8 +10,8 @@ import java.util.List;
  */
 public interface LessonDao extends BaseDao<Lesson> {
 
-    List<Lesson> findAllByDayForFacultyGroup(int facultyId, int groupId, DayOfWeek dayOfWeek);
+    List<Lesson> findGroupLessons(int facultyId, int groupId, DayOfWeek dayOfWeek);
 
-    List<Lesson> findAllByDayForFacultyTeacher(int facultyId, int teacherId, DayOfWeek dayOfWeek);
+    List<Lesson> findTeacherLessons(int facultyId, int teacherId, DayOfWeek dayOfWeek);
 
 }
