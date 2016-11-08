@@ -17,17 +17,15 @@ public class LessonDaoImpl implements LessonDao {
     private ClassroomDao classroomDao;
     private PersonDao<Teacher> teacherDao;
     private GroupDao groupDao;
-    private FacultyDao facultyDao;
 
     public LessonDaoImpl() {
         this.classroomDao = daoFactory.getClassroomDao();
         this.teacherDao = daoFactory.getTeacherDao();
         this.groupDao = daoFactory.getGroupDao();
-        this.facultyDao = daoFactory.getFacultyDao();
     }
 
     @Override
-    public void create(Lesson lesson) {
+    public void create(Lesson lesson, int facultyId) {
         ResultSet resultSet = null;
         try (Connection connection = getConnection();
              PreparedStatement statement =
@@ -38,7 +36,7 @@ public class LessonDaoImpl implements LessonDao {
             statement.setInt(3, lesson.getClassroom().getId());
             statement.setInt(4, lesson.getTeacher().getId());
             statement.setInt(5, lesson.getGroup().getId());
-            statement.setInt(6, lesson.getFaculty().getId());
+            statement.setInt(6, facultyId);
             statement.execute();
             resultSet = statement.getGeneratedKeys();
             if (resultSet.next()) {
@@ -58,7 +56,7 @@ public class LessonDaoImpl implements LessonDao {
     }
 
     @Override
-    public void update(Lesson lesson) {
+    public void update(Lesson lesson, int facultyId) {
         try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(
                      "UPDATE lessons SET subject=?,week_day=?,room_id=?,teacher_id=?,group_id=?,faculty_id=? WHERE id=?")) {
@@ -67,7 +65,7 @@ public class LessonDaoImpl implements LessonDao {
             statement.setInt(3, lesson.getClassroom().getId());
             statement.setInt(4, lesson.getTeacher().getId());
             statement.setInt(5, lesson.getGroup().getId());
-            statement.setInt(6, lesson.getFaculty().getId());
+            statement.setInt(6, facultyId);
             statement.setInt(7, lesson.getId());
             statement.executeUpdate();
         } catch (SQLException e) {
@@ -90,8 +88,7 @@ public class LessonDaoImpl implements LessonDao {
     public Lesson find(int id) {
         ResultSet resultSet = null;
         try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement(
-                     "SELECT subject,week_day,room_id,teacher_id,group_id,faculty_id name FROM lessons WHERE id=?")) {
+             PreparedStatement statement = connection.prepareStatement("SELECT * FROM lessons WHERE id=?")) {
             statement.setInt(1, id);
             resultSet = statement.executeQuery();
             Lesson lesson = null;
@@ -106,8 +103,6 @@ public class LessonDaoImpl implements LessonDao {
                 lesson.setTeacher(teacher);
                 Group group = groupDao.find(resultSet.getInt("group_id"));
                 lesson.setGroup(group);
-                Faculty faculty = facultyDao.find(resultSet.getInt("faculty_id"));
-                lesson.setFaculty(faculty);
             }
             return lesson;
         } catch (SQLException e) {
@@ -141,8 +136,6 @@ public class LessonDaoImpl implements LessonDao {
                 lesson.setTeacher(teacher);
                 Group group = groupDao.find(resultSet.getInt("group_id"));
                 lesson.setGroup(group);
-                Faculty faculty = facultyDao.find(resultSet.getInt("faculty_id"));
-                lesson.setFaculty(faculty);
                 result.add(lesson);
             }
         } catch (SQLException e) {
@@ -152,88 +145,14 @@ public class LessonDaoImpl implements LessonDao {
     }
 
     @Override
-    public List<Lesson> findAllByGroup(int groupId) {
+    public List<Lesson> findGroupLessons(int facultyId, int groupId, DayOfWeek dayOfWeek) {
         List<Lesson> result = new ArrayList<>();
         ResultSet resultSet = null;
         try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT * FROM lessons WHERE group_id=?")) {
-            statement.setInt(1, groupId);
-            resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                Lesson lesson = new Lesson();
-                lesson.setId(resultSet.getInt("id"));
-                lesson.setSubject(resultSet.getString("subject"));
-                lesson.setDayOfWeek(DayOfWeek.valueOf(resultSet.getString("week_day")));
-                Classroom classroom = classroomDao.find(resultSet.getInt("room_id"));
-                lesson.setClassroom(classroom);
-                Teacher teacher = teacherDao.find(resultSet.getInt("teacher_id"));
-                lesson.setTeacher(teacher);
-                Group group = groupDao.find(groupId);
-                lesson.setGroup(group);
-                Faculty faculty = facultyDao.find(resultSet.getInt("faculty_id"));
-                lesson.setFaculty(faculty);
-                result.add(lesson);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return result;
-
-    }
-
-    @Override
-    public List<Lesson> findAllByTeacher(int teacherId) {
-        List<Lesson> result = new ArrayList<>();
-        ResultSet resultSet = null;
-        try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT * FROM lessons WHERE teacher_id=?")) {
-            statement.setInt(1, teacherId);
-            resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                Lesson lesson = new Lesson();
-                lesson.setId(resultSet.getInt("id"));
-                lesson.setSubject(resultSet.getString("subject"));
-                lesson.setDayOfWeek(DayOfWeek.valueOf(resultSet.getString("week_day")));
-                Classroom classroom = classroomDao.find(resultSet.getInt("room_id"));
-                lesson.setClassroom(classroom);
-                Teacher teacher = teacherDao.find(teacherId);
-                lesson.setTeacher(teacher);
-                Group group = groupDao.find(resultSet.getInt("group_id"));
-                lesson.setGroup(group);
-                Faculty faculty = facultyDao.find(resultSet.getInt("faculty_id"));
-                lesson.setFaculty(faculty);
-                result.add(lesson);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return result;
-    }
-
-    @Override
-    public List<Lesson> findAllByDayForGroup(int groupId, DayOfWeek dayOfWeek) {
-        List<Lesson> result = new ArrayList<>();
-        ResultSet resultSet = null;
-        try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT * FROM lessons WHERE group_id=? AND UPPER(week_day) LIKE UPPER(?)")) {
-            statement.setInt(1, groupId);
-            statement.setString(2, dayOfWeek.toString());
+             PreparedStatement statement = connection.prepareStatement("SELECT * FROM lessons WHERE faculty_id=? AND  group_id=? AND UPPER(week_day) LIKE UPPER(?)")) {
+            statement.setInt(1, facultyId);
+            statement.setInt(2, groupId);
+            statement.setString(3, dayOfWeek.toString());
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 Lesson lesson = new Lesson();
@@ -246,8 +165,6 @@ public class LessonDaoImpl implements LessonDao {
                 lesson.setTeacher(teacher);
                 Group group = groupDao.find(groupId);
                 lesson.setGroup(group);
-                Faculty faculty = facultyDao.find(resultSet.getInt("faculty_id"));
-                lesson.setFaculty(faculty);
                 result.add(lesson);
             }
         } catch (SQLException e) {
@@ -265,13 +182,14 @@ public class LessonDaoImpl implements LessonDao {
     }
 
     @Override
-    public List<Lesson> findAllByDayForTeacher(int teacherId, DayOfWeek dayOfWeek) {
+    public List<Lesson> findTeacherLessons(int facultyId, int teacherId, DayOfWeek dayOfWeek) {
         List<Lesson> result = new ArrayList<>();
         ResultSet resultSet = null;
         try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT * FROM lessons WHERE teacher_id=? AND UPPER(week_day) LIKE UPPER(?)")) {
-            statement.setInt(1, teacherId);
-            statement.setString(2, dayOfWeek.toString());
+             PreparedStatement statement = connection.prepareStatement("SELECT * FROM lessons WHERE faculty_id=? AND teacher_id=? AND UPPER(week_day) LIKE UPPER(?)")) {
+            statement.setInt(1, facultyId);
+            statement.setInt(2, teacherId);
+            statement.setString(3, dayOfWeek.toString());
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 Lesson lesson = new Lesson();
@@ -284,8 +202,6 @@ public class LessonDaoImpl implements LessonDao {
                 lesson.setTeacher(teacher);
                 Group group = groupDao.find(resultSet.getInt("group_id"));
                 lesson.setGroup(group);
-                Faculty faculty = facultyDao.find(resultSet.getInt("faculty_id"));
-                lesson.setFaculty(faculty);
                 result.add(lesson);
             }
         } catch (SQLException e) {

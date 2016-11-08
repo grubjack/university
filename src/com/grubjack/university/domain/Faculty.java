@@ -1,19 +1,25 @@
 package com.grubjack.university.domain;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.grubjack.university.dao.DaoFactory;
+import com.grubjack.university.dao.DepartmentDao;
+import com.grubjack.university.dao.GroupDao;
+import com.grubjack.university.dao.LessonDao;
+
+import java.util.*;
 
 /**
  * Created by grubjack on 28.10.2016.
  */
-public class Faculty extends BaseEntity {
+public class Faculty {
+    private int id;
     private String name;
-    private Timetable timetable;
     private List<Department> departments;
     private List<Group> groups;
+    private List<Lesson> lessons;
 
+    private DepartmentDao departmentDao = DaoFactory.getInstance().getDepartmentDao();
+    private GroupDao groupDao = DaoFactory.getInstance().getGroupDao();
+    private LessonDao lessonDao = DaoFactory.getInstance().getLessonDao();
 
     public Faculty() {
         departments = new ArrayList<>();
@@ -34,7 +40,6 @@ public class Faculty extends BaseEntity {
         Faculty faculty = (Faculty) o;
 
         if (name != null ? !name.equals(faculty.name) : faculty.name != null) return false;
-        if (timetable != null ? !timetable.equals(faculty.timetable) : faculty.timetable != null) return false;
         if (departments != null ? !departments.equals(faculty.departments) : faculty.departments != null) return false;
         return groups != null ? groups.equals(faculty.groups) : faculty.groups == null;
 
@@ -43,7 +48,6 @@ public class Faculty extends BaseEntity {
     @Override
     public int hashCode() {
         int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + (timetable != null ? timetable.hashCode() : 0);
         result = 31 * result + (departments != null ? departments.hashCode() : 0);
         result = 31 * result + (groups != null ? groups.hashCode() : 0);
         return result;
@@ -51,122 +55,126 @@ public class Faculty extends BaseEntity {
 
     public void createGroup(Group group) {
         if (group != null && !groups.contains(group)) {
+            groupDao.create(group, id);
             groups.add(group);
         }
     }
 
     public void deleteGroup(Group group) {
-        groups.remove(group);
-    }
-
-    public void updateGroup(Group group) {
-        int index = groups.indexOf(group);
-        if (index != -1) {
+        if (group != null) {
+            groupDao.delete(group.getId());
             groups.remove(group);
-            groups.add(index, group);
         }
     }
 
+    public void updateGroup(Group group) {
+        Group oldGroup = groupDao.find(group.getId());
+        if (oldGroup != null) {
+            groups.remove(oldGroup);
+            groups.add(group);
+            groupDao.update(group, id);
+        }
+    }
 
     public void createDepartment(Department department) {
         if (department != null && !departments.contains(department)) {
+            departmentDao.create(department, id);
             departments.add(department);
         }
     }
 
     public void deleteDepartment(Department department) {
-        departments.remove(department);
+        if (department != null) {
+            departmentDao.delete(department.getId());
+            departments.remove(department);
+        }
     }
 
     public void updateDepartment(Department department) {
-        int index = departments.indexOf(department);
-        if (index != -1) {
-            departments.remove(department);
-            departments.add(index, department);
+        Department oldDepartment = departmentDao.find(department.getId());
+        if (oldDepartment != null) {
+            departments.remove(oldDepartment);
+            departments.add(department);
+            departmentDao.update(department, id);
         }
     }
 
+    public void createLesson(Lesson lesson) {
+        if (lesson != null && !lessons.contains(lesson)) {
+            lessonDao.create(lesson, id);
+            lessons.add(lesson);
+        }
+    }
 
-    public TimetableUnit findDayTimetable(Student student, DayOfWeek dayOfWeek) {
+    public void deleteLesson(Lesson lesson) {
+        if (lesson != null) {
+            lessonDao.delete(lesson.getId());
+            lessons.remove(lesson);
+        }
+    }
+
+    public void updateLesson(Lesson lesson) {
+        Lesson oldLesson = lessonDao.find(lesson.getId());
+        if (oldLesson != null) {
+            lessons.remove(oldLesson);
+            lessons.add(lesson);
+            lessonDao.update(lesson, id);
+        }
+    }
+
+    public List<Lesson> findDayTimetable(Student student, DayOfWeek dayOfWeek) {
         return findDayTimetable(findGroup(student), dayOfWeek);
     }
 
-    public Timetable findTimetable(Student student) {
-        Timetable result = findTimetable(findGroup(student));
-        if (student != null) {
-            result.setName("Timetable " + student.getFirstName() + " " + student.getLastName());
-        }
-        return result;
+    public Map<DayOfWeek, List<Lesson>> findTimetable(Student student) {
+        return findTimetable(findGroup(student));
     }
 
-    public TimetableUnit findDayTimetable(Teacher teacher, DayOfWeek dayOfWeek) {
-        TimetableUnit result = new TimetableUnit();
-        TimetableUnit unit = timetable.findUnit(dayOfWeek);
-        if (unit != null) {
-            List<Lesson> lessons = new ArrayList<>();
-            for (Lesson lesson : unit.getLessons()) {
-                if (lesson.getTeacher().equals(teacher)) {
-                    lessons.add(lesson);
-                }
-            }
-            result.setLessons(lessons);
-        }
-        return result;
-    }
-
-    public Timetable findTimetable(Teacher teacher) {
-        Timetable result = new Timetable();
+    public List<Lesson> findDayTimetable(Teacher teacher, DayOfWeek dayOfWeek) {
         if (teacher != null) {
-            result.setName("Timetable " + teacher.getFirstName() + " " + teacher.getLastName());
-            Map<DayOfWeek, TimetableUnit> units = new HashMap<>();
-            for (DayOfWeek dayOfWeek : timetable.getUnits().keySet()) {
-                TimetableUnit unit = findDayTimetable(teacher, dayOfWeek);
-                if (unit.getLessons().size() > 0) {
-                    units.put(dayOfWeek, unit);
-                }
-            }
-            result.setUnits(units);
+            return lessonDao.findTeacherLessons(id, teacher.getId(), dayOfWeek);
+        }
+        return Collections.emptyList();
+    }
+
+    public Map<DayOfWeek, List<Lesson>> findTimetable(Teacher teacher) {
+        Map<DayOfWeek, List<Lesson>> result = new HashMap<>();
+        for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
+            result.put(dayOfWeek, findDayTimetable(teacher, dayOfWeek));
         }
         return result;
     }
 
-    public TimetableUnit findDayTimetable(Group group, DayOfWeek dayOfWeek) {
-        TimetableUnit result = new TimetableUnit();
-        TimetableUnit unit = timetable.findUnit(dayOfWeek);
-        if (group != null && unit != null) {
-            List<Lesson> lessons = new ArrayList<>();
-            for (Lesson lesson : unit.getLessons()) {
-                if (lesson.getGroup().equals(group)) {
-                    lessons.add(lesson);
-                }
-            }
-            result.setLessons(lessons);
-        }
-        return result;
-    }
-
-    public Timetable findTimetable(Group group) {
-        Timetable result = new Timetable();
+    public List<Lesson> findDayTimetable(Group group, DayOfWeek dayOfWeek) {
         if (group != null) {
-            result.setName("Timetable " + group.getName());
-            Map<DayOfWeek, TimetableUnit> units = new HashMap<>();
-            for (DayOfWeek dayOfWeek : timetable.getUnits().keySet()) {
-                TimetableUnit unit = findDayTimetable(group, dayOfWeek);
-                if (unit.getLessons().size() > 0) {
-                    units.put(dayOfWeek, unit);
-                }
-            }
-            result.setUnits(units);
+            return lessonDao.findGroupLessons(id, group.getId(), dayOfWeek);
+        }
+        return Collections.emptyList();
+    }
+
+    public Map<DayOfWeek, List<Lesson>> findTimetable(Group group) {
+        Map<DayOfWeek, List<Lesson>> result = new HashMap<>();
+        for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
+            result.put(dayOfWeek, findDayTimetable(group, dayOfWeek));
         }
         return result;
     }
 
     public Group findGroup(Student student) {
         for (Group group : groups) {
-            if (group.getStudents().contains(student))
+            if (group.getStudents().contains(student)) {
                 return group;
+            }
         }
         return null;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -175,14 +183,6 @@ public class Faculty extends BaseEntity {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Timetable getTimetable() {
-        return timetable;
-    }
-
-    public void setTimetable(Timetable timetable) {
-        this.timetable = timetable;
     }
 
     public List<Department> getDepartments() {
@@ -199,5 +199,13 @@ public class Faculty extends BaseEntity {
 
     public void setGroups(List<Group> groups) {
         this.groups = groups;
+    }
+
+    public List<Lesson> getLessons() {
+        return lessons;
+    }
+
+    public void setLessons(List<Lesson> lessons) {
+        this.lessons = lessons;
     }
 }

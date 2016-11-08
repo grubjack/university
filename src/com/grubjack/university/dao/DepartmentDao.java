@@ -9,6 +9,10 @@ import java.util.List;
  */
 public interface DepartmentDao extends BaseDao<Department> {
 
+    void create(Department department, int facultyId);
+
+    void update(Department department, int facultyId);
+
     Department findByName(String name);
 
     List<Department> findAll(int facultyId);

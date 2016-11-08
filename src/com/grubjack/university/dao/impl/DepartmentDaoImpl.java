@@ -1,8 +1,6 @@
 package com.grubjack.university.dao.impl;
 
-import com.grubjack.university.dao.DaoFactory;
 import com.grubjack.university.dao.DepartmentDao;
-import com.grubjack.university.dao.FacultyDao;
 import com.grubjack.university.domain.Department;
 import com.grubjack.university.domain.Faculty;
 
@@ -16,18 +14,12 @@ import static com.grubjack.university.dao.DaoFactory.getConnection;
  * Created by grubjack on 03.11.2016.
  */
 public class DepartmentDaoImpl implements DepartmentDao {
-
-    private DaoFactory daoFactory = DaoFactory.getInstance();
-    private FacultyDao facultyDao;
-
-
     public DepartmentDaoImpl() {
-        this.facultyDao = daoFactory.getFacultyDao();
     }
 
 
     @Override
-    public void create(Department department) {
+    public void create(Department department, int facultyId) {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -35,7 +27,7 @@ public class DepartmentDaoImpl implements DepartmentDao {
             connection = getConnection();
             statement = connection.prepareStatement("INSERT INTO departments (name, faculty_id) VALUES (?,?)", Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, department.getName());
-            statement.setInt(2, department.getFaculty().getId());
+            statement.setInt(2, facultyId);
             statement.execute();
             resultSet = statement.getGeneratedKeys();
             if (resultSet.next()) {
@@ -69,14 +61,14 @@ public class DepartmentDaoImpl implements DepartmentDao {
     }
 
     @Override
-    public void update(Department department) {
+    public void update(Department department, int facultyId) {
         Connection connection = null;
         PreparedStatement statement = null;
         try {
             connection = getConnection();
             statement = connection.prepareStatement("UPDATE departments SET name=?,faculty_id=? WHERE id=?");
             statement.setString(1, department.getName());
-            statement.setInt(2, department.getFaculty().getId());
+            statement.setInt(2, facultyId);
             statement.setInt(3, department.getId());
             statement.executeUpdate();
         } catch (SQLException e) {
@@ -135,7 +127,7 @@ public class DepartmentDaoImpl implements DepartmentDao {
         ResultSet resultSet = null;
         try {
             connection = getConnection();
-            statement = connection.prepareStatement("SELECT name, faculty_id FROM departments WHERE id=?");
+            statement = connection.prepareStatement("SELECT * FROM departments WHERE id=?");
             statement.setInt(1, id);
             resultSet = statement.executeQuery();
             Department department = null;
@@ -143,8 +135,6 @@ public class DepartmentDaoImpl implements DepartmentDao {
                 department = new Department();
                 department.setId(id);
                 department.setName(resultSet.getString("name"));
-                Faculty faculty = facultyDao.find(resultSet.getInt("faculty_id"));
-                department.setFaculty(faculty);
             }
             return department;
         } catch (SQLException e) {
@@ -189,8 +179,6 @@ public class DepartmentDaoImpl implements DepartmentDao {
                 Department department = new Department();
                 department.setId(resultSet.getInt("id"));
                 department.setName(resultSet.getString("name"));
-                Faculty faculty = facultyDao.find(resultSet.getInt("faculty_id"));
-                department.setFaculty(faculty);
                 result.add(department);
             }
         } catch (SQLException e) {
@@ -236,8 +224,6 @@ public class DepartmentDaoImpl implements DepartmentDao {
                 department = new Department();
                 department.setId(resultSet.getInt("id"));
                 department.setName(resultSet.getString("name"));
-                Faculty faculty = facultyDao.find(resultSet.getInt("faculty_id"));
-                department.setFaculty(faculty);
             }
             return department;
         } catch (SQLException e) {
@@ -283,8 +269,6 @@ public class DepartmentDaoImpl implements DepartmentDao {
                 Department department = new Department();
                 department.setId(resultSet.getInt("id"));
                 department.setName(resultSet.getString("name"));
-                Faculty faculty = facultyDao.find(facultyId);
-                department.setFaculty(faculty);
                 result.add(department);
             }
         } catch (SQLException e) {
