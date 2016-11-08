@@ -7,6 +7,10 @@ import java.util.List;
  */
 public interface PersonDao<T> extends BaseDao<T> {
 
+    void create(T t, int unitId);
+
+    void update(T t, int unitId);
+
     List<T> findByFirstName(String firstName);
 
     List<T> findByFirstName(int unitId, String firstName);

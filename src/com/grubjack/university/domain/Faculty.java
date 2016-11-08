@@ -55,8 +55,7 @@ public class Faculty {
 
     public void createGroup(Group group) {
         if (group != null && !groups.contains(group)) {
-            group.setFaculty(this);
-            groupDao.create(group);
+            groupDao.create(group, id);
             groups.add(group);
         }
     }
@@ -64,7 +63,6 @@ public class Faculty {
     public void deleteGroup(Group group) {
         if (group != null) {
             groupDao.delete(group.getId());
-            group.setFaculty(null);
             groups.remove(group);
         }
     }
@@ -73,16 +71,14 @@ public class Faculty {
         Group oldGroup = groupDao.find(group.getId());
         if (oldGroup != null) {
             groups.remove(oldGroup);
-            group.setFaculty(this);
             groups.add(group);
-            groupDao.update(group);
+            groupDao.update(group, id);
         }
     }
 
     public void createDepartment(Department department) {
         if (department != null && !departments.contains(department)) {
-            department.setFaculty(this);
-            departmentDao.create(department);
+            departmentDao.create(department, id);
             departments.add(department);
         }
     }
@@ -90,7 +86,6 @@ public class Faculty {
     public void deleteDepartment(Department department) {
         if (department != null) {
             departmentDao.delete(department.getId());
-            department.setFaculty(null);
             departments.remove(department);
         }
     }
@@ -99,16 +94,14 @@ public class Faculty {
         Department oldDepartment = departmentDao.find(department.getId());
         if (oldDepartment != null) {
             departments.remove(oldDepartment);
-            department.setFaculty(this);
             departments.add(department);
-            departmentDao.update(department);
+            departmentDao.update(department, id);
         }
     }
 
     public void createLesson(Lesson lesson) {
         if (lesson != null && !lessons.contains(lesson)) {
-            lesson.setFaculty(this);
-            lessonDao.create(lesson);
+            lessonDao.create(lesson, id);
             lessons.add(lesson);
         }
     }
@@ -116,7 +109,6 @@ public class Faculty {
     public void deleteLesson(Lesson lesson) {
         if (lesson != null) {
             lessonDao.delete(lesson.getId());
-            lesson.setFaculty(null);
             lessons.remove(lesson);
         }
     }
@@ -125,9 +117,8 @@ public class Faculty {
         Lesson oldLesson = lessonDao.find(lesson.getId());
         if (oldLesson != null) {
             lessons.remove(oldLesson);
-            lesson.setFaculty(this);
             lessons.add(lesson);
-            lessonDao.update(lesson);
+            lessonDao.update(lesson, id);
         }
     }
 
@@ -170,8 +161,11 @@ public class Faculty {
     }
 
     public Group findGroup(Student student) {
-        if (student != null)
-            return student.getGroup();
+        for (Group group : groups) {
+            if (group.getStudents().contains(student)) {
+                return group;
+            }
+        }
         return null;
     }
 

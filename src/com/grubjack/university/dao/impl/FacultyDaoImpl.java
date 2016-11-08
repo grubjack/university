@@ -121,7 +121,7 @@ public class FacultyDaoImpl implements FacultyDao {
         ResultSet resultSet = null;
         try {
             connection = getConnection();
-            statement = connection.prepareStatement("SELECT id, name FROM faculties WHERE id=?");
+            statement = connection.prepareStatement("SELECT * FROM faculties WHERE id=?");
             statement.setInt(1, id);
             resultSet = statement.executeQuery();
             Faculty faculty = null;

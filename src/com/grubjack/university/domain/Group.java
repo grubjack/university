@@ -13,7 +13,6 @@ public class Group {
     private int id;
     private String name;
     private List<Student> students;
-    private Faculty faculty;
 
     private PersonDao<Student> studentDao = DaoFactory.getInstance().getStudentDao();
 
@@ -46,10 +45,9 @@ public class Group {
         return result;
     }
 
-    public void createStudent(Student student) {
+    public void createStudent(Student student, int groupId) {
         if (student != null && !students.contains(student)) {
-            student.setGroup(this);
-            studentDao.create(student);
+            studentDao.create(student, groupId);
             students.add(student);
         }
     }
@@ -57,18 +55,16 @@ public class Group {
     public void deleteStudent(Student student) {
         if (student != null) {
             studentDao.delete(student.getId());
-            student.setGroup(null);
             students.remove(student);
         }
     }
 
-    public void updateStudent(Student student) {
+    public void updateStudent(Student student, int groupId) {
         Student oldStudent = studentDao.find(student.getId());
         if (studentDao != null) {
             students.remove(oldStudent);
-            student.setGroup(this);
             students.add(student);
-            studentDao.update(student);
+            studentDao.update(student, groupId);
         }
     }
 
@@ -109,11 +105,4 @@ public class Group {
         this.students = students;
     }
 
-    public Faculty getFaculty() {
-        return faculty;
-    }
-
-    public void setFaculty(Faculty faculty) {
-        this.faculty = faculty;
-    }
 }

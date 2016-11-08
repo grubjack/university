@@ -10,6 +10,10 @@ import java.util.List;
  */
 public interface LessonDao extends BaseDao<Lesson> {
 
+    void create(Lesson lesson, int facultyId);
+
+    void update(Lesson lesson, int facultyId);
+
     List<Lesson> findGroupLessons(int facultyId, int groupId, DayOfWeek dayOfWeek);
 
     List<Lesson> findTeacherLessons(int facultyId, int teacherId, DayOfWeek dayOfWeek);

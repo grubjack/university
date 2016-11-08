@@ -13,7 +13,6 @@ public class Department {
     private int id;
     private String name;
     private List<Teacher> teachers;
-    private Faculty faculty;
     private PersonDao<Teacher> teacherDao = DaoFactory.getInstance().getTeacherDao();
 
     public Department() {
@@ -44,10 +43,9 @@ public class Department {
         return result;
     }
 
-    public void createTeacher(Teacher teacher) {
+    public void createTeacher(Teacher teacher, int departmentId) {
         if (teacher != null && !teachers.contains(teacher)) {
-            teacher.setDepartment(this);
-            teacherDao.create(teacher);
+            teacherDao.create(teacher, departmentId);
             teachers.add(teacher);
         }
     }
@@ -55,18 +53,16 @@ public class Department {
     public void deleteTeacher(Teacher teacher) {
         if (teacher != null) {
             teacherDao.delete(teacher.getId());
-            teacher.setDepartment(null);
             teachers.remove(teacher);
         }
     }
 
-    public void updateTeacher(Teacher teacher) {
+    public void updateTeacher(Teacher teacher, int departmentId) {
         Teacher oldTeacher = teacherDao.find(teacher.getId());
         if (oldTeacher != null) {
             teachers.remove(oldTeacher);
-            teacher.setDepartment(this);
             teachers.add(teacher);
-            teacherDao.update(teacher);
+            teacherDao.update(teacher, departmentId);
         }
     }
 
@@ -106,11 +102,4 @@ public class Department {
         this.teachers = teachers;
     }
 
-    public Faculty getFaculty() {
-        return faculty;
-    }
-
-    public void setFaculty(Faculty faculty) {
-        this.faculty = faculty;
-    }
 }

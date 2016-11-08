@@ -9,6 +9,10 @@ import java.util.List;
  */
 public interface GroupDao extends BaseDao<Group> {
 
+    void create(Group group, int facultyId);
+
+    void update(Group group, int facultyId);
+
     Group findByName(String name);
 
     List<Group> findAll(int facultyId);

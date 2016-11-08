@@ -17,17 +17,15 @@ public class LessonDaoImpl implements LessonDao {
     private ClassroomDao classroomDao;
     private PersonDao<Teacher> teacherDao;
     private GroupDao groupDao;
-    private FacultyDao facultyDao;
 
     public LessonDaoImpl() {
         this.classroomDao = daoFactory.getClassroomDao();
         this.teacherDao = daoFactory.getTeacherDao();
         this.groupDao = daoFactory.getGroupDao();
-        this.facultyDao = daoFactory.getFacultyDao();
     }
 
     @Override
-    public void create(Lesson lesson) {
+    public void create(Lesson lesson, int facultyId) {
         ResultSet resultSet = null;
         try (Connection connection = getConnection();
              PreparedStatement statement =
@@ -38,7 +36,7 @@ public class LessonDaoImpl implements LessonDao {
             statement.setInt(3, lesson.getClassroom().getId());
             statement.setInt(4, lesson.getTeacher().getId());
             statement.setInt(5, lesson.getGroup().getId());
-            statement.setInt(6, lesson.getFaculty().getId());
+            statement.setInt(6, facultyId);
             statement.execute();
             resultSet = statement.getGeneratedKeys();
             if (resultSet.next()) {
@@ -58,7 +56,7 @@ public class LessonDaoImpl implements LessonDao {
     }
 
     @Override
-    public void update(Lesson lesson) {
+    public void update(Lesson lesson, int facultyId) {
         try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(
                      "UPDATE lessons SET subject=?,week_day=?,room_id=?,teacher_id=?,group_id=?,faculty_id=? WHERE id=?")) {
@@ -67,7 +65,7 @@ public class LessonDaoImpl implements LessonDao {
             statement.setInt(3, lesson.getClassroom().getId());
             statement.setInt(4, lesson.getTeacher().getId());
             statement.setInt(5, lesson.getGroup().getId());
-            statement.setInt(6, lesson.getFaculty().getId());
+            statement.setInt(6, facultyId);
             statement.setInt(7, lesson.getId());
             statement.executeUpdate();
         } catch (SQLException e) {
@@ -90,8 +88,7 @@ public class LessonDaoImpl implements LessonDao {
     public Lesson find(int id) {
         ResultSet resultSet = null;
         try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement(
-                     "SELECT subject,week_day,room_id,teacher_id,group_id,faculty_id name FROM lessons WHERE id=?")) {
+             PreparedStatement statement = connection.prepareStatement("SELECT * FROM lessons WHERE id=?")) {
             statement.setInt(1, id);
             resultSet = statement.executeQuery();
             Lesson lesson = null;
@@ -106,8 +103,6 @@ public class LessonDaoImpl implements LessonDao {
                 lesson.setTeacher(teacher);
                 Group group = groupDao.find(resultSet.getInt("group_id"));
                 lesson.setGroup(group);
-                Faculty faculty = facultyDao.find(resultSet.getInt("faculty_id"));
-                lesson.setFaculty(faculty);
             }
             return lesson;
         } catch (SQLException e) {
@@ -141,8 +136,6 @@ public class LessonDaoImpl implements LessonDao {
                 lesson.setTeacher(teacher);
                 Group group = groupDao.find(resultSet.getInt("group_id"));
                 lesson.setGroup(group);
-                Faculty faculty = facultyDao.find(resultSet.getInt("faculty_id"));
-                lesson.setFaculty(faculty);
                 result.add(lesson);
             }
         } catch (SQLException e) {
@@ -172,8 +165,6 @@ public class LessonDaoImpl implements LessonDao {
                 lesson.setTeacher(teacher);
                 Group group = groupDao.find(groupId);
                 lesson.setGroup(group);
-                Faculty faculty = facultyDao.find(resultSet.getInt("faculty_id"));
-                lesson.setFaculty(faculty);
                 result.add(lesson);
             }
         } catch (SQLException e) {
@@ -211,8 +202,6 @@ public class LessonDaoImpl implements LessonDao {
                 lesson.setTeacher(teacher);
                 Group group = groupDao.find(resultSet.getInt("group_id"));
                 lesson.setGroup(group);
-                Faculty faculty = facultyDao.find(resultSet.getInt("faculty_id"));
-                lesson.setFaculty(faculty);
                 result.add(lesson);
             }
         } catch (SQLException e) {

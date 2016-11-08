@@ -1,9 +1,6 @@
 package com.grubjack.university.dao.impl;
 
-import com.grubjack.university.dao.DaoFactory;
-import com.grubjack.university.dao.FacultyDao;
 import com.grubjack.university.dao.GroupDao;
-import com.grubjack.university.domain.Faculty;
 import com.grubjack.university.domain.Group;
 
 import java.sql.*;
@@ -16,16 +13,12 @@ import static com.grubjack.university.dao.DaoFactory.getConnection;
  * Created by grubjack on 03.11.2016.
  */
 public class GroupDaoImpl implements GroupDao {
-    private DaoFactory daoFactory = DaoFactory.getInstance();
-    private FacultyDao facultyDao;
-
 
     public GroupDaoImpl() {
-        this.facultyDao = daoFactory.getFacultyDao();
     }
 
     @Override
-    public void create(Group group) {
+    public void create(Group group, int facultyId) {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -33,7 +26,7 @@ public class GroupDaoImpl implements GroupDao {
             connection = getConnection();
             statement = connection.prepareStatement("INSERT INTO groups (name, faculty_id) VALUES (?,?)", Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, group.getName());
-            statement.setInt(2, group.getFaculty().getId());
+            statement.setInt(2, facultyId);
             statement.execute();
             resultSet = statement.getGeneratedKeys();
             if (resultSet.next()) {
@@ -67,14 +60,14 @@ public class GroupDaoImpl implements GroupDao {
     }
 
     @Override
-    public void update(Group group) {
+    public void update(Group group, int facultyId) {
         Connection connection = null;
         PreparedStatement statement = null;
         try {
             connection = getConnection();
             statement = connection.prepareStatement("UPDATE groups SET name=?,faculty_id=? WHERE id=?");
             statement.setString(1, group.getName());
-            statement.setInt(2, group.getFaculty().getId());
+            statement.setInt(2, facultyId);
             statement.setInt(3, group.getId());
             statement.executeUpdate();
         } catch (SQLException e) {
@@ -133,7 +126,7 @@ public class GroupDaoImpl implements GroupDao {
         ResultSet resultSet = null;
         try {
             connection = getConnection();
-            statement = connection.prepareStatement("SELECT name, faculty_id FROM groups WHERE id=?");
+            statement = connection.prepareStatement("SELECT * FROM groups WHERE id=?");
             statement.setInt(1, id);
             resultSet = statement.executeQuery();
             Group group = null;
@@ -141,8 +134,6 @@ public class GroupDaoImpl implements GroupDao {
                 group = new Group();
                 group.setId(id);
                 group.setName(resultSet.getString("name"));
-                Faculty faculty = facultyDao.find(resultSet.getInt("faculty_id"));
-                group.setFaculty(faculty);
             }
             return group;
         } catch (SQLException e) {
@@ -187,8 +178,6 @@ public class GroupDaoImpl implements GroupDao {
                 Group group = new Group();
                 group.setId(resultSet.getInt("id"));
                 group.setName(resultSet.getString("name"));
-                Faculty faculty = facultyDao.find(resultSet.getInt("faculty_id"));
-                group.setFaculty(faculty);
                 result.add(group);
             }
         } catch (SQLException e) {
@@ -234,8 +223,6 @@ public class GroupDaoImpl implements GroupDao {
                 group = new Group();
                 group.setId(resultSet.getInt("id"));
                 group.setName(resultSet.getString("name"));
-                Faculty faculty = facultyDao.find(resultSet.getInt("faculty_id"));
-                group.setFaculty(faculty);
             }
             return group;
         } catch (SQLException e) {
@@ -281,8 +268,6 @@ public class GroupDaoImpl implements GroupDao {
                 Group group = new Group();
                 group.setId(resultSet.getInt("id"));
                 group.setName(resultSet.getString("name"));
-                Faculty faculty = facultyDao.find(facultyId);
-                group.setFaculty(faculty);
                 result.add(group);
             }
         } catch (SQLException e) {

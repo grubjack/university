@@ -125,7 +125,7 @@ public class ClassroomDaoImpl implements ClassroomDao {
         ResultSet resultSet = null;
         try {
             connection = getConnection();
-            statement = connection.prepareStatement("SELECT number, location, capacity FROM classrooms WHERE id=?");
+            statement = connection.prepareStatement("SELECT * FROM classrooms WHERE id=?");
             statement.setInt(1, id);
             resultSet = statement.executeQuery();
             Classroom classroom = null;

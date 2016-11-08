@@ -8,7 +8,6 @@ public class Lesson implements Comparable<Lesson> {
     private String subject;
     private Teacher teacher;
     private Group group;
-    private Faculty faculty;
     private Classroom classroom;
     private DayOfWeek dayOfWeek;
 
@@ -80,14 +79,6 @@ public class Lesson implements Comparable<Lesson> {
 
     public void setGroup(Group group) {
         this.group = group;
-    }
-
-    public Faculty getFaculty() {
-        return faculty;
-    }
-
-    public void setFaculty(Faculty faculty) {
-        this.faculty = faculty;
     }
 
     public DayOfWeek getDayOfWeek() {
