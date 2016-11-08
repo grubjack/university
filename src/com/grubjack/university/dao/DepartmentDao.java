@@ -1,6 +1,7 @@
 package com.grubjack.university.dao;
 
 import com.grubjack.university.domain.Department;
+import com.grubjack.university.exception.DaoException;
 
 import java.util.List;
 
@@ -9,12 +10,12 @@ import java.util.List;
  */
 public interface DepartmentDao extends BaseDao<Department> {
 
-    void create(Department department, int facultyId);
+    void create(Department department, int facultyId) throws DaoException;
 
-    void update(Department department, int facultyId);
+    void update(Department department, int facultyId) throws DaoException;
 
-    Department findByName(String name);
+    Department findByName(String name) throws DaoException;
 
-    List<Department> findAll(int facultyId);
+    List<Department> findAll(int facultyId) throws DaoException;
 
 }

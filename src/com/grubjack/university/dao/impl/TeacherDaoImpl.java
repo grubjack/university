@@ -1,7 +1,10 @@
 package com.grubjack.university.dao.impl;
 
+import com.grubjack.university.exception.DaoException;
 import com.grubjack.university.dao.PersonDao;
 import com.grubjack.university.domain.Teacher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -15,11 +18,14 @@ import static com.grubjack.university.dao.DaoFactory.getConnection;
  */
 public class TeacherDaoImpl implements PersonDao<Teacher> {
 
+    private static Logger log = LoggerFactory.getLogger(TeacherDaoImpl.class);
+
     public TeacherDaoImpl() {
     }
 
     @Override
-    public void create(Teacher teacher, int departmentId) {
+    public void create(Teacher teacher, int departmentId) throws DaoException {
+        log.info("Creating new teacher");
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -34,36 +40,39 @@ public class TeacherDaoImpl implements PersonDao<Teacher> {
             resultSet = statement.getGeneratedKeys();
             if (resultSet.next()) {
                 teacher.setId(resultSet.getInt(1));
+                log.info("Teacher is created with id = " + teacher.getId());
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error("Can't create teacher", e);
+            throw new DaoException("Can't create teacher", e);
         } finally {
             if (resultSet != null) {
                 try {
                     resultSet.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    log.error("Can't close result set", e);
                 }
             }
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    log.error("Can't close statement", e);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    log.error("Can't close connection", e);
                 }
             }
         }
     }
 
     @Override
-    public void update(Teacher teacher, int departmentId) {
+    public void update(Teacher teacher, int departmentId) throws DaoException {
+        log.info("Updating teacher with id " + teacher.getId());
         Connection connection = null;
         PreparedStatement statement = null;
         try {
@@ -76,27 +85,29 @@ public class TeacherDaoImpl implements PersonDao<Teacher> {
             statement.setInt(5, teacher.getId());
             statement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error("Can't update teacher", e);
+            throw new DaoException("Can't update teacher", e);
         } finally {
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    log.error("Can't close statement", e);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    log.error("Can't close connection", e);
                 }
             }
         }
     }
 
     @Override
-    public void delete(int id) {
+    public void delete(int id) throws DaoException {
+        log.info("Deleting teacher with id " + id);
         Connection connection = null;
         PreparedStatement statement = null;
         try {
@@ -105,36 +116,38 @@ public class TeacherDaoImpl implements PersonDao<Teacher> {
             statement.setInt(1, id);
             statement.execute();
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error("Can't delete teacher", e);
+            throw new DaoException("Can't delete teacher", e);
         } finally {
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    log.error("Can't close statement", e);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    log.error("Can't close connection", e);
                 }
             }
         }
     }
 
     @Override
-    public Teacher find(int id) {
+    public Teacher find(int id) throws DaoException {
+        log.info("Finding teacher with id " + id);
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
+        Teacher teacher = null;
         try {
             connection = getConnection();
             statement = connection.prepareStatement("SELECT * FROM teachers WHERE id=?");
             statement.setInt(1, id);
             resultSet = statement.executeQuery();
-            Teacher teacher = null;
             if (resultSet.next()) {
                 teacher = new Teacher();
                 teacher.setId(id);
@@ -142,37 +155,38 @@ public class TeacherDaoImpl implements PersonDao<Teacher> {
                 teacher.setLastName(resultSet.getString("lastname"));
                 teacher.setSalary(resultSet.getInt("salary"));
             }
-            return teacher;
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error("Can't find teacher", e);
+            throw new DaoException("Can't find teacher", e);
         } finally {
             if (resultSet != null) {
                 try {
                     resultSet.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    log.error("Can't close result set", e);
                 }
             }
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    log.error("Can't close statement", e);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    log.error("Can't close connection", e);
                 }
             }
         }
-        return null;
+        return teacher;
     }
 
     @Override
-    public List<Teacher> findAll() {
+    public List<Teacher> findAll() throws DaoException {
+        log.info("Finding all teachers");
         List<Teacher> result = new ArrayList<>();
         Connection connection = null;
         PreparedStatement statement = null;
@@ -190,27 +204,28 @@ public class TeacherDaoImpl implements PersonDao<Teacher> {
                 result.add(teacher);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error("Can't find teachers", e);
+            throw new DaoException("Can't find teachers", e);
         } finally {
             if (resultSet != null) {
                 try {
                     resultSet.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    log.error("Can't close result set", e);
                 }
             }
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    log.error("Can't close statement", e);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    log.error("Can't close connection", e);
                 }
             }
         }
@@ -218,7 +233,8 @@ public class TeacherDaoImpl implements PersonDao<Teacher> {
     }
 
     @Override
-    public List<Teacher> findByFirstName(String firstName) {
+    public List<Teacher> findByFirstName(String firstName) throws DaoException {
+        log.info("Finding teachers with firstname " + firstName);
         List<Teacher> result = new ArrayList<>();
         Connection connection = null;
         PreparedStatement statement = null;
@@ -237,27 +253,28 @@ public class TeacherDaoImpl implements PersonDao<Teacher> {
                 result.add(teacher);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error("Can't find teachers by firstname", e);
+            throw new DaoException("Can't find teachers by firstname", e);
         } finally {
             if (resultSet != null) {
                 try {
                     resultSet.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    log.error("Can't close result set", e);
                 }
             }
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    log.error("Can't close statement", e);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    log.error("Can't close connection", e);
                 }
             }
         }
@@ -266,7 +283,8 @@ public class TeacherDaoImpl implements PersonDao<Teacher> {
 
 
     @Override
-    public List<Teacher> findByFirstName(int departmentId, String firstName) {
+    public List<Teacher> findByFirstName(int departmentId, String firstName) throws DaoException {
+        log.info("Finding teachers with firstname " + firstName + " from department with id " + departmentId);
         List<Teacher> result = new ArrayList<>();
         Connection connection = null;
         PreparedStatement statement = null;
@@ -286,27 +304,28 @@ public class TeacherDaoImpl implements PersonDao<Teacher> {
                 result.add(teacher);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error("Can't find teachers by firstname and department", e);
+            throw new DaoException("Can't find teachers by firstname and department", e);
         } finally {
             if (resultSet != null) {
                 try {
                     resultSet.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    log.error("Can't close result set", e);
                 }
             }
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    log.error("Can't close statement", e);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    log.error("Can't close connection", e);
                 }
             }
         }
@@ -314,7 +333,8 @@ public class TeacherDaoImpl implements PersonDao<Teacher> {
     }
 
     @Override
-    public List<Teacher> findByLastName(String lastName) {
+    public List<Teacher> findByLastName(String lastName) throws DaoException {
+        log.info("Finding teachers with lastname " + lastName);
         List<Teacher> result = new ArrayList<>();
         Connection connection = null;
         PreparedStatement statement = null;
@@ -333,27 +353,28 @@ public class TeacherDaoImpl implements PersonDao<Teacher> {
                 result.add(teacher);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error("Can't find teachers by lastname", e);
+            throw new DaoException("Can't find teachers by lastname", e);
         } finally {
             if (resultSet != null) {
                 try {
                     resultSet.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    log.error("Can't close result set", e);
                 }
             }
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    log.error("Can't close statement", e);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    log.error("Can't close connection", e);
                 }
             }
         }
@@ -361,7 +382,8 @@ public class TeacherDaoImpl implements PersonDao<Teacher> {
     }
 
     @Override
-    public List<Teacher> findByLastName(int departmentId, String lastName) {
+    public List<Teacher> findByLastName(int departmentId, String lastName) throws DaoException {
+        log.info("Finding teachers with lastname " + lastName + " from department with id " + departmentId);
         List<Teacher> result = new ArrayList<>();
         Connection connection = null;
         PreparedStatement statement = null;
@@ -381,27 +403,28 @@ public class TeacherDaoImpl implements PersonDao<Teacher> {
                 result.add(teacher);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error("Can't find teachers by lastname and department", e);
+            throw new DaoException("Can't find teachers by lastname and department", e);
         } finally {
             if (resultSet != null) {
                 try {
                     resultSet.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    log.error("Can't close result set", e);
                 }
             }
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    log.error("Can't close statement", e);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    log.error("Can't close connection", e);
                 }
             }
         }
@@ -409,7 +432,8 @@ public class TeacherDaoImpl implements PersonDao<Teacher> {
     }
 
     @Override
-    public List<Teacher> findByName(String firstName, String lastName) {
+    public List<Teacher> findByName(String firstName, String lastName) throws DaoException {
+        log.info("Finding teachers with firstname " + lastName + " and lastname " + lastName);
         List<Teacher> result = new ArrayList<>();
         Connection connection = null;
         PreparedStatement statement = null;
@@ -429,27 +453,28 @@ public class TeacherDaoImpl implements PersonDao<Teacher> {
                 result.add(teacher);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error("Can't find teachers by name", e);
+            throw new DaoException("Can't find teachers by name", e);
         } finally {
             if (resultSet != null) {
                 try {
                     resultSet.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    log.error("Can't close result set", e);
                 }
             }
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    log.error("Can't close statement", e);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    log.error("Can't close connection", e);
                 }
             }
         }
@@ -457,7 +482,8 @@ public class TeacherDaoImpl implements PersonDao<Teacher> {
     }
 
     @Override
-    public List<Teacher> findByName(int departmentId, String firstName, String lastName) {
+    public List<Teacher> findByName(int departmentId, String firstName, String lastName) throws DaoException {
+        log.info("Finding teachers with firstname " + lastName + " and lastname " + lastName + " from department with id " + departmentId);
         List<Teacher> result = new ArrayList<>();
         Connection connection = null;
         PreparedStatement statement = null;
@@ -478,27 +504,28 @@ public class TeacherDaoImpl implements PersonDao<Teacher> {
                 result.add(teacher);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error("Can't find teachers by name and department", e);
+            throw new DaoException("Can't find teachers by name and department", e);
         } finally {
             if (resultSet != null) {
                 try {
                     resultSet.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    log.error("Can't close result set", e);
                 }
             }
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    log.error("Can't close statement", e);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    log.error("Can't close connection", e);
                 }
             }
         }
@@ -506,7 +533,8 @@ public class TeacherDaoImpl implements PersonDao<Teacher> {
     }
 
     @Override
-    public List<Teacher> findAll(int departmentId) {
+    public List<Teacher> findAll(int departmentId) throws DaoException {
+        log.info("Finding all teachers from department with id " + departmentId);
         List<Teacher> result = new ArrayList<>();
         Connection connection = null;
         PreparedStatement statement = null;
@@ -525,27 +553,28 @@ public class TeacherDaoImpl implements PersonDao<Teacher> {
                 result.add(teacher);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error("Can't find teachers from department", e);
+            throw new DaoException("Can't find teachers from department", e);
         } finally {
             if (resultSet != null) {
                 try {
                     resultSet.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    log.error("Can't close result set", e);
                 }
             }
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    log.error("Can't close statement", e);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    log.error("Can't close connection", e);
                 }
             }
         }

@@ -1,9 +1,13 @@
 package com.grubjack.university.domain;
 
+import com.grubjack.university.exception.DaoException;
 import com.grubjack.university.dao.DaoFactory;
 import com.grubjack.university.dao.PersonDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -13,6 +17,8 @@ public class Group {
     private int id;
     private String name;
     private List<Student> students;
+
+    private static Logger log = LoggerFactory.getLogger(Group.class);
 
     private PersonDao<Student> studentDao = DaoFactory.getInstance().getStudentDao();
 
@@ -47,38 +53,70 @@ public class Group {
 
     public void createStudent(Student student, int groupId) {
         if (student != null && !students.contains(student)) {
-            studentDao.create(student, groupId);
-            students.add(student);
+            try {
+                studentDao.create(student,groupId);
+                students.add(student);
+            } catch (DaoException e) {
+                log.warn("Can't create student");
+            }
         }
     }
 
     public void deleteStudent(Student student) {
         if (student != null) {
-            studentDao.delete(student.getId());
-            students.remove(student);
+            try {
+                studentDao.delete(student.getId());
+                students.remove(student);
+            } catch (DaoException e) {
+                log.warn("Can't delete student");
+            }
         }
     }
 
     public void updateStudent(Student student, int groupId) {
-        Student oldStudent = studentDao.find(student.getId());
+        Student oldStudent = null;
+        try {
+            oldStudent = studentDao.find(student.getId());
+        } catch (DaoException e) {
+            log.warn("Can't find student");
+        }
         if (studentDao != null) {
-            students.remove(oldStudent);
-            students.add(student);
-            studentDao.update(student, groupId);
+            try {
+                studentDao.update(student,groupId);
+                students.remove(oldStudent);
+                students.add(student);
+            } catch (DaoException e) {
+                log.warn("Can't update student");
+            }
         }
     }
 
 
     public List<Student> findStudentsByFirstName(String firstName) {
-        return studentDao.findByFirstName(firstName);
+        try {
+            return studentDao.findByFirstName(firstName);
+        } catch (DaoException e) {
+            log.warn("Can't find students by firstname");
+        }
+        return Collections.emptyList();
     }
 
     public List<Student> findStudentsByLastName(String lastName) {
-        return studentDao.findByLastName(lastName);
+        try {
+            return studentDao.findByLastName(lastName);
+        } catch (DaoException e) {
+            log.warn("Can't find students by lastname");
+        }
+        return Collections.emptyList();
     }
 
     public List<Student> findStudentsByName(String firstName, String lastName) {
-        return studentDao.findByName(firstName, lastName);
+        try {
+            return studentDao.findByName(firstName, lastName);
+        } catch (DaoException e) {
+            log.warn("Can't find students by name");
+        }
+        return Collections.emptyList();
     }
 
     public int getId() {

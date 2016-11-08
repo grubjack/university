@@ -1,7 +1,10 @@
 package com.grubjack.university.dao.impl;
 
+import com.grubjack.university.exception.DaoException;
 import com.grubjack.university.dao.ClassroomDao;
 import com.grubjack.university.domain.Classroom;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -13,9 +16,11 @@ import static com.grubjack.university.dao.DaoFactory.getConnection;
  * Created by grubjack on 03.11.2016.
  */
 public class ClassroomDaoImpl implements ClassroomDao {
+    private static Logger log = LoggerFactory.getLogger(ClassroomDaoImpl.class);
 
     @Override
-    public void create(Classroom classroom) {
+    public void create(Classroom classroom) throws DaoException {
+        log.info("Creating new classroom " + classroom.getNumber());
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -29,36 +34,39 @@ public class ClassroomDaoImpl implements ClassroomDao {
             resultSet = statement.getGeneratedKeys();
             if (resultSet.next()) {
                 classroom.setId(resultSet.getInt(1));
+                log.info("Classroom is created with id = " + classroom.getId());
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error("Can't create classroom", e);
+            throw new DaoException("Can't create classroom", e);
         } finally {
             if (resultSet != null) {
                 try {
                     resultSet.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    log.error("Can't close result set", e);
                 }
             }
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    log.error("Can't close statement", e);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    log.error("Can't close connection", e);
                 }
             }
         }
     }
 
     @Override
-    public void update(Classroom classroom) {
+    public void update(Classroom classroom) throws DaoException {
+        log.info("Updating classroom with id " + classroom.getId());
         Connection connection = null;
         PreparedStatement statement = null;
         try {
@@ -70,27 +78,29 @@ public class ClassroomDaoImpl implements ClassroomDao {
             statement.setInt(4, classroom.getId());
             statement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error("Can't update classroom", e);
+            throw new DaoException("Can't update classroom", e);
         } finally {
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    log.error("Can't close statement", e);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    log.error("Can't close connection", e);
                 }
             }
         }
     }
 
     @Override
-    public void delete(int id) {
+    public void delete(int id) throws DaoException {
+        log.info("Deleting classroom with id " + id);
         Connection connection = null;
         PreparedStatement statement = null;
         try {
@@ -99,36 +109,38 @@ public class ClassroomDaoImpl implements ClassroomDao {
             statement.setInt(1, id);
             statement.execute();
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error("Can't delete classroom", e);
+            throw new DaoException("Can't delete classroom", e);
         } finally {
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    log.error("Can't close statement", e);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    log.error("Can't close connection", e);
                 }
             }
         }
     }
 
     @Override
-    public Classroom find(int id) {
+    public Classroom find(int id) throws DaoException {
+        log.info("Finding classroom with id " + id);
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
+        Classroom classroom = null;
         try {
             connection = getConnection();
             statement = connection.prepareStatement("SELECT * FROM classrooms WHERE id=?");
             statement.setInt(1, id);
             resultSet = statement.executeQuery();
-            Classroom classroom = null;
             if (resultSet.next()) {
                 classroom = new Classroom();
                 classroom.setId(id);
@@ -136,37 +148,38 @@ public class ClassroomDaoImpl implements ClassroomDao {
                 classroom.setLocation(resultSet.getString("location"));
                 classroom.setCapacity(resultSet.getInt("capacity"));
             }
-            return classroom;
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error("Can't find classroom", e);
+            throw new DaoException("Can't find classroom", e);
         } finally {
             if (resultSet != null) {
                 try {
                     resultSet.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    log.error("Can't close result set", e);
                 }
             }
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    log.error("Can't close statement", e);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    log.error("Can't close connection", e);
                 }
             }
         }
-        return null;
+        return classroom;
     }
 
     @Override
-    public List<Classroom> findAll() {
+    public List<Classroom> findAll() throws DaoException {
+        log.info("Finding all classrooms");
         List<Classroom> result = new ArrayList<>();
         Connection connection = null;
         PreparedStatement statement = null;
@@ -184,27 +197,28 @@ public class ClassroomDaoImpl implements ClassroomDao {
                 result.add(classroom);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error("Can't find classrooms", e);
+            throw new DaoException("Can't find classrooms", e);
         } finally {
             if (resultSet != null) {
                 try {
                     resultSet.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    log.error("Can't close result set", e);
                 }
             }
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    log.error("Can't close statement", e);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    log.error("Can't close connection", e);
                 }
             }
         }
@@ -212,16 +226,17 @@ public class ClassroomDaoImpl implements ClassroomDao {
     }
 
     @Override
-    public Classroom findByNumber(String number) {
+    public Classroom findByNumber(String number) throws DaoException {
+        log.info("Finding classroom with number " + number);
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
+        Classroom classroom = null;
         try {
             connection = getConnection();
             statement = connection.prepareStatement("SELECT DISTINCT * FROM classrooms WHERE UPPER(number) LIKE UPPER(?)");
             statement.setString(1, number);
             resultSet = statement.executeQuery();
-            Classroom classroom = null;
             if (resultSet.next()) {
                 classroom = new Classroom();
                 classroom.setId(resultSet.getInt("id"));
@@ -229,32 +244,32 @@ public class ClassroomDaoImpl implements ClassroomDao {
                 classroom.setLocation(resultSet.getString("location"));
                 classroom.setCapacity(resultSet.getInt("capacity"));
             }
-            return classroom;
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error("Can't find classroom by number", e);
+            throw new DaoException("Can't find classroom by number", e);
         } finally {
             if (resultSet != null) {
                 try {
                     resultSet.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    log.error("Can't close result set", e);
                 }
             }
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    log.error("Can't close statement", e);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    log.error("Can't close connection", e);
                 }
             }
         }
-        return null;
+        return classroom;
     }
 }
