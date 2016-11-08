@@ -48,14 +48,14 @@ public class DepartmentDaoImpl implements DepartmentDao {
                 try {
                     resultSet.close();
                 } catch (SQLException e) {
-                    log.warn("Can't close result set", e);
+                    log.error("Can't close result set", e);
                 }
             }
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException e) {
-                    log.warn("Can't close statement", e);
+                    log.error("Can't close statement", e);
                 }
             }
             if (connection != null) {
@@ -88,14 +88,14 @@ public class DepartmentDaoImpl implements DepartmentDao {
                 try {
                     statement.close();
                 } catch (SQLException e) {
-                    log.warn("Can't close statement", e);
+                    log.error("Can't close statement", e);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException e) {
-                    log.warn("Can't close connection", e);
+                    log.error("Can't close connection", e);
                 }
             }
         }
@@ -119,14 +119,14 @@ public class DepartmentDaoImpl implements DepartmentDao {
                 try {
                     statement.close();
                 } catch (SQLException e) {
-                    log.warn("Can't close statement", e);
+                    log.error("Can't close statement", e);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException e) {
-                    log.warn("Can't close connection", e);
+                    log.error("Can't close connection", e);
                 }
             }
         }
@@ -157,21 +157,21 @@ public class DepartmentDaoImpl implements DepartmentDao {
                 try {
                     resultSet.close();
                 } catch (SQLException e) {
-                    log.warn("Can't close result set", e);
+                    log.error("Can't close result set", e);
                 }
             }
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException e) {
-                    log.warn("Can't close statement", e);
+                    log.error("Can't close statement", e);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException e) {
-                    log.warn("Can't close connection", e);
+                    log.error("Can't close connection", e);
                 }
             }
         }
@@ -203,21 +203,21 @@ public class DepartmentDaoImpl implements DepartmentDao {
                 try {
                     resultSet.close();
                 } catch (SQLException e) {
-                    log.warn("Can't close result set", e);
+                    log.error("Can't close result set", e);
                 }
             }
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException e) {
-                    log.warn("Can't close statement", e);
+                    log.error("Can't close statement", e);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException e) {
-                    log.warn("Can't close connection", e);
+                    log.error("Can't close connection", e);
                 }
             }
         }
@@ -249,21 +249,21 @@ public class DepartmentDaoImpl implements DepartmentDao {
                 try {
                     resultSet.close();
                 } catch (SQLException e) {
-                    log.warn("Can't close result set", e);
+                    log.error("Can't close result set", e);
                 }
             }
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException e) {
-                    log.warn("Can't close statement", e);
+                    log.error("Can't close statement", e);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException e) {
-                    log.warn("Can't close connection", e);
+                    log.error("Can't close connection", e);
                 }
             }
         }
@@ -296,21 +296,21 @@ public class DepartmentDaoImpl implements DepartmentDao {
                 try {
                     resultSet.close();
                 } catch (SQLException e) {
-                    log.warn("Can't close result set", e);
+                    log.error("Can't close result set", e);
                 }
             }
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException e) {
-                    log.warn("Can't close statement", e);
+                    log.error("Can't close statement", e);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException e) {
-                    log.warn("Can't close connection", e);
+                    log.error("Can't close connection", e);
                 }
             }
         }

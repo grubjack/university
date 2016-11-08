@@ -44,21 +44,21 @@ public class ClassroomDaoImpl implements ClassroomDao {
                 try {
                     resultSet.close();
                 } catch (SQLException e) {
-                    log.warn("Can't close result set", e);
+                    log.error("Can't close result set", e);
                 }
             }
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException e) {
-                    log.warn("Can't close statement", e);
+                    log.error("Can't close statement", e);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException e) {
-                    log.warn("Can't close connection", e);
+                    log.error("Can't close connection", e);
                 }
             }
         }
@@ -85,14 +85,14 @@ public class ClassroomDaoImpl implements ClassroomDao {
                 try {
                     statement.close();
                 } catch (SQLException e) {
-                    log.warn("Can't close statement", e);
+                    log.error("Can't close statement", e);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException e) {
-                    log.warn("Can't close connection", e);
+                    log.error("Can't close connection", e);
                 }
             }
         }
@@ -116,14 +116,14 @@ public class ClassroomDaoImpl implements ClassroomDao {
                 try {
                     statement.close();
                 } catch (SQLException e) {
-                    log.warn("Can't close statement", e);
+                    log.error("Can't close statement", e);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException e) {
-                    log.warn("Can't close connection", e);
+                    log.error("Can't close connection", e);
                 }
             }
         }
@@ -156,21 +156,21 @@ public class ClassroomDaoImpl implements ClassroomDao {
                 try {
                     resultSet.close();
                 } catch (SQLException e) {
-                    log.warn("Can't close result set", e);
+                    log.error("Can't close result set", e);
                 }
             }
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException e) {
-                    log.warn("Can't close statement", e);
+                    log.error("Can't close statement", e);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException e) {
-                    log.warn("Can't close connection", e);
+                    log.error("Can't close connection", e);
                 }
             }
         }
@@ -204,21 +204,21 @@ public class ClassroomDaoImpl implements ClassroomDao {
                 try {
                     resultSet.close();
                 } catch (SQLException e) {
-                    log.warn("Can't close result set", e);
+                    log.error("Can't close result set", e);
                 }
             }
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException e) {
-                    log.warn("Can't close statement", e);
+                    log.error("Can't close statement", e);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException e) {
-                    log.warn("Can't close connection", e);
+                    log.error("Can't close connection", e);
                 }
             }
         }
@@ -252,21 +252,21 @@ public class ClassroomDaoImpl implements ClassroomDao {
                 try {
                     resultSet.close();
                 } catch (SQLException e) {
-                    log.warn("Can't close result set", e);
+                    log.error("Can't close result set", e);
                 }
             }
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException e) {
-                    log.warn("Can't close statement", e);
+                    log.error("Can't close statement", e);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException e) {
-                    log.warn("Can't close connection", e);
+                    log.error("Can't close connection", e);
                 }
             }
         }
