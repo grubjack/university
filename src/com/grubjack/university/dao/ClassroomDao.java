@@ -1,5 +1,6 @@
 package com.grubjack.university.dao;
 
+import com.grubjack.university.DaoException;
 import com.grubjack.university.domain.Classroom;
 import com.grubjack.university.domain.Group;
 
@@ -8,9 +9,9 @@ import com.grubjack.university.domain.Group;
  */
 public interface ClassroomDao extends BaseDao<Classroom> {
 
-    void create(Classroom classroom);
+    void create(Classroom classroom) throws DaoException;
 
-    void update(Classroom classroom);
+    void update(Classroom classroom) throws DaoException;
 
-    Classroom findByNumber(String number);
+    Classroom findByNumber(String number) throws DaoException;
 }

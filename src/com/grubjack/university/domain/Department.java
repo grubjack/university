@@ -1,9 +1,13 @@
 package com.grubjack.university.domain;
 
+import com.grubjack.university.DaoException;
 import com.grubjack.university.dao.DaoFactory;
 import com.grubjack.university.dao.PersonDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -14,6 +18,8 @@ public class Department {
     private String name;
     private List<Teacher> teachers;
     private PersonDao<Teacher> teacherDao = DaoFactory.getInstance().getTeacherDao();
+
+    private static Logger log = LoggerFactory.getLogger(Department.class);
 
     public Department() {
         teachers = new ArrayList<>();
@@ -45,37 +51,69 @@ public class Department {
 
     public void createTeacher(Teacher teacher, int departmentId) {
         if (teacher != null && !teachers.contains(teacher)) {
-            teacherDao.create(teacher, departmentId);
-            teachers.add(teacher);
+            try {
+                teacherDao.create(teacher, departmentId);
+                teachers.add(teacher);
+            } catch (DaoException e) {
+                log.warn("Can't create teacher");
+            }
         }
     }
 
     public void deleteTeacher(Teacher teacher) {
         if (teacher != null) {
-            teacherDao.delete(teacher.getId());
-            teachers.remove(teacher);
+            try {
+                teacherDao.delete(teacher.getId());
+                teachers.remove(teacher);
+            } catch (DaoException e) {
+                log.warn("Can't delete teacher");
+            }
         }
     }
 
     public void updateTeacher(Teacher teacher, int departmentId) {
-        Teacher oldTeacher = teacherDao.find(teacher.getId());
+        Teacher oldTeacher = null;
+        try {
+            oldTeacher = teacherDao.find(teacher.getId());
+        } catch (DaoException e) {
+            log.warn("Can't find teacher");
+        }
         if (oldTeacher != null) {
-            teachers.remove(oldTeacher);
-            teachers.add(teacher);
-            teacherDao.update(teacher, departmentId);
+            try {
+                teacherDao.update(teacher, departmentId);
+                teachers.remove(oldTeacher);
+                teachers.add(teacher);
+            } catch (DaoException e) {
+                log.warn("Can't update teacher");
+            }
         }
     }
 
     public List<Teacher> findTeachersByFirstName(String firstName) {
-        return teacherDao.findByFirstName(id, firstName);
+        try {
+            return teacherDao.findByFirstName(id, firstName);
+        } catch (DaoException e) {
+            log.warn("Can't find teacher by firstname");
+        }
+        return Collections.emptyList();
     }
 
     public List<Teacher> findTeachersByLastName(String lastName) {
-        return teacherDao.findByLastName(id, lastName);
+        try {
+            return teacherDao.findByLastName(id, lastName);
+        } catch (DaoException e) {
+            log.warn("Can't find teacher by lastname");
+        }
+        return Collections.emptyList();
     }
 
     public List<Teacher> findTeachersByName(String firstName, String lastName) {
-        return teacherDao.findByName(id, firstName, lastName);
+        try {
+            return teacherDao.findByName(id, firstName, lastName);
+        } catch (DaoException e) {
+            log.warn("Can't find teacher by name");
+        }
+        return Collections.emptyList();
     }
 
     public int getId() {

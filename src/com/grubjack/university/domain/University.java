@@ -1,8 +1,11 @@
 package com.grubjack.university.domain;
 
+import com.grubjack.university.DaoException;
 import com.grubjack.university.dao.ClassroomDao;
 import com.grubjack.university.dao.DaoFactory;
 import com.grubjack.university.dao.FacultyDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +22,9 @@ public class University {
     private FacultyDao facultyDao = DaoFactory.getInstance().getFacultyDao();
     private ClassroomDao classroomDao = DaoFactory.getInstance().getClassroomDao();
 
+    private static Logger log = LoggerFactory.getLogger(University.class);
+
+
     private University() {
         rooms = new ArrayList<>();
         faculties = new ArrayList<>();
@@ -33,47 +39,92 @@ public class University {
 
     public void createRoom(Classroom classroom) {
         if (classroom != null && !rooms.contains(classroom)) {
-            classroomDao.create(classroom);
-            rooms.add(classroom);
+            try {
+                classroomDao.create(classroom);
+                rooms.add(classroom);
+            } catch (DaoException e) {
+                log.warn("Can't create classroom");
+            }
         }
     }
 
     public void deleteRoom(Classroom classroom) {
         if (classroom != null) {
-            classroomDao.delete(classroom.getId());
-            rooms.remove(classroom);
+            try {
+                classroomDao.delete(classroom.getId());
+                rooms.remove(classroom);
+            } catch (DaoException e) {
+                log.warn("Can't delete classroom");
+            }
         }
     }
 
     public void updateRoom(Classroom classroom) {
-        Classroom oldRoom = classroomDao.find(classroom.getId());
-        if (oldRoom != null) {
-            rooms.remove(oldRoom);
-            rooms.add(classroom);
-            classroomDao.update(classroom);
+        Classroom oldRoom = null;
+        try {
+            oldRoom = classroomDao.find(classroom.getId());
+        } catch (DaoException e) {
+            log.warn("Can't find classroom");
         }
+        if (oldRoom != null) {
+            try {
+                classroomDao.update(classroom);
+                rooms.remove(oldRoom);
+                rooms.add(classroom);
+            } catch (DaoException e) {
+                log.warn("Can't update classroom");
+            }
+        }
+    }
+
+    public Classroom findByNumber(String number) {
+        if (number != null) {
+            try {
+                return classroomDao.findByNumber(number);
+            } catch (DaoException e) {
+                log.warn("Can't find classroom by number");
+            }
+        }
+        return null;
     }
 
     public void createFaculty(Faculty faculty) {
         if (faculty != null && !faculties.contains(faculty)) {
-            facultyDao.create(faculty);
-            faculties.add(faculty);
+            try {
+                facultyDao.create(faculty);
+                faculties.add(faculty);
+            } catch (DaoException e) {
+                log.warn("Can't create faculty");
+            }
         }
     }
 
     public void deleteFaculty(Faculty faculty) {
         if (faculty != null) {
-            facultyDao.delete(faculty.getId());
-            faculties.remove(faculty);
+            try {
+                facultyDao.delete(faculty.getId());
+                faculties.remove(faculty);
+            } catch (DaoException e) {
+                log.warn("Can't delete faculty");
+            }
         }
     }
 
     public void updateFaculty(Faculty faculty) {
-        Faculty oldFaculty = facultyDao.find(faculty.getId());
+        Faculty oldFaculty = null;
+        try {
+            oldFaculty = facultyDao.find(faculty.getId());
+        } catch (DaoException e) {
+            log.warn("Can't find faculty");
+        }
         if (oldFaculty != null) {
-            faculties.remove(oldFaculty);
-            faculties.add(faculty);
-            facultyDao.update(faculty);
+            try {
+                facultyDao.update(faculty);
+                faculties.remove(oldFaculty);
+                faculties.add(faculty);
+            } catch (DaoException e) {
+                log.warn("Can't update faculty");
+            }
         }
     }
 

@@ -1,9 +1,12 @@
 package com.grubjack.university.domain;
 
+import com.grubjack.university.DaoException;
 import com.grubjack.university.dao.DaoFactory;
 import com.grubjack.university.dao.DepartmentDao;
 import com.grubjack.university.dao.GroupDao;
 import com.grubjack.university.dao.LessonDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -20,6 +23,8 @@ public class Faculty {
     private DepartmentDao departmentDao = DaoFactory.getInstance().getDepartmentDao();
     private GroupDao groupDao = DaoFactory.getInstance().getGroupDao();
     private LessonDao lessonDao = DaoFactory.getInstance().getLessonDao();
+
+    private static Logger log = LoggerFactory.getLogger(Faculty.class);
 
     public Faculty() {
         departments = new ArrayList<>();
@@ -55,70 +60,121 @@ public class Faculty {
 
     public void createGroup(Group group) {
         if (group != null && !groups.contains(group)) {
-            groupDao.create(group, id);
-            groups.add(group);
+            try {
+                groupDao.create(group,id);
+                groups.add(group);
+            } catch (DaoException e) {
+                log.warn("Can't create group");
+            }
         }
     }
 
     public void deleteGroup(Group group) {
         if (group != null) {
-            groupDao.delete(group.getId());
-            groups.remove(group);
+            try {
+                groupDao.delete(group.getId());
+                groups.remove(group);
+            } catch (DaoException e) {
+                log.warn("Can't delete group");
+            }
         }
     }
 
     public void updateGroup(Group group) {
-        Group oldGroup = groupDao.find(group.getId());
+        Group oldGroup = null;
+        try {
+            oldGroup = groupDao.find(group.getId());
+        } catch (DaoException e) {
+            log.warn("Can't find group");
+        }
         if (oldGroup != null) {
-            groups.remove(oldGroup);
-            groups.add(group);
-            groupDao.update(group, id);
+            try {
+                groupDao.update(group,id);
+                groups.remove(oldGroup);
+                groups.add(group);
+            } catch (DaoException e) {
+                log.warn("Can't update group");
+            }
         }
     }
 
     public void createDepartment(Department department) {
         if (department != null && !departments.contains(department)) {
-            departmentDao.create(department, id);
-            departments.add(department);
+            try {
+                departmentDao.create(department,id);
+                departments.add(department);
+            } catch (DaoException e) {
+                log.warn("Can't create department");
+            }
         }
     }
 
     public void deleteDepartment(Department department) {
         if (department != null) {
-            departmentDao.delete(department.getId());
-            departments.remove(department);
+            try {
+                departmentDao.delete(department.getId());
+                departments.remove(department);
+            } catch (DaoException e) {
+                log.warn("Can't delete department");
+            }
         }
     }
 
     public void updateDepartment(Department department) {
-        Department oldDepartment = departmentDao.find(department.getId());
+        Department oldDepartment = null;
+        try {
+            oldDepartment = departmentDao.find(department.getId());
+        } catch (DaoException e) {
+            log.warn("Can't find department");
+        }
         if (oldDepartment != null) {
-            departments.remove(oldDepartment);
-            departments.add(department);
-            departmentDao.update(department, id);
+            try {
+                departmentDao.update(department,id);
+                departments.remove(oldDepartment);
+                departments.add(department);
+            } catch (DaoException e) {
+                log.warn("Can't update department");
+            }
         }
     }
 
     public void createLesson(Lesson lesson) {
         if (lesson != null && !lessons.contains(lesson)) {
-            lessonDao.create(lesson, id);
-            lessons.add(lesson);
+            try {
+                lessonDao.create(lesson,id);
+                lessons.add(lesson);
+            } catch (DaoException e) {
+                log.warn("Can't create lesson");
+            }
         }
     }
 
     public void deleteLesson(Lesson lesson) {
         if (lesson != null) {
-            lessonDao.delete(lesson.getId());
-            lessons.remove(lesson);
+            try {
+                lessonDao.delete(lesson.getId());
+                lessons.remove(lesson);
+            } catch (DaoException e) {
+                log.warn("Can't delete lesson");
+            }
         }
     }
 
     public void updateLesson(Lesson lesson) {
-        Lesson oldLesson = lessonDao.find(lesson.getId());
+        Lesson oldLesson = null;
+        try {
+            oldLesson = lessonDao.find(lesson.getId());
+        } catch (DaoException e) {
+            log.warn("Can't find lesson");
+        }
         if (oldLesson != null) {
-            lessons.remove(oldLesson);
-            lessons.add(lesson);
-            lessonDao.update(lesson, id);
+            try {
+                lessonDao.update(lesson,id);
+                lessons.remove(oldLesson);
+                lessons.add(lesson);
+            } catch (DaoException e) {
+                log.warn("Can't update lesson");
+            }
         }
     }
 
@@ -132,7 +188,11 @@ public class Faculty {
 
     public List<Lesson> findDayTimetable(Teacher teacher, DayOfWeek dayOfWeek) {
         if (teacher != null) {
-            return lessonDao.findTeacherLessons(id, teacher.getId(), dayOfWeek);
+            try {
+                return lessonDao.findTeacherLessons(id, teacher.getId(), dayOfWeek);
+            } catch (DaoException e) {
+                log.warn("Can't find teacher lessons");
+            }
         }
         return Collections.emptyList();
     }
@@ -147,7 +207,11 @@ public class Faculty {
 
     public List<Lesson> findDayTimetable(Group group, DayOfWeek dayOfWeek) {
         if (group != null) {
-            return lessonDao.findGroupLessons(id, group.getId(), dayOfWeek);
+            try {
+                return lessonDao.findGroupLessons(id, group.getId(), dayOfWeek);
+            } catch (DaoException e) {
+                log.warn("Can't find group lessons");
+            }
         }
         return Collections.emptyList();
     }

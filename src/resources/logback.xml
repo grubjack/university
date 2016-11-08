@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <property name="TASK9_HOME" value="C:/logs/university"/>
+
+    <appender name="FILE_DEBUG" class="ch.qos.logback.core.FileAppender">
+        <file>${TASK9_HOME}/debug.log</file>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%date %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="FILE_ERROR" class="ch.qos.logback.core.FileAppender">
+        <file>${TASK9_HOME}/error.log</file>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%date %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%d{dd-MM-yyyy HH:mm:ss} %-5level %logger{0} [%file:%line] %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="com.grubjack.university" level="debug">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="FILE_DEBUG"/>
+    </logger>
+
+
+    <root level="error">
+        <appender-ref ref="FILE_ERROR"/>
+    </root>
+
+</configuration>
