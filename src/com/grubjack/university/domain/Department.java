@@ -1,6 +1,6 @@
 package com.grubjack.university.domain;
 
-import com.grubjack.university.DaoException;
+import com.grubjack.university.exception.DaoException;
 import com.grubjack.university.dao.DaoFactory;
 import com.grubjack.university.dao.PersonDao;
 import org.slf4j.Logger;

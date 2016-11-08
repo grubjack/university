@@ -1,6 +1,6 @@
 package com.grubjack.university.dao.impl;
 
-import com.grubjack.university.DaoException;
+import com.grubjack.university.exception.DaoException;
 import com.grubjack.university.dao.FacultyDao;
 import com.grubjack.university.domain.Faculty;
 import org.slf4j.Logger;

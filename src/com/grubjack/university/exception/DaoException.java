@@ -1,4 +1,4 @@
-package com.grubjack.university;
+package com.grubjack.university.exception;
 
 /**
  * Created by grubjack on 08.11.2016.

@@ -1,6 +1,6 @@
 package com.grubjack.university.dao;
 
-import com.grubjack.university.DaoException;
+import com.grubjack.university.exception.DaoException;
 
 import java.util.List;
 
