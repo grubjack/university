@@ -2,6 +2,7 @@ package com.grubjack.university.dao;
 
 import com.grubjack.university.domain.DayOfWeek;
 import com.grubjack.university.domain.Lesson;
+import com.grubjack.university.domain.TimeOfDay;
 import com.grubjack.university.exception.DaoException;
 
 import java.util.List;

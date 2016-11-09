@@ -5,24 +5,23 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>List of Classrooms</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 <p><a href="${pageContext.request.contextPath}/index.html">Home page</a></p>
 
 <h1>List of classrooms</h1>
-<table border="2px" cellpadding="1" cellspacing="1">
+<table>
     <thead>
     <tr>
-        <th width="10%">Id</th>
-        <th width="10%">Number</th>
-        <th width="10%">Location</th>
-        <th width="10%">Capacity</th>
+        <th>Number</th>
+        <th>Location</th>
+        <th>Capacity</th>
     </tr>
     </thead>
     <tbody>
     <c:forEach var="classroom" items="${classrooms}">
-        <tr align="center">
-            <td>${classroom.id}</td>
+        <tr>
             <td>${classroom.number}</td>
             <td>${classroom.location}</td>
             <td>${classroom.capacity}</td>

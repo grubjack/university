@@ -10,6 +10,7 @@ public class Lesson implements Comparable<Lesson> {
     private Group group;
     private Classroom classroom;
     private DayOfWeek dayOfWeek;
+    private TimeOfDay timeOfDay;
 
     public Lesson() {
     }
@@ -89,8 +90,19 @@ public class Lesson implements Comparable<Lesson> {
         this.dayOfWeek = dayOfWeek;
     }
 
+    public TimeOfDay getTimeOfDay() {
+        return timeOfDay;
+    }
+
+    public void setTimeOfDay(TimeOfDay timeOfDay) {
+        this.timeOfDay = timeOfDay;
+    }
+
     @Override
     public int compareTo(Lesson o) {
-        return dayOfWeek.compareTo(o.getDayOfWeek());
+        int day = dayOfWeek.compareTo(o.getDayOfWeek());
+        if (day != 0)
+            return day;
+        return timeOfDay.compareTo(o.getTimeOfDay());
     }
 }

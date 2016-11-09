@@ -46,7 +46,7 @@
     </build>
 
     <dependencies>
-        <!--Test-->
+        <!--GenerateDbData-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

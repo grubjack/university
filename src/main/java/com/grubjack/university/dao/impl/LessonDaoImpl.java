@@ -37,13 +37,14 @@ public class LessonDaoImpl implements LessonDao {
         ResultSet resultSet = null;
         try {
             connection = getConnection();
-            statement = connection.prepareStatement("INSERT INTO lessons (subject,week_day,room_id,teacher_id,group_id,faculty_id) VALUES (?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+            statement = connection.prepareStatement("INSERT INTO lessons (subject,week_day,day_time,room_id,teacher_id,group_id,faculty_id) VALUES (?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, lesson.getSubject());
             statement.setString(2, lesson.getDayOfWeek().toString());
-            statement.setInt(3, lesson.getClassroom().getId());
-            statement.setInt(4, lesson.getTeacher().getId());
-            statement.setInt(5, lesson.getGroup().getId());
-            statement.setInt(6, facultyId);
+            statement.setString(3, lesson.getTimeOfDay().toString());
+            statement.setInt(4, lesson.getClassroom().getId());
+            statement.setInt(5, lesson.getTeacher().getId());
+            statement.setInt(6, lesson.getGroup().getId());
+            statement.setInt(7, facultyId);
             statement.execute();
             resultSet = statement.getGeneratedKeys();
             if (resultSet.next()) {
@@ -85,14 +86,15 @@ public class LessonDaoImpl implements LessonDao {
         PreparedStatement statement = null;
         try {
             connection = getConnection();
-            statement = connection.prepareStatement("UPDATE lessons SET subject=?,week_day=?,room_id=?,teacher_id=?,group_id=?,faculty_id=? WHERE id=?");
+            statement = connection.prepareStatement("UPDATE lessons SET subject=?,week_day=?,day_time=?,room_id=?,teacher_id=?,group_id=?,faculty_id=? WHERE id=?");
             statement.setString(1, lesson.getSubject());
             statement.setString(2, lesson.getDayOfWeek().toString());
-            statement.setInt(3, lesson.getClassroom().getId());
-            statement.setInt(4, lesson.getTeacher().getId());
-            statement.setInt(5, lesson.getGroup().getId());
-            statement.setInt(6, facultyId);
-            statement.setInt(7, lesson.getId());
+            statement.setString(3, lesson.getTimeOfDay().toString());
+            statement.setInt(4, lesson.getClassroom().getId());
+            statement.setInt(5, lesson.getTeacher().getId());
+            statement.setInt(6, lesson.getGroup().getId());
+            statement.setInt(7, facultyId);
+            statement.setInt(8, lesson.getId());
             statement.executeUpdate();
         } catch (SQLException e) {
             log.error("Can't update lesson", e);
@@ -163,6 +165,7 @@ public class LessonDaoImpl implements LessonDao {
                 lesson.setId(id);
                 lesson.setSubject(resultSet.getString("subject"));
                 lesson.setDayOfWeek(DayOfWeek.valueOf(resultSet.getString("week_day")));
+                lesson.setTimeOfDay(TimeOfDay.convert(resultSet.getString("day_time")));
                 Classroom classroom = classroomDao.find(resultSet.getInt("room_id"));
                 lesson.setClassroom(classroom);
                 Teacher teacher = teacherDao.find(resultSet.getInt("teacher_id"));
@@ -215,6 +218,13 @@ public class LessonDaoImpl implements LessonDao {
                 lesson.setId(resultSet.getInt("id"));
                 lesson.setSubject(resultSet.getString("subject"));
                 lesson.setDayOfWeek(DayOfWeek.valueOf(resultSet.getString("week_day")));
+                lesson.setTimeOfDay(TimeOfDay.convert(resultSet.getString("day_time")));
+                Classroom classroom = classroomDao.find(resultSet.getInt("room_id"));
+                lesson.setClassroom(classroom);
+                Teacher teacher = teacherDao.find(resultSet.getInt("teacher_id"));
+                lesson.setTeacher(teacher);
+                Group group = groupDao.find(resultSet.getInt("group_id"));
+                lesson.setGroup(group);
                 result.add(lesson);
             }
         } catch (SQLException e) {
@@ -265,6 +275,7 @@ public class LessonDaoImpl implements LessonDao {
                 lesson.setId(resultSet.getInt("id"));
                 lesson.setSubject(resultSet.getString("subject"));
                 lesson.setDayOfWeek(dayOfWeek);
+                lesson.setTimeOfDay(TimeOfDay.convert(resultSet.getString("day_time")));
                 Classroom classroom = classroomDao.find(resultSet.getInt("room_id"));
                 lesson.setClassroom(classroom);
                 Teacher teacher = teacherDao.find(resultSet.getInt("teacher_id"));
@@ -321,6 +332,7 @@ public class LessonDaoImpl implements LessonDao {
                 lesson.setId(resultSet.getInt("id"));
                 lesson.setSubject(resultSet.getString("subject"));
                 lesson.setDayOfWeek(dayOfWeek);
+                lesson.setTimeOfDay(TimeOfDay.convert(resultSet.getString("day_time")));
                 Classroom classroom = classroomDao.find(resultSet.getInt("room_id"));
                 lesson.setClassroom(classroom);
                 Teacher teacher = teacherDao.find(teacherId);

@@ -1,8 +1,7 @@
-package com.grubjack.university.ui;
+package com.grubjack.university.servlet;
 
-import com.grubjack.university.dao.ClassroomDao;
 import com.grubjack.university.dao.DaoFactory;
-import com.grubjack.university.dao.DepartmentDao;
+import com.grubjack.university.dao.GroupDao;
 import com.grubjack.university.exception.DaoException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,19 +16,19 @@ import java.io.IOException;
 /**
  * Created by grubjack on 09.11.2016.
  */
-@WebServlet("/departments")
-public class DepartmentServlet extends HttpServlet {
+@WebServlet("/groups")
+public class GroupServlet extends HttpServlet {
 
-    private static Logger log = LoggerFactory.getLogger(DepartmentServlet.class);
+    private static Logger log = LoggerFactory.getLogger(GroupServlet.class);
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        DepartmentDao departmentDao = DaoFactory.getInstance().getDepartmentDao();
+        GroupDao groupDao = DaoFactory.getInstance().getGroupDao();
         try {
-            req.setAttribute("departments", departmentDao.findAll());
+            req.setAttribute("groups", groupDao.findAll());
         } catch (DaoException e) {
-            log.error("Can't find departments", e);
+            log.error("Can't find groups", e);
         }
-        req.getRequestDispatcher("departments.jsp").forward(req, resp);
+        req.getRequestDispatcher("groups.jsp").forward(req, resp);
     }
 }

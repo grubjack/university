@@ -5,22 +5,21 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>List of Groups</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 <p><a href="${pageContext.request.contextPath}/index.html">Home page</a></p>
 
 <h1>List of groups</h1>
-<table border="2px" cellpadding="1" cellspacing="1">
+<table>
     <thead>
     <tr>
-        <th width="30%">Id</th>
-        <th width="30%">Name</th>
+        <th>Name</th>
     </tr>
     </thead>
     <tbody>
     <c:forEach var="group" items="${groups}">
-        <tr align="center">
-            <td>${group.id}</td>
+        <tr>
             <td>${group.name}</td>
         </tr>
     </c:forEach>

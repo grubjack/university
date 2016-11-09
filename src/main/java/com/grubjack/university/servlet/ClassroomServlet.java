@@ -1,10 +1,7 @@
-package com.grubjack.university.ui;
+package com.grubjack.university.servlet;
 
+import com.grubjack.university.dao.ClassroomDao;
 import com.grubjack.university.dao.DaoFactory;
-import com.grubjack.university.dao.FacultyDao;
-import com.grubjack.university.dao.PersonDao;
-import com.grubjack.university.dao.impl.FacultyDaoImpl;
-import com.grubjack.university.domain.Student;
 import com.grubjack.university.exception.DaoException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,19 +16,19 @@ import java.io.IOException;
 /**
  * Created by grubjack on 09.11.2016.
  */
-@WebServlet("/faculties")
-public class FacultyServlet extends HttpServlet {
+@WebServlet("/classrooms")
+public class ClassroomServlet extends HttpServlet {
 
-    private static Logger log = LoggerFactory.getLogger(FacultyServlet.class);
+    private static Logger log = LoggerFactory.getLogger(ClassroomServlet.class);
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        FacultyDao facultyDao = DaoFactory.getInstance().getFacultyDao();
+        ClassroomDao classroomDao = DaoFactory.getInstance().getClassroomDao();
         try {
-            req.setAttribute("faculties", facultyDao.findAll());
+            req.setAttribute("classrooms", classroomDao.findAll());
         } catch (DaoException e) {
-            log.error("Can't find faculties", e);
+            log.error("Can't find classrooms", e);
         }
-        req.getRequestDispatcher("faculties.jsp").forward(req, resp);
+        req.getRequestDispatcher("classrooms.jsp").forward(req, resp);
     }
 }

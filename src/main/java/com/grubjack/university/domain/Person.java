@@ -58,4 +58,8 @@ public class Person {
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
+
+    public String getName() {
+        return String.format("%s %s", firstName, lastName);
+    }
 }
