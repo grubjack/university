@@ -141,7 +141,7 @@ public class Faculty {
     public void createLesson(Lesson lesson) {
         if (lesson != null && !lessons.contains(lesson)) {
             try {
-                lessonDao.create(lesson,id);
+                lessonDao.create(lesson);
                 lessons.add(lesson);
             } catch (DaoException e) {
                 log.warn("Can't create lesson");
@@ -169,7 +169,7 @@ public class Faculty {
         }
         if (oldLesson != null) {
             try {
-                lessonDao.update(lesson,id);
+                lessonDao.update(lesson);
                 lessons.remove(oldLesson);
                 lessons.add(lesson);
             } catch (DaoException e) {
@@ -189,7 +189,7 @@ public class Faculty {
     public List<Lesson> findDayTimetable(Teacher teacher, DayOfWeek dayOfWeek) {
         if (teacher != null) {
             try {
-                return lessonDao.findTeacherLessons(id, teacher.getId(), dayOfWeek);
+                return lessonDao.findTeacherLessons(teacher.getId(), dayOfWeek);
             } catch (DaoException e) {
                 log.warn("Can't find teacher lessons");
             }
@@ -208,7 +208,7 @@ public class Faculty {
     public List<Lesson> findDayTimetable(Group group, DayOfWeek dayOfWeek) {
         if (group != null) {
             try {
-                return lessonDao.findGroupLessons(id, group.getId(), dayOfWeek);
+                return lessonDao.findGroupLessons(group.getId(), dayOfWeek);
             } catch (DaoException e) {
                 log.warn("Can't find group lessons");
             }

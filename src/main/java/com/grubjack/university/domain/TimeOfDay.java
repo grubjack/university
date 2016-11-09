@@ -1,5 +1,8 @@
 package com.grubjack.university.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by grubjack on 28.10.2016.
  */
@@ -19,7 +22,6 @@ public enum TimeOfDay {
 
     @Override
     public String toString() {
-        ordinal();
         return text;
     }
 
@@ -29,5 +31,13 @@ public enum TimeOfDay {
                 return time;
         }
         return null;
+    }
+
+    public static List<String> names() {
+        List<String> names = new ArrayList();
+        for (TimeOfDay time : TimeOfDay.values()) {
+            names.add(time.toString());
+        }
+        return names;
     }
 }
