@@ -1,8 +1,8 @@
 package com.grubjack.university.dao.impl;
 
-import com.grubjack.university.exception.DaoException;
 import com.grubjack.university.dao.*;
 import com.grubjack.university.domain.*;
+import com.grubjack.university.exception.DaoException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -210,17 +210,13 @@ public class LessonDaoImpl implements LessonDao {
             connection = getConnection();
             statement = connection.prepareStatement("SELECT * FROM lessons");
             resultSet = statement.executeQuery();
-            Lesson lesson = new Lesson();
-            lesson.setId(resultSet.getInt("id"));
-            lesson.setSubject(resultSet.getString("subject"));
-            lesson.setDayOfWeek(DayOfWeek.valueOf(resultSet.getString("week_day")));
-            Classroom classroom = classroomDao.find(resultSet.getInt("room_id"));
-            lesson.setClassroom(classroom);
-            Teacher teacher = teacherDao.find(resultSet.getInt("teacher_id"));
-            lesson.setTeacher(teacher);
-            Group group = groupDao.find(resultSet.getInt("group_id"));
-            lesson.setGroup(group);
-            result.add(lesson);
+            while (resultSet.next()) {
+                Lesson lesson = new Lesson();
+                lesson.setId(resultSet.getInt("id"));
+                lesson.setSubject(resultSet.getString("subject"));
+                lesson.setDayOfWeek(DayOfWeek.valueOf(resultSet.getString("week_day")));
+                result.add(lesson);
+            }
         } catch (SQLException e) {
             log.error("Can't find lessons", e);
             throw new DaoException("Can't find lessons", e);
