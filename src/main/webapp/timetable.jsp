@@ -14,22 +14,27 @@
 <table>
     <tr>
         <td/>
-        <c:forEach var="day" items="${days}">
-            <th>${day}</th>
+        <td/>
+        <c:forEach var="group" items="${groups}">
+            <th>${group}</th>
         </c:forEach>
     </tr>
-
-    <c:forEach var="time" items="${times}">
+    <c:forEach var="day" items="${days}">
         <tr>
-            <th>${time}</th>
-            <c:forEach var="day" items="${days}">
-                <td>
-                    <c:set value="${timetable.get(day).get(time)}" var="lesson"/>
-                        ${lesson.subject}<br>
-                        ${lesson.classroom.number}<br>
-                        ${lesson.teacher.name}
-                </td>
-            </c:forEach>
+        <th rowspan="7">${day}</th>
+        <c:forEach var="time" items="${times}">
+            <tr>
+                <th>${time}</th>
+                <c:forEach var="group" items="${groups}">
+                    <td>
+                        <c:set value="${timetables.get(group).get(day).get(time)}" var="lesson"/>
+                            ${lesson.subject}<br>
+                            ${lesson.classroom.number}<br>
+                            ${lesson.teacher.name}
+                    </td>
+                </c:forEach>
+            </tr>
+        </c:forEach>
         </tr>
     </c:forEach>
 </table>

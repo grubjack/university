@@ -1,8 +1,10 @@
 package com.grubjack.university.servlet;
 
 import com.grubjack.university.dao.DaoFactory;
+import com.grubjack.university.dao.GroupDao;
 import com.grubjack.university.dao.LessonDao;
 import com.grubjack.university.domain.DayOfWeek;
+import com.grubjack.university.domain.Group;
 import com.grubjack.university.domain.Lesson;
 import com.grubjack.university.domain.TimeOfDay;
 import com.grubjack.university.exception.DaoException;
@@ -15,6 +17,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,41 +27,60 @@ import java.util.Map;
  */
 @WebServlet("/timetable")
 public class TimetableServlet extends HttpServlet {
-    private static final int GROUP_ID = 1031;
-
     private static Logger log = LoggerFactory.getLogger(TimetableServlet.class);
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         LessonDao lessonDao = DaoFactory.getInstance().getLessonDao();
-        Map<String, Map<String, Lesson>> timetable = new HashMap<>();
+        GroupDao groupDao = DaoFactory.getInstance().getGroupDao();
+        Map<String, Map<String, Map<String, Lesson>>> timetables = new HashMap<>();
 
-        for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
-            try {
-                List<Lesson> dayLessons = lessonDao.findGroupLessons(GROUP_ID, dayOfWeek);
+        List<Group> groups = new ArrayList<>();
+        try {
+            groups = groupDao.findAll();
+        } catch (DaoException e) {
+            log.error("Can't find groups", e);
+        }
 
-                Map<String, Lesson> timeLessons = new HashMap<>();
-                for (TimeOfDay timeOfDay : TimeOfDay.values()) {
-                    Lesson timeLesson = null;
-                    for (Lesson lesson : dayLessons) {
-                        if (lesson.getTimeOfDay().equals(timeOfDay)) {
-                            timeLesson = lesson;
-                            break;
+        List<String> groupNames = new ArrayList<>();
+
+        for (Group group : groups) {
+            String groupName = group.getName();
+            groupNames.add(groupName);
+
+            Map<String, Map<String, Lesson>> timetable = new HashMap<>();
+
+            timetables.put(groupName, timetable);
+
+            for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
+                try {
+                    List<Lesson> dayLessons = lessonDao.findGroupLessons(group.getId(), dayOfWeek);
+
+                    Map<String, Lesson> timeLessons = new HashMap<>();
+
+                    for (TimeOfDay timeOfDay : TimeOfDay.values()) {
+                        Lesson timeLesson = null;
+                        for (Lesson lesson : dayLessons) {
+                            if (lesson.getTimeOfDay().equals(timeOfDay)) {
+                                timeLesson = lesson;
+                                break;
+                            }
                         }
+                        timeLessons.put(timeOfDay.toString(), timeLesson);
                     }
-                    timeLessons.put(timeOfDay.toString(), timeLesson);
-                }
-                timetable.put(dayOfWeek.toString(), timeLessons);
+                    timetable.put(dayOfWeek.toString(), timeLessons);
 
-            } catch (DaoException e) {
-                log.error("Can't find lessons", e);
+                } catch (DaoException e) {
+                    log.error("Can't find lessons", e);
+                }
             }
         }
 
+        req.setAttribute("groups", groupNames);
         req.setAttribute("days", DayOfWeek.names());
         req.setAttribute("times", TimeOfDay.names());
-        req.setAttribute("timetable", timetable);
+        req.setAttribute("timetables", timetables);
         req.getRequestDispatcher("timetable.jsp").forward(req, resp);
 
     }
