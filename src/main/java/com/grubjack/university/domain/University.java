@@ -248,7 +248,8 @@ public class University {
                         Iterator<Lesson> iterator = lessons.iterator();
                         while (iterator.hasNext()) {
                             Lesson lesson = iterator.next();
-                            if (lesson.getGroup().getId() == group.getId() && lesson.getDayOfWeek().equals(day) && lesson.getTimeOfDay().equals(time)) {
+                            Group groupLesson = lesson.getGroup();
+                            if (groupLesson != null && groupLesson.getId() == group.getId() && lesson.getDayOfWeek().equals(day) && lesson.getTimeOfDay().equals(time)) {
                                 unit.getLessons().add(lesson);
                                 iterator.remove();
                                 break;
