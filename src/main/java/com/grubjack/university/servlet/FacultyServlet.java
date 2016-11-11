@@ -1,10 +1,6 @@
 package com.grubjack.university.servlet;
 
-import com.grubjack.university.dao.DaoFactory;
-import com.grubjack.university.dao.FacultyDao;
-import com.grubjack.university.exception.DaoException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.grubjack.university.domain.University;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -19,16 +15,9 @@ import java.io.IOException;
 @WebServlet("/faculties")
 public class FacultyServlet extends HttpServlet {
 
-    private static Logger log = LoggerFactory.getLogger(FacultyServlet.class);
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        FacultyDao facultyDao = DaoFactory.getInstance().getFacultyDao();
-        try {
-            req.setAttribute("faculties", facultyDao.findAll());
-        } catch (DaoException e) {
-            log.error("Can't find faculties", e);
-        }
+        req.setAttribute("faculties", University.getInstance().getFaculties());
         req.getRequestDispatcher("faculties.jsp").forward(req, resp);
     }
 }
