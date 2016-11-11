@@ -3,7 +3,7 @@ package com.grubjack.university.domain;
 /**
  * Created by grubjack on 28.10.2016.
  */
-public class Person {
+public class Person implements Comparable<Person> {
     private int id;
     private String firstName;
     private String lastName;
@@ -60,6 +60,11 @@ public class Person {
     }
 
     public String getName() {
-        return String.format("%s %s", firstName, lastName);
+        return String.format("%s %s", lastName, firstName);
+    }
+
+    @Override
+    public int compareTo(Person o) {
+        return getName().compareTo(o.getName());
     }
 }

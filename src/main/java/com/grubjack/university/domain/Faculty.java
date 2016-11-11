@@ -8,19 +8,19 @@ import com.grubjack.university.exception.DaoException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
 /**
  * Created by grubjack on 28.10.2016.
  */
-public class Faculty {
+public class Faculty implements Comparable<Faculty> {
     private static Logger log = LoggerFactory.getLogger(Faculty.class);
     private int id;
     private String name;
-    private List<Department> departments = new ArrayList();
-    private List<Group> groups = new ArrayList();
+    private List<Department> departments;
+    private List<Group> groups;
     private Timetable timetable;
     private DepartmentDao departmentDao = DaoFactory.getInstance().getDepartmentDao();
     private GroupDao groupDao = DaoFactory.getInstance().getGroupDao();
@@ -57,10 +57,10 @@ public class Faculty {
     }
 
     public void createGroup(Group group) {
-        if (group != null && !groups.contains(group)) {
+        if (group != null && !getGroups().contains(group)) {
             try {
                 groupDao.create(group, id);
-                groups.add(group);
+                getGroups().add(group);
             } catch (DaoException e) {
                 log.warn("Can't create group");
             }
@@ -71,7 +71,7 @@ public class Faculty {
         if (group != null) {
             try {
                 groupDao.delete(group.getId());
-                groups.remove(group);
+                getGroups().remove(group);
             } catch (DaoException e) {
                 log.warn("Can't delete group");
             }
@@ -88,8 +88,8 @@ public class Faculty {
         if (oldGroup != null) {
             try {
                 groupDao.update(group, id);
-                groups.remove(oldGroup);
-                groups.add(group);
+                getGroups().remove(oldGroup);
+                getGroups().add(group);
             } catch (DaoException e) {
                 log.warn("Can't update group");
             }
@@ -97,10 +97,10 @@ public class Faculty {
     }
 
     public void createDepartment(Department department) {
-        if (department != null && !departments.contains(department)) {
+        if (department != null && !getDepartments().contains(department)) {
             try {
                 departmentDao.create(department, id);
-                departments.add(department);
+                getDepartments().add(department);
             } catch (DaoException e) {
                 log.warn("Can't create department");
             }
@@ -111,7 +111,7 @@ public class Faculty {
         if (department != null) {
             try {
                 departmentDao.delete(department.getId());
-                departments.remove(department);
+                getDepartments().remove(department);
             } catch (DaoException e) {
                 log.warn("Can't delete department");
             }
@@ -128,8 +128,8 @@ public class Faculty {
         if (oldDepartment != null) {
             try {
                 departmentDao.update(department, id);
-                departments.remove(oldDepartment);
-                departments.add(department);
+                getDepartments().remove(oldDepartment);
+                getDepartments().add(department);
             } catch (DaoException e) {
                 log.warn("Can't update department");
             }
@@ -278,6 +278,13 @@ public class Faculty {
     }
 
     public List<Department> getDepartments() {
+        if (departments == null) {
+            try {
+                departments = departmentDao.findAll(id);
+            } catch (DaoException e) {
+                log.warn("Can't find departments");
+            }
+        }
         return departments;
     }
 
@@ -286,6 +293,13 @@ public class Faculty {
     }
 
     public List<Group> getGroups() {
+        if (groups == null) {
+            try {
+                groups = groupDao.findAll(id);
+            } catch (DaoException e) {
+                log.warn("Can't find groups");
+            }
+        }
         return groups;
     }
 
@@ -294,13 +308,27 @@ public class Faculty {
     }
 
     public Timetable getTimetable() {
-        if (timetable != null)
+        if (timetable != null) {
             return timetable;
-        else
-            return findTimetable();
+        }
+        return findTimetable();
+    }
+
+    public List<Lesson> findLessons() {
+        try {
+            return lessonDao.findFacultyLessons(id);
+        } catch (DaoException e) {
+            log.warn("Can't find faculty lessons");
+        }
+        return Collections.emptyList();
     }
 
     public void setTimetable(Timetable timetable) {
         this.timetable = timetable;
+    }
+
+    @Override
+    public int compareTo(Faculty o) {
+        return name.compareTo(o.getName());
     }
 }
