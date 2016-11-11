@@ -233,7 +233,7 @@ public class DepartmentDaoImpl implements DepartmentDao {
         Department department = null;
         try {
             connection = getConnection();
-            statement = connection.prepareStatement("SELECT DISTINCT * FROM departments WHERE UPPER(name) LIKE UPPER(?)");
+            statement = connection.prepareStatement("SELECT * FROM departments WHERE UPPER(name) LIKE UPPER(?)");
             statement.setString(1, name);
             resultSet = statement.executeQuery();
             if (resultSet.next()) {

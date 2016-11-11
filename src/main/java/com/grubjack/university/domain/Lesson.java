@@ -10,6 +10,7 @@ public class Lesson implements Comparable<Lesson> {
     private Group group;
     private Classroom classroom;
     private DayOfWeek dayOfWeek;
+    private TimeOfDay timeOfDay;
 
     public Lesson() {
     }
@@ -26,18 +27,22 @@ public class Lesson implements Comparable<Lesson> {
         Lesson lesson = (Lesson) o;
 
         if (subject != null ? !subject.equals(lesson.subject) : lesson.subject != null) return false;
-        if (classroom != null ? !classroom.equals(lesson.classroom) : lesson.classroom != null) return false;
         if (teacher != null ? !teacher.equals(lesson.teacher) : lesson.teacher != null) return false;
-        return group != null ? group.equals(lesson.group) : lesson.group == null;
+        if (group != null ? !group.equals(lesson.group) : lesson.group != null) return false;
+        if (classroom != null ? !classroom.equals(lesson.classroom) : lesson.classroom != null) return false;
+        if (dayOfWeek != lesson.dayOfWeek) return false;
+        return timeOfDay == lesson.timeOfDay;
 
     }
 
     @Override
     public int hashCode() {
         int result = subject != null ? subject.hashCode() : 0;
-        result = 31 * result + (classroom != null ? classroom.hashCode() : 0);
         result = 31 * result + (teacher != null ? teacher.hashCode() : 0);
         result = 31 * result + (group != null ? group.hashCode() : 0);
+        result = 31 * result + (classroom != null ? classroom.hashCode() : 0);
+        result = 31 * result + (dayOfWeek != null ? dayOfWeek.hashCode() : 0);
+        result = 31 * result + (timeOfDay != null ? timeOfDay.hashCode() : 0);
         return result;
     }
 
@@ -89,8 +94,19 @@ public class Lesson implements Comparable<Lesson> {
         this.dayOfWeek = dayOfWeek;
     }
 
+    public TimeOfDay getTimeOfDay() {
+        return timeOfDay;
+    }
+
+    public void setTimeOfDay(TimeOfDay timeOfDay) {
+        this.timeOfDay = timeOfDay;
+    }
+
     @Override
     public int compareTo(Lesson o) {
-        return dayOfWeek.compareTo(o.getDayOfWeek());
+        int day = dayOfWeek.compareTo(o.getDayOfWeek());
+        if (day != 0)
+            return day;
+        return timeOfDay.compareTo(o.getTimeOfDay());
     }
 }

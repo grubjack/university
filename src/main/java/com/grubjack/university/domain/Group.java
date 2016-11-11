@@ -1,19 +1,18 @@
 package com.grubjack.university.domain;
 
-import com.grubjack.university.exception.DaoException;
 import com.grubjack.university.dao.DaoFactory;
 import com.grubjack.university.dao.PersonDao;
+import com.grubjack.university.exception.DaoException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 /**
  * Created by grubjack on 28.10.2016.
  */
-public class Group {
+public class Group implements Comparable<Group> {
     private int id;
     private String name;
     private List<Student> students;
@@ -23,12 +22,10 @@ public class Group {
     private PersonDao<Student> studentDao = DaoFactory.getInstance().getStudentDao();
 
     public Group() {
-        students = new ArrayList<>();
     }
 
     public Group(String name) {
         this.name = name;
-        students = new ArrayList<>();
     }
 
 
@@ -52,10 +49,10 @@ public class Group {
     }
 
     public void createStudent(Student student, int groupId) {
-        if (student != null && !students.contains(student)) {
+        if (student != null && !getStudents().contains(student)) {
             try {
-                studentDao.create(student,groupId);
-                students.add(student);
+                studentDao.create(student, groupId);
+                getStudents().add(student);
             } catch (DaoException e) {
                 log.warn("Can't create student");
             }
@@ -66,7 +63,7 @@ public class Group {
         if (student != null) {
             try {
                 studentDao.delete(student.getId());
-                students.remove(student);
+                getStudents().remove(student);
             } catch (DaoException e) {
                 log.warn("Can't delete student");
             }
@@ -82,9 +79,9 @@ public class Group {
         }
         if (studentDao != null) {
             try {
-                studentDao.update(student,groupId);
-                students.remove(oldStudent);
-                students.add(student);
+                studentDao.update(student, groupId);
+                getStudents().remove(oldStudent);
+                getStudents().add(student);
             } catch (DaoException e) {
                 log.warn("Can't update student");
             }
@@ -136,6 +133,13 @@ public class Group {
     }
 
     public List<Student> getStudents() {
+        if (students == null) {
+            try {
+                students = studentDao.findAll(id);
+            } catch (DaoException e) {
+                log.warn("Can't find students");
+            }
+        }
         return students;
     }
 
@@ -143,4 +147,8 @@ public class Group {
         this.students = students;
     }
 
+    @Override
+    public int compareTo(Group o) {
+        return name.compareTo(o.getName());
+    }
 }

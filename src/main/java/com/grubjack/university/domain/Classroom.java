@@ -3,7 +3,7 @@ package com.grubjack.university.domain;
 /**
  * Created by grubjack on 28.10.2016.
  */
-public class Classroom {
+public class Classroom implements Comparable<Classroom> {
     private int id;
     private String number;
     private String location;
@@ -69,5 +69,10 @@ public class Classroom {
 
     public void setCapacity(int capacity) {
         this.capacity = capacity;
+    }
+
+    @Override
+    public int compareTo(Classroom o) {
+        return number.compareTo(o.getNumber());
     }
 }

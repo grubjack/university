@@ -1,8 +1,9 @@
 package com.grubjack.university.dao.impl;
 
-import com.grubjack.university.exception.DaoException;
 import com.grubjack.university.dao.GroupDao;
 import com.grubjack.university.domain.Group;
+import com.grubjack.university.domain.Student;
+import com.grubjack.university.exception.DaoException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -177,6 +178,52 @@ public class GroupDaoImpl implements GroupDao {
     }
 
     @Override
+    public Group findByStudent(Student student) throws DaoException {
+        log.info("Finding group by student with id " + student.getId());
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        Group group = null;
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement("SELECT g.* FROM groups g JOIN students s ON g.id = s.group_id WHERE s.id=?");
+            statement.setInt(1, student.getId());
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                group = new Group();
+                group.setId(resultSet.getInt("id"));
+                group.setName(resultSet.getString("name"));
+            }
+        } catch (SQLException e) {
+            log.error("Can't find group", e);
+            throw new DaoException("Can't find group", e);
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    log.error("Can't close result set", e);
+                }
+            }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    log.error("Can't close statement", e);
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    log.error("Can't close connection", e);
+                }
+            }
+        }
+        return group;
+    }
+
+    @Override
     public List<Group> findAll() throws DaoException {
         log.info("Finding all groups");
         List<Group> result = new ArrayList<>();
@@ -231,7 +278,7 @@ public class GroupDaoImpl implements GroupDao {
         Group group = null;
         try {
             connection = getConnection();
-            statement = connection.prepareStatement("SELECT DISTINCT * FROM groups WHERE UPPER(name) LIKE UPPER(?)");
+            statement = connection.prepareStatement("SELECT * FROM groups WHERE UPPER(name) LIKE UPPER(?)");
             statement.setString(1, name);
             resultSet = statement.executeQuery();
             if (resultSet.next()) {

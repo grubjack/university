@@ -1,19 +1,18 @@
 package com.grubjack.university.domain;
 
-import com.grubjack.university.exception.DaoException;
 import com.grubjack.university.dao.DaoFactory;
 import com.grubjack.university.dao.PersonDao;
+import com.grubjack.university.exception.DaoException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 /**
  * Created by grubjack on 28.10.2016.
  */
-public class Department {
+public class Department implements Comparable<Department> {
     private int id;
     private String name;
     private List<Teacher> teachers;
@@ -22,12 +21,11 @@ public class Department {
     private static Logger log = LoggerFactory.getLogger(Department.class);
 
     public Department() {
-        teachers = new ArrayList<>();
     }
 
     public Department(String name) {
         this.name = name;
-        teachers = new ArrayList<>();
+
     }
 
     @Override
@@ -50,10 +48,10 @@ public class Department {
     }
 
     public void createTeacher(Teacher teacher, int departmentId) {
-        if (teacher != null && !teachers.contains(teacher)) {
+        if (teacher != null && !getTeachers().contains(teacher)) {
             try {
                 teacherDao.create(teacher, departmentId);
-                teachers.add(teacher);
+                getTeachers().add(teacher);
             } catch (DaoException e) {
                 log.warn("Can't create teacher");
             }
@@ -64,7 +62,7 @@ public class Department {
         if (teacher != null) {
             try {
                 teacherDao.delete(teacher.getId());
-                teachers.remove(teacher);
+                getTeachers().remove(teacher);
             } catch (DaoException e) {
                 log.warn("Can't delete teacher");
             }
@@ -81,8 +79,8 @@ public class Department {
         if (oldTeacher != null) {
             try {
                 teacherDao.update(teacher, departmentId);
-                teachers.remove(oldTeacher);
-                teachers.add(teacher);
+                getTeachers().remove(oldTeacher);
+                getTeachers().add(teacher);
             } catch (DaoException e) {
                 log.warn("Can't update teacher");
             }
@@ -133,6 +131,13 @@ public class Department {
     }
 
     public List<Teacher> getTeachers() {
+        if (teachers == null) {
+            try {
+                teachers = teacherDao.findAll(id);
+            } catch (DaoException e) {
+                log.warn("Can't find teachers");
+            }
+        }
         return teachers;
     }
 
@@ -140,4 +145,8 @@ public class Department {
         this.teachers = teachers;
     }
 
+    @Override
+    public int compareTo(Department o) {
+        return name.compareTo(o.getName());
+    }
 }

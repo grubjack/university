@@ -11,12 +11,25 @@ import java.util.List;
  */
 public interface LessonDao extends BaseDao<Lesson> {
 
-    void create(Lesson lesson, int facultyId) throws DaoException;
+    void create(Lesson lesson) throws DaoException;
 
-    void update(Lesson lesson, int facultyId) throws DaoException;
+    void update(Lesson lesson) throws DaoException;
 
-    List<Lesson> findGroupLessons(int facultyId, int groupId, DayOfWeek dayOfWeek) throws DaoException;
+    void update(List<Lesson> lessons) throws DaoException;
 
-    List<Lesson> findTeacherLessons(int facultyId, int teacherId, DayOfWeek dayOfWeek) throws DaoException;
+    void delete(List<Lesson> lessons) throws DaoException;
+
+    List<Lesson> findGroupLessons(int groupId) throws DaoException;
+
+    List<Lesson> findTeacherLessons(int teacherId) throws DaoException;
+
+    List<Lesson> findGroupLessons(int groupId, DayOfWeek dayOfWeek) throws DaoException;
+
+    List<Lesson> findTeacherLessons(int teacherId, DayOfWeek dayOfWeek) throws DaoException;
+
+    List<Lesson> findByDay(DayOfWeek dayOfWeek) throws DaoException;
+
+    List<Lesson> findFacultyLessons(int facultyId) throws DaoException;
+
 
 }

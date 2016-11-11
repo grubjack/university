@@ -3,7 +3,7 @@ package com.grubjack.university.domain;
 /**
  * Created by grubjack on 28.10.2016.
  */
-public class Teacher extends Person {
+public class Teacher extends Person{
     private int salary;
 
     public Teacher() {

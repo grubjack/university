@@ -227,7 +227,7 @@ public class FacultyDaoImpl implements FacultyDao {
         Faculty faculty = null;
         try {
             connection = getConnection();
-            statement = connection.prepareStatement("SELECT DISTINCT * FROM faculties WHERE UPPER(name) LIKE UPPER(?)");
+            statement = connection.prepareStatement("SELECT * FROM faculties WHERE UPPER(name) LIKE UPPER(?)");
             statement.setString(1, name);
             resultSet = statement.executeQuery();
             if (resultSet.next()) {
