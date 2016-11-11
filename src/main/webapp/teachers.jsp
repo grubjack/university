@@ -14,16 +14,16 @@
 <table>
     <thead>
     <tr>
-        <th>Firstname</th>
         <th>Lastname</th>
+        <th>Firstname</th>
         <th>Salary</th>
     </tr>
     </thead>
     <tbody>
     <c:forEach var="teacher" items="${teachers}">
         <tr>
-            <td>${teacher.firstName}</td>
             <td>${teacher.lastName}</td>
+            <td>${teacher.firstName}</td>
             <td>${teacher.salary}</td>
         </tr>
     </c:forEach>
