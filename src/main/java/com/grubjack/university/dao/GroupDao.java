@@ -1,6 +1,7 @@
 package com.grubjack.university.dao;
 
 import com.grubjack.university.domain.Group;
+import com.grubjack.university.domain.Student;
 import com.grubjack.university.exception.DaoException;
 
 import java.util.List;
@@ -15,6 +16,8 @@ public interface GroupDao extends BaseDao<Group> {
     void update(Group group, int facultyId) throws DaoException;
 
     Group findByName(String name) throws DaoException;
+
+    Group findByStudent(Student student) throws DaoException;
 
     List<Group> findAll(int facultyId) throws DaoException;
 

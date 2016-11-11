@@ -234,7 +234,7 @@ public class ClassroomDaoImpl implements ClassroomDao {
         Classroom classroom = null;
         try {
             connection = getConnection();
-            statement = connection.prepareStatement("SELECT DISTINCT * FROM classrooms WHERE UPPER(number) LIKE UPPER(?)");
+            statement = connection.prepareStatement("SELECT * FROM classrooms WHERE UPPER(number) LIKE UPPER(?)");
             statement.setString(1, number);
             resultSet = statement.executeQuery();
             if (resultSet.next()) {
