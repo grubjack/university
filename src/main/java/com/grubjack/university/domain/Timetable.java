@@ -6,6 +6,7 @@ import com.grubjack.university.exception.DaoException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,7 +14,7 @@ import java.util.List;
  */
 public class Timetable {
     private String name;
-    private List<TimetableUnit> units;
+    private List<TimetableUnit> units = new ArrayList<>();
 
     private static Logger log = LoggerFactory.getLogger(Timetable.class);
 

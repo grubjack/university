@@ -241,7 +241,6 @@ public class University {
 
             for (Group group : getGroups()) {
                 Timetable timetable = new Timetable(group.getName());
-                timetable.setUnits(new ArrayList<TimetableUnit>());
                 for (DayOfWeek day : DayOfWeek.values()) {
                     TimetableUnit unit = new TimetableUnit(day);
                     unit.setLessons(new ArrayList<Lesson>());
