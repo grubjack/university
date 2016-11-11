@@ -6,8 +6,6 @@ import com.grubjack.university.exception.DaoException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -49,12 +47,12 @@ public class Timetable {
     }
 
     public void createUnit(TimetableUnit unit) {
-        if (unit != null && !getUnits().contains(unit)) {
+        if (unit != null && !units.contains(unit)) {
             try {
                 for (Lesson lesson : unit.getLessons()) {
                     lessonDao.create(lesson);
                 }
-                getUnits().add(unit);
+                units.add(unit);
             } catch (DaoException e) {
                 log.warn("Can't create timetable unit");
             }
@@ -65,7 +63,7 @@ public class Timetable {
         if (unit != null) {
             try {
                 lessonDao.delete(unit.getLessons());
-                getUnits().remove(unit);
+                units.remove(unit);
             } catch (DaoException e) {
                 log.warn("Can't delete timetable unit");
             }
@@ -85,8 +83,8 @@ public class Timetable {
         if (oldUnit != null) {
             try {
                 lessonDao.update(unit.getLessons());
-                getUnits().remove(oldUnit);
-                getUnits().add(unit);
+                units.remove(oldUnit);
+                units.add(unit);
             } catch (DaoException e) {
                 log.warn("Can't update timetable unit");
             }
@@ -112,30 +110,6 @@ public class Timetable {
     }
 
     public List<TimetableUnit> getUnits() {
-        if (units == null) {
-            List<Lesson> lessons = null;
-            try {
-                lessons = lessonDao.findAll();
-            } catch (DaoException e) {
-                log.warn("Can't find lessons");
-            }
-            if (lessons != null) {
-                units = new ArrayList<>();
-                for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
-                    TimetableUnit unit = new TimetableUnit(dayOfWeek);
-                    unit.setLessons(new ArrayList<Lesson>());
-                    Iterator<Lesson> iterator = lessons.iterator();
-                    while (iterator.hasNext()) {
-                        Lesson lesson = iterator.next();
-                        if (lesson.getDayOfWeek().equals(dayOfWeek)) {
-                            unit.getLessons().add(lesson);
-                            iterator.remove();
-                        }
-                    }
-                    units.add(unit);
-                }
-            }
-        }
         return units;
     }
 
