@@ -15,10 +15,6 @@ public class Lesson implements Comparable<Lesson> {
     public Lesson() {
     }
 
-    public Lesson(TimeOfDay timeOfDay) {
-        this.timeOfDay = timeOfDay;
-    }
-
     public Lesson(String subject) {
         this.subject = subject;
     }
