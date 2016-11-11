@@ -17,7 +17,7 @@ public class GroupServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.setAttribute("groups", University.getInstance().getAllGroups());
+        req.setAttribute("groups", University.getInstance().getGroups());
         req.getRequestDispatcher("groups.jsp").forward(req, resp);
     }
 }

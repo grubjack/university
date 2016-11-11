@@ -20,12 +20,12 @@ public class University {
     private List<Classroom> rooms;
     private List<Faculty> faculties;
 
-    private List<Department> allDepartments;
-    private List<Group> allGroups;
-    private List<Student> allStudents;
-    private List<Teacher> allTeachers;
-    private List<Lesson> allLessons;
-    private List<Timetable> allTimetables;
+    private List<Department> departments;
+    private List<Group> groups;
+    private List<Student> students;
+    private List<Teacher> teachers;
+    private List<Lesson> lessons;
+    private List<Timetable> timetables;
 
     private DepartmentDao departmentDao = DaoFactory.getInstance().getDepartmentDao();
     private FacultyDao facultyDao = DaoFactory.getInstance().getFacultyDao();
@@ -138,52 +138,52 @@ public class University {
         }
     }
 
-    public List<Student> getAllStudents() {
-        if (allStudents == null) {
+    public List<Student> getStudents() {
+        if (students == null) {
             try {
-                allStudents = studentDao.findAll();
+                students = studentDao.findAll();
             } catch (DaoException e) {
                 log.warn("Can't find all students");
             }
         }
-        Collections.sort(allStudents);
-        return allStudents;
+        Collections.sort(students);
+        return students;
     }
 
-    public List<Teacher> getAllTeachers() {
-        if (allTeachers == null) {
+    public List<Teacher> getTeachers() {
+        if (teachers == null) {
             try {
-                allTeachers = teacherDao.findAll();
+                teachers = teacherDao.findAll();
             } catch (DaoException e) {
                 log.warn("Can't find all teachers");
             }
         }
-        Collections.sort(allTeachers);
-        return allTeachers;
+        Collections.sort(teachers);
+        return teachers;
     }
 
-    public List<Lesson> getAllLessons() {
-        if (allLessons == null) {
+    public List<Lesson> getLessons() {
+        if (lessons == null) {
             try {
-                allLessons = lessonDao.findAll();
+                lessons = lessonDao.findAll();
             } catch (DaoException e) {
                 log.warn("Can't find all lessons");
             }
         }
-        Collections.sort(allLessons);
-        return allLessons;
+        Collections.sort(lessons);
+        return lessons;
     }
 
-    public List<Department> getAllDepartments() {
-        if (allDepartments == null) {
+    public List<Department> getDepartments() {
+        if (departments == null) {
             try {
-                allDepartments = departmentDao.findAll();
+                departments = departmentDao.findAll();
             } catch (DaoException e) {
                 log.warn("Can't find all departments");
             }
         }
-        Collections.sort(allDepartments);
-        return allDepartments;
+        Collections.sort(departments);
+        return departments;
     }
 
 
@@ -219,27 +219,27 @@ public class University {
         this.faculties = faculties;
     }
 
-    public List<Group> getAllGroups() {
-        if (allGroups == null) {
+    public List<Group> getGroups() {
+        if (groups == null) {
             try {
-                allGroups = groupDao.findAll();
+                groups = groupDao.findAll();
             } catch (DaoException e) {
                 log.warn("Can't find all groups");
             }
         }
-        Collections.sort(allGroups);
-        return allGroups;
+        Collections.sort(groups);
+        return groups;
     }
 
     public List<Timetable> findGroupTimetables() {
-        if (allTimetables == null) {
+        if (timetables == null) {
 
             List<Lesson> lessons = new ArrayList<>();
-            lessons.addAll(getAllLessons());
+            lessons.addAll(getLessons());
 
-            allTimetables = new ArrayList<>();
+            timetables = new ArrayList<>();
 
-            for (Group group : getAllGroups()) {
+            for (Group group : getGroups()) {
                 Timetable timetable = new Timetable(group.getName());
                 timetable.setUnits(new ArrayList<TimetableUnit>());
                 for (DayOfWeek day : DayOfWeek.values()) {
@@ -258,10 +258,10 @@ public class University {
                     }
                     timetable.getUnits().add(unit);
                 }
-                allTimetables.add(timetable);
+                timetables.add(timetable);
             }
         }
-        return allTimetables;
+        return timetables;
     }
 
     public String getName() {

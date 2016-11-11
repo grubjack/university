@@ -17,7 +17,7 @@ public class DepartmentServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.setAttribute("departments", University.getInstance().getAllDepartments());
+        req.setAttribute("departments", University.getInstance().getDepartments());
         req.getRequestDispatcher("departments.jsp").forward(req, resp);
     }
 }
