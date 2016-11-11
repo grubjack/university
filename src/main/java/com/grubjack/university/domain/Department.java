@@ -16,18 +16,17 @@ import java.util.List;
 public class Department {
     private int id;
     private String name;
-    private List<Teacher> teachers;
+    private List<Teacher> teachers = new ArrayList();
     private PersonDao<Teacher> teacherDao = DaoFactory.getInstance().getTeacherDao();
 
     private static Logger log = LoggerFactory.getLogger(Department.class);
 
     public Department() {
-        teachers = new ArrayList<>();
     }
 
     public Department(String name) {
         this.name = name;
-        teachers = new ArrayList<>();
+   
     }
 
     @Override

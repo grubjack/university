@@ -1,8 +1,8 @@
 package com.grubjack.university.domain;
 
-import com.grubjack.university.exception.DaoException;
 import com.grubjack.university.dao.DaoFactory;
 import com.grubjack.university.dao.PersonDao;
+import com.grubjack.university.exception.DaoException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,19 +16,17 @@ import java.util.List;
 public class Group {
     private int id;
     private String name;
-    private List<Student> students;
+    private List<Student> students = new ArrayList();
 
     private static Logger log = LoggerFactory.getLogger(Group.class);
 
     private PersonDao<Student> studentDao = DaoFactory.getInstance().getStudentDao();
 
     public Group() {
-        students = new ArrayList<>();
     }
 
     public Group(String name) {
         this.name = name;
-        students = new ArrayList<>();
     }
 
 
@@ -54,7 +52,7 @@ public class Group {
     public void createStudent(Student student, int groupId) {
         if (student != null && !students.contains(student)) {
             try {
-                studentDao.create(student,groupId);
+                studentDao.create(student, groupId);
                 students.add(student);
             } catch (DaoException e) {
                 log.warn("Can't create student");
@@ -82,7 +80,7 @@ public class Group {
         }
         if (studentDao != null) {
             try {
-                studentDao.update(student,groupId);
+                studentDao.update(student, groupId);
                 students.remove(oldStudent);
                 students.add(student);
             } catch (DaoException e) {

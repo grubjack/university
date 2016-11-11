@@ -16,8 +16,8 @@ import java.util.List;
 public class University {
     private static University instance;
     private String name;
-    private List<Classroom> rooms;
-    private List<Faculty> faculties;
+    private List<Classroom> rooms = new ArrayList ();
+    private List<Faculty> faculties = new ArrayList();
 
     private FacultyDao facultyDao = DaoFactory.getInstance().getFacultyDao();
     private ClassroomDao classroomDao = DaoFactory.getInstance().getClassroomDao();
@@ -26,8 +26,6 @@ public class University {
 
 
     private University() {
-        rooms = new ArrayList<>();
-        faculties = new ArrayList<>();
     }
 
     public static University getInstance() {

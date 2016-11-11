@@ -15,6 +15,10 @@ public class Lesson implements Comparable<Lesson> {
     public Lesson() {
     }
 
+    public Lesson(TimeOfDay timeOfDay) {
+        this.timeOfDay = timeOfDay;
+    }
+
     public Lesson(String subject) {
         this.subject = subject;
     }
@@ -27,18 +31,22 @@ public class Lesson implements Comparable<Lesson> {
         Lesson lesson = (Lesson) o;
 
         if (subject != null ? !subject.equals(lesson.subject) : lesson.subject != null) return false;
-        if (classroom != null ? !classroom.equals(lesson.classroom) : lesson.classroom != null) return false;
         if (teacher != null ? !teacher.equals(lesson.teacher) : lesson.teacher != null) return false;
-        return group != null ? group.equals(lesson.group) : lesson.group == null;
+        if (group != null ? !group.equals(lesson.group) : lesson.group != null) return false;
+        if (classroom != null ? !classroom.equals(lesson.classroom) : lesson.classroom != null) return false;
+        if (dayOfWeek != lesson.dayOfWeek) return false;
+        return timeOfDay == lesson.timeOfDay;
 
     }
 
     @Override
     public int hashCode() {
         int result = subject != null ? subject.hashCode() : 0;
-        result = 31 * result + (classroom != null ? classroom.hashCode() : 0);
         result = 31 * result + (teacher != null ? teacher.hashCode() : 0);
         result = 31 * result + (group != null ? group.hashCode() : 0);
+        result = 31 * result + (classroom != null ? classroom.hashCode() : 0);
+        result = 31 * result + (dayOfWeek != null ? dayOfWeek.hashCode() : 0);
+        result = 31 * result + (timeOfDay != null ? timeOfDay.hashCode() : 0);
         return result;
     }
 
