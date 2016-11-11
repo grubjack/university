@@ -9,33 +9,28 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
  * Created by grubjack on 28.10.2016.
  */
 public class Faculty {
+    private static Logger log = LoggerFactory.getLogger(Faculty.class);
     private int id;
     private String name;
-    private List<Department> departments;
-    private List<Group> groups;
+    private List<Department> departments = new ArrayList();
+    private List<Group> groups = new ArrayList();
     private Timetable timetable;
-
     private DepartmentDao departmentDao = DaoFactory.getInstance().getDepartmentDao();
     private GroupDao groupDao = DaoFactory.getInstance().getGroupDao();
     private LessonDao lessonDao = DaoFactory.getInstance().getLessonDao();
 
-    private static Logger log = LoggerFactory.getLogger(Faculty.class);
-
     public Faculty() {
-        departments = new ArrayList<>();
-        groups = new ArrayList<>();
     }
 
     public Faculty(String name) {
         this.name = name;
-        departments = new ArrayList<>();
-        groups = new ArrayList<>();
     }
 
     @Override
@@ -164,12 +159,30 @@ public class Faculty {
 
     public Timetable findTimetable(Teacher teacher) {
         Timetable result = new Timetable();
-        List<TimetableUnit> units = new ArrayList<>();
-        for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
-            units.add(findDayTimetable(teacher, dayOfWeek));
+        if (teacher != null) {
+            timetable.setName(teacher.getName());
+            List<Lesson> lessons = null;
+            try {
+                lessons = lessonDao.findTeacherLessons(teacher.getId());
+            } catch (DaoException e) {
+                log.warn("Can't find lessons for teacher");
+            }
+            if (lessons != null) {
+                for (DayOfWeek day : DayOfWeek.values()) {
+                    TimetableUnit unit = new TimetableUnit(day);
+                    Iterator<Lesson> iterator = lessons.iterator();
+                    while (iterator.hasNext()) {
+                        Lesson lesson = iterator.next();
+                        if (lesson.getDayOfWeek().equals(day)) {
+                            unit.getLessons().add(lesson);
+                            iterator.remove();
+                        }
+                    }
+                    timetable.getUnits().add(unit);
+                }
+            }
         }
-        result.setUnits(units);
-        return result;
+        return timetable;
     }
 
     public TimetableUnit findDayTimetable(Group group, DayOfWeek dayOfWeek) {
@@ -186,21 +199,66 @@ public class Faculty {
 
     public Timetable findTimetable(Group group) {
         Timetable result = new Timetable();
-        List<TimetableUnit> units = new ArrayList<>();
-        for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
-            units.add(findDayTimetable(group, dayOfWeek));
-        }
-        result.setUnits(units);
-        return result;
-    }
-
-    public Group findGroup(Student student) {
-        for (Group group : groups) {
-            if (group.getStudents().contains(student)) {
-                return group;
+        if (group != null) {
+            timetable.setName(group.getName());
+            List<Lesson> lessons = null;
+            try {
+                lessons = lessonDao.findGroupLessons(group.getId());
+            } catch (DaoException e) {
+                log.warn("Can't find lessons for group");
+            }
+            if (lessons != null) {
+                for (DayOfWeek day : DayOfWeek.values()) {
+                    TimetableUnit unit = new TimetableUnit(day);
+                    Iterator<Lesson> iterator = lessons.iterator();
+                    while (iterator.hasNext()) {
+                        Lesson lesson = iterator.next();
+                        if (lesson.getDayOfWeek().equals(day)) {
+                            unit.getLessons().add(lesson);
+                            iterator.remove();
+                        }
+                    }
+                    timetable.getUnits().add(unit);
+                }
             }
         }
+        return timetable;
+    }
+
+
+    public Group findGroup(Student student) {
+        try {
+            return groupDao.findByStudent(student);
+        } catch (DaoException e) {
+            log.warn("Can't find group by student");
+        }
         return null;
+    }
+
+    private Timetable findTimetable() {
+        timetable = new Timetable();
+        timetable.setName(name);
+        List<Lesson> lessons = null;
+        try {
+            lessons = lessonDao.findFacultyLessons(id);
+        } catch (DaoException e) {
+            log.warn("Can't find lessons by faculty");
+        }
+        if (lessons != null) {
+            for (DayOfWeek day : DayOfWeek.values()) {
+                TimetableUnit unit = new TimetableUnit(day);
+                Iterator<Lesson> iterator = lessons.iterator();
+                while (iterator.hasNext()) {
+                    Lesson lesson = iterator.next();
+                    if (lesson.getDayOfWeek().equals(day)) {
+                        unit.getLessons().add(lesson);
+                        iterator.remove();
+                    }
+                }
+                timetable.getUnits().add(unit);
+            }
+        }
+        return timetable;
     }
 
     public int getId() {
@@ -236,7 +294,10 @@ public class Faculty {
     }
 
     public Timetable getTimetable() {
-        return timetable;
+        if (timetable != null)
+            return timetable;
+        else
+            return findTimetable();
     }
 
     public void setTimetable(Timetable timetable) {
