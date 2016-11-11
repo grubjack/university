@@ -27,7 +27,7 @@
                 <th>${time}</th>
                 <c:forEach var="timetable" items="${timetables}">
                     <td>
-                        <c:set value="${timetable.findLesson(day,time)}" var="lesson"/>
+                        <c:set value="${timetable.findUnit(day).findLesson(time)}" var="lesson"/>
                             ${lesson.subject}<br>
                             ${lesson.classroom.number}<br>
                             ${lesson.teacher.name}

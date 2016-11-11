@@ -6,7 +6,6 @@ import com.grubjack.university.exception.DaoException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,7 +13,7 @@ import java.util.List;
  */
 public class TimetableUnit {
     private DayOfWeek dayOfWeek;
-    private List<Lesson> lessons = new ArrayList();
+    private List<Lesson> lessons;
 
     private LessonDao lessonDao = DaoFactory.getInstance().getLessonDao();
 
@@ -22,11 +21,11 @@ public class TimetableUnit {
 
     public TimetableUnit(DayOfWeek dayOfWeek) {
         this.dayOfWeek = dayOfWeek;
-  
+
     }
 
     public TimetableUnit() {
-        
+
     }
 
 
@@ -49,11 +48,20 @@ public class TimetableUnit {
         return result;
     }
 
+    public Lesson findLesson(String time) {
+        for (Lesson lesson : lessons) {
+            if (lesson.getTimeOfDay().toString().equals(time)) {
+                return lesson;
+            }
+        }
+        return null;
+    }
+
     public void createLesson(Lesson lesson) {
-        if (lesson != null && !lessons.contains(lesson)) {
+        if (lesson != null && !getLessons().contains(lesson)) {
             try {
                 lessonDao.create(lesson);
-                lessons.add(lesson);
+                getLessons().add(lesson);
             } catch (DaoException e) {
                 log.warn("Can't create lesson");
             }
@@ -64,7 +72,7 @@ public class TimetableUnit {
         if (lesson != null) {
             try {
                 lessonDao.delete(lesson.getId());
-                lessons.remove(lesson);
+                getLessons().remove(lesson);
             } catch (DaoException e) {
                 log.warn("Can't delete lesson");
             }
@@ -81,8 +89,8 @@ public class TimetableUnit {
         if (oldLesson != null) {
             try {
                 lessonDao.update(lesson);
-                lessons.remove(oldLesson);
-                lessons.add(lesson);
+                getLessons().remove(oldLesson);
+                getLessons().add(lesson);
             } catch (DaoException e) {
                 log.warn("Can't update lesson");
             }
@@ -91,6 +99,13 @@ public class TimetableUnit {
 
 
     public List<Lesson> getLessons() {
+        if (lessons == null) {
+            try {
+                lessons = lessonDao.findByDay(dayOfWeek);
+            } catch (DaoException e) {
+                log.warn("Can't find lessons");
+            }
+        }
         return lessons;
     }
 
