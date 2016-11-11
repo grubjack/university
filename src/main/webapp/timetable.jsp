@@ -15,8 +15,8 @@
     <tr>
         <td/>
         <td/>
-        <c:forEach var="group" items="${groups}">
-            <th>${group}</th>
+        <c:forEach var="timetable" items="${timetables}">
+            <th>${timetable.getName()}</th>
         </c:forEach>
     </tr>
     <c:forEach var="day" items="${days}">
@@ -25,9 +25,9 @@
         <c:forEach var="time" items="${times}">
             <tr>
                 <th>${time}</th>
-                <c:forEach var="group" items="${groups}">
+                <c:forEach var="timetable" items="${timetables}">
                     <td>
-                        <c:set value="${timetables.get(group).get(day).get(time)}" var="lesson"/>
+                        <c:set value="${timetable.findLesson(day,time)}" var="lesson"/>
                             ${lesson.subject}<br>
                             ${lesson.classroom.number}<br>
                             ${lesson.teacher.name}
