@@ -28,8 +28,8 @@
     <c:forEach var="faculty" items="${faculties}">
         <tr>
             <td>${faculty.name}</td>
-            <td><a href="groups?id=${faculty.id}">show</a></td>
-            <td><a href="departments?id=${faculty.id}">show</a></td>
+            <td><a href="groups?fid=${faculty.id}">show</a></td>
+            <td><a href="departments?fid=${faculty.id}">show</a></td>
             <td><a href="timetable?fid=${faculty.id}">show</a></td>
             <td>
                 <a href="faculties?action=edit&id=${faculty.id}">Edit</a><br/>

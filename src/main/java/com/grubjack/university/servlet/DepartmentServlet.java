@@ -21,7 +21,7 @@ public class DepartmentServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        String facultyId = req.getParameter("id");
+        String facultyId = req.getParameter("fid");
 
         String title = "Departments";
         List<Department> departments = null;

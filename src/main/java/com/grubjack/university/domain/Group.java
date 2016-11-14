@@ -24,6 +24,11 @@ public class Group implements Comparable<Group> {
     public Group() {
     }
 
+
+    public Group(String name) {
+        this.name = name;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
