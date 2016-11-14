@@ -8,6 +8,7 @@ import com.grubjack.university.exception.DaoException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -160,7 +161,7 @@ public class Faculty implements Comparable<Faculty> {
     public Timetable findTimetable(Teacher teacher) {
         Timetable result = new Timetable();
         if (teacher != null) {
-            timetable.setName(teacher.getName());
+            result.setName(teacher.getName());
             List<Lesson> lessons = null;
             try {
                 lessons = lessonDao.findTeacherLessons(teacher.getId());
@@ -178,11 +179,11 @@ public class Faculty implements Comparable<Faculty> {
                             iterator.remove();
                         }
                     }
-                    timetable.getUnits().add(unit);
+                    result.getUnits().add(unit);
                 }
             }
         }
-        return timetable;
+        return result;
     }
 
     public TimetableUnit findDayTimetable(Group group, DayOfWeek dayOfWeek) {
@@ -200,7 +201,7 @@ public class Faculty implements Comparable<Faculty> {
     public Timetable findTimetable(Group group) {
         Timetable result = new Timetable();
         if (group != null) {
-            timetable.setName(group.getName());
+            result.setName(group.getName());
             List<Lesson> lessons = null;
             try {
                 lessons = lessonDao.findGroupLessons(group.getId());
@@ -218,11 +219,11 @@ public class Faculty implements Comparable<Faculty> {
                             iterator.remove();
                         }
                     }
-                    timetable.getUnits().add(unit);
+                    result.getUnits().add(unit);
                 }
             }
         }
-        return timetable;
+        return result;
     }
 
 
@@ -260,6 +261,17 @@ public class Faculty implements Comparable<Faculty> {
         }
         return timetable;
     }
+
+    public List<Timetable> findGroupTimetables() {
+        List<Timetable> timetables = new ArrayList<>();
+
+        for (Group group : getGroups()) {
+            timetables.add(findTimetable(group));
+        }
+
+        return timetables;
+    }
+
 
     public int getId() {
         return id;
