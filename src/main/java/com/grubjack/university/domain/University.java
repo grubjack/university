@@ -219,6 +219,89 @@ public class University {
         this.faculties = faculties;
     }
 
+    public Faculty findFaculty(int id) {
+        try {
+            return facultyDao.find(id);
+        } catch (DaoException e) {
+            log.warn("Can't find faculty");
+        }
+        return null;
+    }
+
+    public Group findGroup(int id) {
+        try {
+            return groupDao.find(id);
+        } catch (DaoException e) {
+            log.warn("Can't find group");
+        }
+        return null;
+    }
+
+    public Teacher findTeacher(int id) {
+        try {
+            return teacherDao.find(id);
+        } catch (DaoException e) {
+            log.warn("Can't find teacher");
+        }
+        return null;
+    }
+
+    public Student findStudent(int id) {
+        try {
+            return studentDao.find(id);
+        } catch (DaoException e) {
+            log.warn("Can't find student");
+        }
+        return null;
+    }
+
+    public Lesson findLesson(int id) {
+        try {
+            return lessonDao.find(id);
+        } catch (DaoException e) {
+            log.warn("Can't find lesson");
+        }
+        return null;
+    }
+
+    public Faculty findGroupFaculty(int groupId) {
+        try {
+            return facultyDao.findByGroup(groupId);
+        } catch (DaoException e) {
+            log.warn("Can't find group faculty");
+        }
+        return null;
+    }
+
+    public Faculty findStudentFaculty(int studentId) {
+        try {
+            return facultyDao.findByStudent(studentId);
+        } catch (DaoException e) {
+            log.warn("Can't find student faculty");
+        }
+        return null;
+    }
+
+    public Faculty findTeacherFaculty(int teacherId) {
+        try {
+            return facultyDao.findByTeacher(teacherId);
+        } catch (DaoException e) {
+            log.warn("Can't find teacher faculty");
+        }
+        return null;
+    }
+
+
+    public Department findDepartment(int id) {
+        try {
+            return departmentDao.find(id);
+        } catch (DaoException e) {
+            log.warn("Can't find department");
+        }
+        return null;
+    }
+
+
     public List<Group> getGroups() {
         if (groups == null) {
             try {
@@ -243,7 +326,6 @@ public class University {
                 Timetable timetable = new Timetable(group.getName());
                 for (DayOfWeek day : DayOfWeek.values()) {
                     TimetableUnit unit = new TimetableUnit(day);
-                    unit.setLessons(new ArrayList<Lesson>());
                     for (TimeOfDay time : TimeOfDay.values()) {
                         Iterator<Lesson> iterator = lessons.iterator();
                         while (iterator.hasNext()) {
