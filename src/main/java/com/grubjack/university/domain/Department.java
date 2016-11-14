@@ -63,6 +63,8 @@ public class Department implements Comparable<Department> {
             try {
                 teacherDao.delete(teacher.getId());
                 getTeachers().remove(teacher);
+                University.getInstance().setTeachers(null);
+                University.getInstance().setTimetables(null);
             } catch (DaoException e) {
                 log.warn("Can't delete teacher");
             }

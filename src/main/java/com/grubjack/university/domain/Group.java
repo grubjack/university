@@ -24,11 +24,6 @@ public class Group implements Comparable<Group> {
     public Group() {
     }
 
-    public Group(String name) {
-        this.name = name;
-    }
-
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -43,9 +38,7 @@ public class Group implements Comparable<Group> {
 
     @Override
     public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + (students != null ? students.hashCode() : 0);
-        return result;
+        return name != null ? name.hashCode() : 0;
     }
 
     public void createStudent(Student student, int groupId) {
@@ -64,6 +57,8 @@ public class Group implements Comparable<Group> {
             try {
                 studentDao.delete(student.getId());
                 getStudents().remove(student);
+                University.getInstance().setStudents(null);
+                University.getInstance().setTimetables(null);
             } catch (DaoException e) {
                 log.warn("Can't delete student");
             }

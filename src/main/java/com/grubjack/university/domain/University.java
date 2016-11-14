@@ -114,6 +114,11 @@ public class University {
             try {
                 facultyDao.delete(faculty.getId());
                 getFaculties().remove(faculty);
+                groups = null;
+                students = null;
+                departments = null;
+                teachers = null;
+                timetables = null;
             } catch (DaoException e) {
                 log.warn("Can't delete faculty");
             }
@@ -352,5 +357,29 @@ public class University {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setDepartments(List<Department> departments) {
+        this.departments = departments;
+    }
+
+    public void setGroups(List<Group> groups) {
+        this.groups = groups;
+    }
+
+    public void setStudents(List<Student> students) {
+        this.students = students;
+    }
+
+    public void setTeachers(List<Teacher> teachers) {
+        this.teachers = teachers;
+    }
+
+    public void setLessons(List<Lesson> lessons) {
+        this.lessons = lessons;
+    }
+
+    public void setTimetables(List<Timetable> timetables) {
+        this.timetables = timetables;
     }
 }

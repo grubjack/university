@@ -11,6 +11,9 @@
 <p><a href="${pageContext.request.contextPath}/index.html">Home page</a></p>
 
 <h1>List of faculties</h1>
+<p>
+    <a href="faculties?action=create">Add Faculty</a>
+</p>
 <table>
     <thead>
     <tr>
@@ -18,15 +21,20 @@
         <th>Groups</th>
         <th>Departments</th>
         <th>Timetable</th>
+        <th>Actions</th>
     </tr>
     </thead>
     <tbody>
     <c:forEach var="faculty" items="${faculties}">
         <tr>
             <td>${faculty.name}</td>
-            <td><a href="groups?id=${faculty.getId()}">show</a></td>
-            <td><a href="departments?id=${faculty.getId()}">show</a></td>
-            <td><a href="timetable?fid=${faculty.getId()}">show</a></td>
+            <td><a href="groups?id=${faculty.id}">show</a></td>
+            <td><a href="departments?id=${faculty.id}">show</a></td>
+            <td><a href="timetable?fid=${faculty.id}">show</a></td>
+            <td>
+                <a href="faculties?action=edit&id=${faculty.id}">Edit</a><br/>
+                <a href="faculties?action=delete&id=${faculty.id}">Delete</a><br/>
+            </td>
         </tr>
     </c:forEach>
     </tbody>

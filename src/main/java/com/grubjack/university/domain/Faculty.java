@@ -73,6 +73,9 @@ public class Faculty implements Comparable<Faculty> {
             try {
                 groupDao.delete(group.getId());
                 getGroups().remove(group);
+                University.getInstance().setGroups(null);
+                University.getInstance().setStudents(null);
+                University.getInstance().setTimetables(null);
             } catch (DaoException e) {
                 log.warn("Can't delete group");
             }
@@ -113,6 +116,9 @@ public class Faculty implements Comparable<Faculty> {
             try {
                 departmentDao.delete(department.getId());
                 getDepartments().remove(department);
+                department.setTeachers(null);
+                University.getInstance().setTeachers(null);
+                University.getInstance().setTimetables(null);
             } catch (DaoException e) {
                 log.warn("Can't delete department");
             }

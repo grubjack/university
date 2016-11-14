@@ -65,6 +65,8 @@ public class Timetable {
             try {
                 lessonDao.delete(unit.getLessons());
                 units.remove(unit);
+                University.getInstance().setLessons(null);
+                University.getInstance().setTimetables(null);
             } catch (DaoException e) {
                 log.warn("Can't delete timetable unit");
             }
