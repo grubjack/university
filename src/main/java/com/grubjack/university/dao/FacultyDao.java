@@ -14,4 +14,9 @@ public interface FacultyDao extends BaseDao<Faculty> {
 
     Faculty findByName(String name) throws DaoException;
 
+    Faculty findByGroup(int groupId) throws DaoException;
+
+    Faculty findByStudent(int studentId) throws DaoException;
+
+    Faculty findByTeacher(int teacherId) throws DaoException;
 }
