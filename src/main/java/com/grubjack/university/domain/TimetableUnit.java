@@ -6,6 +6,7 @@ import com.grubjack.university.exception.DaoException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,7 +14,7 @@ import java.util.List;
  */
 public class TimetableUnit {
     private DayOfWeek dayOfWeek;
-    private List<Lesson> lessons;
+    private List<Lesson> lessons = new ArrayList<>();
 
     private LessonDao lessonDao = DaoFactory.getInstance().getLessonDao();
 
@@ -99,13 +100,6 @@ public class TimetableUnit {
 
 
     public List<Lesson> getLessons() {
-        if (lessons == null) {
-            try {
-                lessons = lessonDao.findByDay(dayOfWeek);
-            } catch (DaoException e) {
-                log.warn("Can't find lessons");
-            }
-        }
         return lessons;
     }
 
