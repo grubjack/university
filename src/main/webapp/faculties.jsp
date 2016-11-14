@@ -15,12 +15,18 @@
     <thead>
     <tr>
         <th>Name</th>
+        <th>Groups</th>
+        <th>Departments</th>
+        <th>Timetable</th>
     </tr>
     </thead>
     <tbody>
     <c:forEach var="faculty" items="${faculties}">
         <tr>
             <td>${faculty.name}</td>
+            <td><a href="groups?id=${faculty.getId()}">show</a></td>
+            <td><a href="departments?id=${faculty.getId()}">show</a></td>
+            <td><a href="timetable?fid=${faculty.getId()}">show</a></td>
         </tr>
     </c:forEach>
     </tbody>

@@ -4,18 +4,20 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title>List of Students</title>
+    <title>${title}</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 <p><a href="${pageContext.request.contextPath}/index.html">Home page</a></p>
+<p><a href="${pageContext.request.contextPath}/groups">Groups</a></p>
 
-<h1>List of students</h1>
+<h1>${title}</h1>
 <table>
     <thead>
     <tr>
         <th>Lastname</th>
         <th>Firstname</th>
+        <th>Timetable</th>
     </tr>
     </thead>
     <tbody>
@@ -23,6 +25,7 @@
         <tr>
             <td>${student.lastName}</td>
             <td>${student.firstName}</td>
+            <td><a href="timetable?sid=${student.getId()}">show</a></td>
         </tr>
     </c:forEach>
     </tbody>

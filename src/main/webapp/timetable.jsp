@@ -4,13 +4,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title>Timetable</title>
+    <title>${title}</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<p><a href="${pageContext.request.contextPath}/index.html">Home page</a></p>
+<p><a href="${pageContext.request.contextPath}/${home}">${homeTitle}</a></p>
 
-<h1>Timetable</h1>
+<h1>${title}</h1>
 <table>
     <tr>
         <td/>
@@ -26,12 +26,12 @@
             <tr>
                 <th>${time}</th>
                 <c:forEach var="timetable" items="${timetables}">
-                    <td>
-                        <c:set value="${timetable.findUnit(day).findLesson(time)}" var="lesson"/>
+                    <c:set value="${timetable.findUnit(day).findLesson(time)}" var="lesson"/>
+                    <td><a href="lessons?id=${lesson.getId()}">
                             ${lesson.subject}<br>
                             ${lesson.classroom.number}<br>
                             ${lesson.teacher.name}
-                    </td>
+                    </a></td>
                 </c:forEach>
             </tr>
         </c:forEach>

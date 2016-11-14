@@ -4,13 +4,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title>List of Departments</title>
+    <title>${title}</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 <p><a href="${pageContext.request.contextPath}/index.html">Home page</a></p>
+<p><a href="${pageContext.request.contextPath}/faculties">Faculties</a></p>
 
-<h1>List of departments</h1>
+<h1>${title}</h1>
 <table>
     <thead>
     <tr>
@@ -20,7 +21,7 @@
     <tbody>
     <c:forEach var="department" items="${departments}">
         <tr>
-            <td>${department.name}</td>
+            <td><a href="teachers?id=${department.getId()}">${department.name}</a></td>
         </tr>
     </c:forEach>
     </tbody>
