@@ -123,6 +123,7 @@ public class University {
                 getDepartments().removeAll(faculty.getDepartments());
                 students = null;
                 teachers = null;
+                lessons = null;
                 timetables = null;
                 facultyDao.delete(faculty.getId());
             } catch (DaoException e) {

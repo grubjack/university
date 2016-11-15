@@ -89,9 +89,6 @@ public class GroupServlet extends HttpServlet {
                     group.setId(Integer.parseInt(id));
                     faculty.updateGroup(group);
                 }
-
-
-                System.out.println("size = " + faculty.getGroups().size());
                 groups = faculty.getGroups();
             }
         }

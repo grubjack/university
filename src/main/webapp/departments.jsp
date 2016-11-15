@@ -12,6 +12,11 @@
 <p><a href="${pageContext.request.contextPath}/faculties">Faculties</a></p>
 
 <h1>${title}</h1>
+<c:if test="${facultyId != null}">
+    <p>
+        <a href="departments?action=create&fid=${facultyId}">Add Department</a>
+    </p>
+</c:if>
 <table>
     <thead>
     <tr>
@@ -21,7 +26,13 @@
     <tbody>
     <c:forEach var="department" items="${departments}">
         <tr>
-            <td><a href="teachers?id=${department.getId()}">${department.name}</a></td>
+            <td><a href="teachers?id=${department.id}">${department.name}</a></td>
+            <c:if test="${facultyId != null}">
+                <td>
+                    <a href="departments?action=edit&fid=${facultyId}&id=${department.id}">Edit</a><br/>
+                    <a href="departments?action=delete&fid=${facultyId}&id=${department.id}">Delete</a><br/>
+                </td>
+            </c:if>
         </tr>
     </c:forEach>
     </tbody>
