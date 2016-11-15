@@ -26,7 +26,7 @@
     <tbody>
     <c:forEach var="department" items="${departments}">
         <tr>
-            <td><a href="teachers?id=${department.id}">${department.name}</a></td>
+            <td><a href="teachers?did=${department.id}">${department.name}</a></td>
             <c:if test="${facultyId != null}">
                 <td>
                     <a href="departments?action=edit&fid=${facultyId}&id=${department.id}">Edit</a><br/>

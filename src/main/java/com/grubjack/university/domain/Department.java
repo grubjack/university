@@ -47,11 +47,14 @@ public class Department implements Comparable<Department> {
         return result;
     }
 
-    public void createTeacher(Teacher teacher, int departmentId) {
+    public void createTeacher(Teacher teacher) {
         if (teacher != null && !getTeachers().contains(teacher)) {
             try {
-                teacherDao.create(teacher, departmentId);
                 getTeachers().add(teacher);
+                University.getInstance().getTeachers().add(teacher);
+                University.getInstance().setLessons(null);
+                University.getInstance().setTimetables(null);
+                teacherDao.create(teacher, id);
             } catch (DaoException e) {
                 log.warn("Can't create teacher");
             }
@@ -61,17 +64,18 @@ public class Department implements Comparable<Department> {
     public void deleteTeacher(Teacher teacher) {
         if (teacher != null) {
             try {
-                teacherDao.delete(teacher.getId());
                 getTeachers().remove(teacher);
-                University.getInstance().setTeachers(null);
+                University.getInstance().getTeachers().remove(teacher);
+                University.getInstance().setLessons(null);
                 University.getInstance().setTimetables(null);
+                teacherDao.delete(teacher.getId());
             } catch (DaoException e) {
                 log.warn("Can't delete teacher");
             }
         }
     }
 
-    public void updateTeacher(Teacher teacher, int departmentId) {
+    public void updateTeacher(Teacher teacher) {
         Teacher oldTeacher = null;
         try {
             oldTeacher = teacherDao.find(teacher.getId());
@@ -80,9 +84,15 @@ public class Department implements Comparable<Department> {
         }
         if (oldTeacher != null) {
             try {
-                teacherDao.update(teacher, departmentId);
-                getTeachers().remove(oldTeacher);
-                getTeachers().add(teacher);
+                int index = getTeachers().indexOf(oldTeacher);
+                int index2 = University.getInstance().getTeachers().indexOf(oldTeacher);
+                if (index != -1) {
+                    getTeachers().set(index, teacher);
+                }
+                if (index2 != -1) {
+                    University.getInstance().getTeachers().set(index2, teacher);
+                }
+                teacherDao.update(teacher, id);
             } catch (DaoException e) {
                 log.warn("Can't update teacher");
             }
