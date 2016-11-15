@@ -50,8 +50,10 @@ public class University {
     public void createRoom(Classroom classroom) {
         if (classroom != null && !getRooms().contains(classroom)) {
             try {
-                classroomDao.create(classroom);
                 getRooms().add(classroom);
+                lessons = null;
+                timetables = null;
+                classroomDao.create(classroom);
             } catch (DaoException e) {
                 log.warn("Can't create classroom");
             }
@@ -62,6 +64,8 @@ public class University {
         if (classroom != null) {
             try {
                 classroomDao.delete(classroom.getId());
+                lessons = null;
+                timetables = null;
                 getRooms().remove(classroom);
             } catch (DaoException e) {
                 log.warn("Can't delete classroom");
@@ -78,9 +82,11 @@ public class University {
         }
         if (oldRoom != null) {
             try {
-                classroomDao.update(classroom);
                 getRooms().remove(oldRoom);
                 getRooms().add(classroom);
+                lessons = null;
+                timetables = null;
+                classroomDao.update(classroom);
             } catch (DaoException e) {
                 log.warn("Can't update classroom");
             }
@@ -268,6 +274,16 @@ public class University {
         }
         return null;
     }
+
+    public Classroom findRoom(int id) {
+        try {
+            return classroomDao.find(id);
+        } catch (DaoException e) {
+            log.warn("Can't find classroom");
+        }
+        return null;
+    }
+
 
     public Faculty findGroupFaculty(int groupId) {
         try {
