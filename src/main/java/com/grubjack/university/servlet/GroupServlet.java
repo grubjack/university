@@ -76,11 +76,11 @@ public class GroupServlet extends HttpServlet {
         String id = req.getParameter("id");
         String name = req.getParameter("name");
         List<Group> groups = null;
+        String title = "Groups";
 
         if (facultyId != null) {
             Faculty faculty = University.getInstance().findFaculty(Integer.parseInt(facultyId));
             if (faculty != null && name != null && !name.isEmpty()) {
-
                 Group group = new Group(name);
 
                 if (id == null || id.isEmpty()) {
@@ -89,11 +89,14 @@ public class GroupServlet extends HttpServlet {
                     group.setId(Integer.parseInt(id));
                     faculty.updateGroup(group);
                 }
+
                 groups = faculty.getGroups();
+                title = String.format("Groups of %s faculty", faculty.getName());
             }
         }
         req.setAttribute("facultyId", facultyId);
         req.setAttribute("groups", groups);
+        req.setAttribute("title", title);
         req.getRequestDispatcher(LIST).forward(req, resp);
     }
 

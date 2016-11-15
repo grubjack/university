@@ -75,6 +75,7 @@ public class TeacherServlet extends HttpServlet {
         String lastname = req.getParameter("lastname");
         String salary = req.getParameter("salary");
         List<Teacher> teachers = null;
+        String title = "Teachers";
 
         if (departmentId != null) {
             Department department = University.getInstance().findDepartment(Integer.parseInt(departmentId));
@@ -88,11 +89,14 @@ public class TeacherServlet extends HttpServlet {
                     teacher.setId(Integer.parseInt(id));
                     department.updateTeacher(teacher);
                 }
+
                 teachers = department.getTeachers();
+                title = String.format("Teachers of %s department", department.getName());
             }
         }
         req.setAttribute("departmentId", departmentId);
         req.setAttribute("teachers", teachers);
+        req.setAttribute("title", title);
         req.getRequestDispatcher(LIST).forward(req, resp);
     }
 

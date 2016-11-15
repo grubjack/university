@@ -75,11 +75,11 @@ public class DepartmentServlet extends HttpServlet {
         String id = req.getParameter("id");
         String name = req.getParameter("name");
         List<Department> departments = null;
+        String title = "Departments";
 
         if (facultyId != null) {
             Faculty faculty = University.getInstance().findFaculty(Integer.parseInt(facultyId));
             if (faculty != null && name != null && !name.isEmpty()) {
-
                 Department department = new Department(name);
 
                 if (id == null || id.isEmpty()) {
@@ -90,10 +90,12 @@ public class DepartmentServlet extends HttpServlet {
                 }
 
                 departments = faculty.getDepartments();
+                title = String.format("Departments of %s faculty", faculty.getName());
             }
         }
         req.setAttribute("facultyId", facultyId);
         req.setAttribute("departments", departments);
+        req.setAttribute("title", title);
         req.getRequestDispatcher(LIST).forward(req, resp);
     }
 }

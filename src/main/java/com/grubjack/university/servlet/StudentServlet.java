@@ -75,6 +75,7 @@ public class StudentServlet extends HttpServlet {
         String firstname = req.getParameter("firstname");
         String lastname = req.getParameter("lastname");
         List<Student> students = null;
+        String title = "Students";
 
         if (groupId != null) {
             Group group = University.getInstance().findGroup(Integer.parseInt(groupId));
@@ -88,11 +89,14 @@ public class StudentServlet extends HttpServlet {
                     student.setId(Integer.parseInt(id));
                     group.updateStudent(student);
                 }
+
                 students = group.getStudents();
+                title = String.format("Student of %s group", group.getName());
             }
         }
         req.setAttribute("groupId", groupId);
         req.setAttribute("students", students);
+        req.setAttribute("title", title);
         req.getRequestDispatcher(LIST).forward(req, resp);
     }
 
