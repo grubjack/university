@@ -93,8 +93,12 @@ public class Faculty implements Comparable<Faculty> {
             try {
                 groupDao.update(group, id);
                 int index = getGroups().indexOf(oldGroup);
+                int index2 = University.getInstance().getGroups().indexOf(oldGroup);
                 if (index != -1) {
                     getGroups().set(index, group);
+                }
+                if (index2 != -1) {
+                    University.getInstance().getGroups().set(index2, group);
                 }
             } catch (DaoException e) {
                 log.warn("Can't update group");
