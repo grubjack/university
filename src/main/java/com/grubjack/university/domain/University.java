@@ -101,8 +101,8 @@ public class University {
     public void createFaculty(Faculty faculty) {
         if (faculty != null && !getFaculties().contains(faculty)) {
             try {
-                facultyDao.create(faculty);
                 getFaculties().add(faculty);
+                facultyDao.create(faculty);
             } catch (DaoException e) {
                 log.warn("Can't create faculty");
             }
@@ -112,13 +112,13 @@ public class University {
     public void deleteFaculty(Faculty faculty) {
         if (faculty != null) {
             try {
-                facultyDao.delete(faculty.getId());
                 getFaculties().remove(faculty);
-                groups = null;
+                getGroups().removeAll(faculty.getGroups());
+                getDepartments().removeAll(faculty.getDepartments());
                 students = null;
-                departments = null;
                 teachers = null;
                 timetables = null;
+                facultyDao.delete(faculty.getId());
             } catch (DaoException e) {
                 log.warn("Can't delete faculty");
             }
@@ -134,9 +134,9 @@ public class University {
         }
         if (oldFaculty != null) {
             try {
-                facultyDao.update(faculty);
                 getFaculties().remove(oldFaculty);
                 getFaculties().add(faculty);
+                facultyDao.update(faculty);
             } catch (DaoException e) {
                 log.warn("Can't update faculty");
             }

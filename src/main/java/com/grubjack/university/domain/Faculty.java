@@ -60,8 +60,10 @@ public class Faculty implements Comparable<Faculty> {
     public void createGroup(Group group) {
         if (group != null && !getGroups().contains(group)) {
             try {
-                groupDao.create(group, id);
                 getGroups().add(group);
+                University.getInstance().getGroups().add(group);
+                University.getInstance().setTimetables(null);
+                groupDao.create(group, id);
             } catch (DaoException e) {
                 log.warn("Can't create group");
             }
@@ -71,11 +73,11 @@ public class Faculty implements Comparable<Faculty> {
     public void deleteGroup(Group group) {
         if (group != null) {
             try {
-                groupDao.delete(group.getId());
                 getGroups().remove(group);
-                University.getInstance().setGroups(null);
-                University.getInstance().setStudents(null);
+                University.getInstance().getGroups().remove(group);
+                University.getInstance().getStudents().removeAll(group.getStudents());
                 University.getInstance().setTimetables(null);
+                groupDao.delete(group.getId());
             } catch (DaoException e) {
                 log.warn("Can't delete group");
             }
@@ -91,7 +93,6 @@ public class Faculty implements Comparable<Faculty> {
         }
         if (oldGroup != null) {
             try {
-                groupDao.update(group, id);
                 int index = getGroups().indexOf(oldGroup);
                 int index2 = University.getInstance().getGroups().indexOf(oldGroup);
                 if (index != -1) {
@@ -100,6 +101,7 @@ public class Faculty implements Comparable<Faculty> {
                 if (index2 != -1) {
                     University.getInstance().getGroups().set(index2, group);
                 }
+                groupDao.update(group, id);
             } catch (DaoException e) {
                 log.warn("Can't update group");
             }

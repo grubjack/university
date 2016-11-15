@@ -79,7 +79,7 @@ public class GroupServlet extends HttpServlet {
 
         if (facultyId != null) {
             Faculty faculty = University.getInstance().findFaculty(Integer.parseInt(facultyId));
-            if (faculty != null) {
+            if (faculty != null && name != null && !name.isEmpty()) {
 
                 Group group = new Group(name);
 

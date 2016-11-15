@@ -53,13 +53,15 @@ public class FacultyServlet extends HttpServlet {
         String id = req.getParameter("id");
         String name = req.getParameter("name");
 
-        Faculty faculty = new Faculty(name);
+        if (name != null && !name.isEmpty()) {
+            Faculty faculty = new Faculty(name);
 
-        if (id == null || id.isEmpty()) {
-            University.getInstance().createFaculty(faculty);
-        } else {
-            faculty.setId(Integer.parseInt(id));
-            University.getInstance().updateFaculty(faculty);
+            if (id == null || id.isEmpty()) {
+                University.getInstance().createFaculty(faculty);
+            } else {
+                faculty.setId(Integer.parseInt(id));
+                University.getInstance().updateFaculty(faculty);
+            }
         }
         req.setAttribute("faculties", University.getInstance().getFaculties());
         req.getRequestDispatcher(LIST).forward(req, resp);
