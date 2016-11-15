@@ -46,11 +46,12 @@ public class Group implements Comparable<Group> {
         return name != null ? name.hashCode() : 0;
     }
 
-    public void createStudent(Student student, int groupId) {
+    public void createStudent(Student student) {
         if (student != null && !getStudents().contains(student)) {
             try {
-                studentDao.create(student, groupId);
                 getStudents().add(student);
+                University.getInstance().getStudents().add(student);
+                studentDao.create(student, id);
             } catch (DaoException e) {
                 log.warn("Can't create student");
             }
@@ -60,28 +61,33 @@ public class Group implements Comparable<Group> {
     public void deleteStudent(Student student) {
         if (student != null) {
             try {
-                studentDao.delete(student.getId());
                 getStudents().remove(student);
-                University.getInstance().setStudents(null);
-                University.getInstance().setTimetables(null);
+                University.getInstance().getStudents().remove(student);
+                studentDao.delete(student.getId());
             } catch (DaoException e) {
                 log.warn("Can't delete student");
             }
         }
     }
 
-    public void updateStudent(Student student, int groupId) {
+    public void updateStudent(Student student) {
         Student oldStudent = null;
         try {
             oldStudent = studentDao.find(student.getId());
         } catch (DaoException e) {
             log.warn("Can't find student");
         }
-        if (studentDao != null) {
+        if (oldStudent != null) {
             try {
-                studentDao.update(student, groupId);
-                getStudents().remove(oldStudent);
-                getStudents().add(student);
+                int index = getStudents().indexOf(oldStudent);
+                int index2 = University.getInstance().getStudents().indexOf(oldStudent);
+                if (index != -1) {
+                    getStudents().set(index, student);
+                }
+                if (index2 != -1) {
+                    University.getInstance().getStudents().set(index2, student);
+                }
+                studentDao.update(student, id);
             } catch (DaoException e) {
                 log.warn("Can't update student");
             }

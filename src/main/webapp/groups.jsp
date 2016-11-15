@@ -30,8 +30,8 @@
     <tbody>
     <c:forEach var="group" items="${groups}">
         <tr>
-            <td><a href="students?id=${group.getId()}">${group.name}</a></td>
-            <td><a href="timetable?gid=${group.getId()}">show</a></td>
+            <td><a href="students?gid=${group.id}">${group.name}</a></td>
+            <td><a href="timetable?gid=${group.id}">show</a></td>
             <c:if test="${facultyId != null}">
                 <td>
                     <a href="groups?action=edit&fid=${facultyId}&id=${group.id}">Edit</a><br/>

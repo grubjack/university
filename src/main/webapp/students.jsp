@@ -12,6 +12,11 @@
 <p><a href="${pageContext.request.contextPath}/groups">Groups</a></p>
 
 <h1>${title}</h1>
+<c:if test="${groupId != null}">
+    <p>
+        <a href="students?action=create&gid=${groupId}">Add Student</a>
+    </p>
+</c:if>
 <table>
     <thead>
     <tr>
@@ -25,7 +30,13 @@
         <tr>
             <td>${student.lastName}</td>
             <td>${student.firstName}</td>
-            <td><a href="timetable?sid=${student.getId()}">show</a></td>
+            <td><a href="timetable?sid=${student.id}">show</a></td>
+            <c:if test="${groupId != null}">
+                <td>
+                    <a href="students?action=edit&gid=${groupId}&id=${student.id}">Edit</a><br/>
+                    <a href="students?action=delete&gid=${groupId}&id=${student.id}">Delete</a><br/>
+                </td>
+            </c:if>
         </tr>
     </c:forEach>
     </tbody>
