@@ -32,7 +32,14 @@
                             <c:when test="${lesson != null}">
                                 ${lesson.subject}<br>
                                 ${lesson.classroom.number}<br>
-                                ${lesson.teacher.name}
+                                <c:choose>
+                                    <c:when test="${tid != null}">
+                                        ${lesson.group.name}
+                                    </c:when>
+                                    <c:otherwise>
+                                        ${lesson.teacher.name}
+                                    </c:otherwise>
+                                </c:choose>
                                 <c:choose>
                                     <c:when test="${sid != null}">
                                         <br><br>
