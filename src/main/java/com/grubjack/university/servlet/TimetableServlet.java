@@ -37,6 +37,7 @@ public class TimetableServlet extends HttpServlet {
                 title = String.format("Timetable for faculty %s", faculty.getName());
                 home = "faculties";
                 homeTitle = "Faculties";
+                req.setAttribute("fid", faculty.getId());
             }
         } else if (groupId != null) {
             Faculty faculty = University.getInstance().findGroupFaculty(Integer.parseInt(groupId));
@@ -46,6 +47,7 @@ public class TimetableServlet extends HttpServlet {
                 title = String.format("Timetable for group %s", group.getName());
                 home = "groups";
                 homeTitle = "Groups";
+                req.setAttribute("gid", group.getId());
             }
         } else if (studentId != null) {
             Faculty faculty = University.getInstance().findStudentFaculty(Integer.parseInt(studentId));
@@ -55,6 +57,7 @@ public class TimetableServlet extends HttpServlet {
                 title = String.format("Timetable for student %s", student.getName());
                 home = "students";
                 homeTitle = "Students";
+                req.setAttribute("sid", student.getId());
             }
         } else if (teacherId != null) {
             Faculty faculty = University.getInstance().findTeacherFaculty(Integer.parseInt(teacherId));
@@ -64,6 +67,7 @@ public class TimetableServlet extends HttpServlet {
                 title = String.format("Timetable for teacher %s", teacher.getName());
                 home = "teachers";
                 homeTitle = "Teachers";
+                req.setAttribute("tid", teacher.getId());
             }
 
         } else {
@@ -76,6 +80,8 @@ public class TimetableServlet extends HttpServlet {
         req.setAttribute("title", title);
         req.setAttribute("home", home);
         req.setAttribute("homeTitle", homeTitle);
+        req.setAttribute("rooms", University.getInstance().getRooms());
+        req.setAttribute("teachers", University.getInstance().getTeachers());
         req.getRequestDispatcher("timetable.jsp").forward(req, resp);
     }
 }

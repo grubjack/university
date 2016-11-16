@@ -16,7 +16,7 @@
         <td/>
         <td/>
         <c:forEach var="timetable" items="${timetables}">
-            <th>${timetable.getName()}</th>
+            <th>${timetable.name}</th>
         </c:forEach>
     </tr>
     <c:forEach var="day" items="${days}">
@@ -27,11 +27,53 @@
                 <th>${time}</th>
                 <c:forEach var="timetable" items="${timetables}">
                     <c:set value="${timetable.findUnit(day).findLesson(time)}" var="lesson"/>
-                    <td><a href="lessons?id=${lesson.getId()}">
-                            ${lesson.subject}<br>
-                            ${lesson.classroom.number}<br>
-                            ${lesson.teacher.name}
-                    </a></td>
+                    <td>
+                        <c:choose>
+                            <c:when test="${lesson != null}">
+                                ${lesson.subject}<br>
+                                ${lesson.classroom.number}<br>
+                                ${lesson.teacher.name}
+                                <c:choose>
+                                    <c:when test="${sid != null}">
+                                        <br><br>
+                                        <a href="lessons?action=edit&day=${day}&time=${time}&sid=${sid}&id=${lesson.id}&groupname=${timetable.name}">edit</a>
+                                        <a href="lessons?action=delete&sid=${sid}&id=${lesson.id}">delete</a>
+                                    </c:when>
+                                    <c:when test="${gid != null}">
+                                        <br><br>
+                                        <a href="lessons?action=edit&day=${day}&time=${time}&gid=${gid}&id=${lesson.id}&groupname=${timetable.name}">edit</a>
+                                        <a href="lessons?action=delete&gid=${gid}&id=${lesson.id}">delete</a>
+                                    </c:when>
+                                    <c:when test="${tid != null}">
+                                        <br><br>
+                                        <a href="lessons?action=edit&day=${day}&time=${time}&tid=${tid}&id=${lesson.id}&groupname=${timetable.name}">edit</a>
+                                        <a href="lessons?action=delete&tid=${tid}&id=${lesson.id}">delete</a>
+                                    </c:when>
+                                    <c:when test="${fid != null}">
+                                        <br><br>
+                                        <a href="lessons?action=edit&day=${day}&time=${time}&fid=${fid}&id=${lesson.id}&groupname=${timetable.name}">edit</a>
+                                        <a href="lessons?action=delete&fid=${fid}&id=${lesson.id}">delete</a>
+                                    </c:when>
+                                </c:choose>
+                            </c:when>
+                            <c:otherwise>
+                                <c:choose>
+                                    <c:when test="${sid != null}">
+                                        <a href="lessons?action=create&day=${day}&time=${time}&sid=${sid}&groupname=${timetable.name}">add</a>
+                                    </c:when>
+                                    <c:when test="${gid != null}">
+                                        <a href="lessons?action=create&day=${day}&time=${time}&gid=${gid}&groupname=${timetable.name}">add</a>
+                                    </c:when>
+                                    <c:when test="${tid != null}">
+                                        <a href="lessons?action=create&day=${day}&time=${time}&tid=${tid}&groupname=${timetable.name}">add</a>
+                                    </c:when>
+                                    <c:when test="${fid != null}">
+                                        <a href="lessons?action=create&day=${day}&time=${time}&fid=${fid}&groupname=${timetable.name}">add</a>
+                                    </c:when>
+                                </c:choose>
+                            </c:otherwise>
+                        </c:choose>
+                    </td>
                 </c:forEach>
             </tr>
         </c:forEach>

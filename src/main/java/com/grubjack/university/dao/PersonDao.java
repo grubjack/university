@@ -1,5 +1,7 @@
 package com.grubjack.university.dao;
 
+import com.grubjack.university.domain.DayOfWeek;
+import com.grubjack.university.domain.TimeOfDay;
 import com.grubjack.university.exception.DaoException;
 
 import java.util.List;
@@ -26,5 +28,7 @@ public interface PersonDao<T> extends BaseDao<T> {
     List<T> findByName(int unitId, String firstName, String lastName) throws DaoException;
 
     List<T> findAll(int unitId) throws DaoException;
+
+    List<T> findAvailable(DayOfWeek dayOfWeek, TimeOfDay timeOfDay) throws DaoException;
 
 }

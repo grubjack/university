@@ -63,10 +63,10 @@ public class University {
     public void deleteRoom(Classroom classroom) {
         if (classroom != null) {
             try {
-                classroomDao.delete(classroom.getId());
+                getRooms().remove(classroom);
                 lessons = null;
                 timetables = null;
-                getRooms().remove(classroom);
+                classroomDao.delete(classroom.getId());
             } catch (DaoException e) {
                 log.warn("Can't delete classroom");
             }
@@ -321,6 +321,24 @@ public class University {
             log.warn("Can't find department");
         }
         return null;
+    }
+
+    public List<Teacher> findAvailableTeachers(DayOfWeek day, TimeOfDay time) {
+        try {
+            return teacherDao.findAvailable(day, time);
+        } catch (DaoException e) {
+            log.warn("Can't find available teachers");
+        }
+        return Collections.emptyList();
+    }
+
+    public List<Classroom> findAvailableRooms(DayOfWeek day, TimeOfDay time) {
+        try {
+            return classroomDao.findAvailable(day, time);
+        } catch (DaoException e) {
+            log.warn("Can't find available classrooms");
+        }
+        return Collections.emptyList();
     }
 
 

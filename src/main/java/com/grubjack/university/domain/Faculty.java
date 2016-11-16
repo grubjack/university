@@ -84,6 +84,15 @@ public class Faculty implements Comparable<Faculty> {
         }
     }
 
+    public Group findGroup(String name) {
+        try {
+            return groupDao.findByName(name);
+        } catch (DaoException e) {
+            log.warn("Can't find group by name");
+        }
+        return null;
+    }
+
     public void updateGroup(Group group) {
         Group oldGroup = null;
         try {

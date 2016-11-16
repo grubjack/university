@@ -1,13 +1,16 @@
 package com.grubjack.university.dao.impl;
 
-import com.grubjack.university.exception.DaoException;
 import com.grubjack.university.dao.ClassroomDao;
 import com.grubjack.university.domain.Classroom;
+import com.grubjack.university.domain.DayOfWeek;
+import com.grubjack.university.domain.TimeOfDay;
+import com.grubjack.university.exception.DaoException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.grubjack.university.dao.DaoFactory.getConnection;
@@ -271,5 +274,57 @@ public class ClassroomDaoImpl implements ClassroomDao {
             }
         }
         return classroom;
+    }
+
+    @Override
+    public List<Classroom> findAvailable(DayOfWeek dayOfWeek, TimeOfDay timeOfDay) throws DaoException {
+        log.info("Finding available classrooms on " + dayOfWeek.toString() + " at " + timeOfDay.toString());
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        List<Classroom> result = new ArrayList<>();
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement("SELECT * FROM classrooms WHERE id NOT IN " +
+                    "(SELECT r.id FROM lessons l INNER JOIN classrooms r ON l.room_id = r.id WHERE l.week_day=? and l.day_time=?)");
+            statement.setString(1, dayOfWeek.toString());
+            statement.setString(2, timeOfDay.toString());
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                Classroom classroom = new Classroom();
+                classroom.setId(resultSet.getInt("id"));
+                classroom.setNumber(resultSet.getString("number"));
+                classroom.setLocation(resultSet.getString("location"));
+                classroom.setCapacity(resultSet.getInt("capacity"));
+                result.add(classroom);
+            }
+        } catch (SQLException e) {
+            log.error("Can't find available classrooms", e);
+            throw new DaoException("Can't find available classrooms", e);
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    log.error("Can't close result set", e);
+                }
+            }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    log.error("Can't close statement", e);
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    log.error("Can't close connection", e);
+                }
+            }
+        }
+        Collections.sort(result);
+        return result;
     }
 }
