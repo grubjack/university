@@ -21,7 +21,6 @@
     <input type="hidden" name="id" value="${fn:escapeXml(lesson.id)}"/>
     <input type="hidden" name="day" value="${fn:escapeXml(day)}"/>
     <input type="hidden" name="time" value="${fn:escapeXml(time)}"/>
-    <input type="hidden" name="groupName" value="${fn:escapeXml(groupName)}"/>
     <label>Subject</label>
     <input type="text" name="subject" value="${fn:escapeXml(lesson.subject)}"/>
     <label>Classroom</label>
@@ -33,15 +32,52 @@
             </c:if>
         </c:forEach>
     </select>
+    <label>Group</label>
+    <c:choose>
+        <c:when test="${selectedGroup!=null}">
+            <select name="group">
+                <option value="${selectedGroup.id}" selected>${selectedGroup.name}</option>
+            </select>
+        </c:when>
+        <c:when test="${facultyGroups!=null}">
+            <select name="group">
+                <c:forEach var="group" items="${facultyGroups}">
+                    <option value="${group.id}">${group.name}</option>
+                </c:forEach>
+            </select>
+        </c:when>
+        <c:otherwise>
+            <select name="group">
+                <option value="${lesson.group.id}" selected>${lesson.group.name}</option>
+                <c:forEach var="group" items="${groups}">
+                    <c:if test="${group.id != lesson.group.id}">
+                        <option value="${group.id}">${group.name}</option>
+                    </c:if>
+                </c:forEach>
+            </select>
+        </c:otherwise>
+    </c:choose>
+
     <label>Teacher</label>
-    <select name="teacher">
-        <option value="${lesson.teacher.id}" selected>${lesson.teacher.name}</option>
-        <c:forEach var="teacher" items="${teachers}">
-            <c:if test="${teacher.id != lesson.teacher.id}">
-                <option value="${teacher.id}">${teacher.name}</option>
-            </c:if>
-        </c:forEach>
+    <c:choose>
+        <c:when test="${selectedTeacher != null}">
+            <select name="teacher">
+                <option value="${selectedTeacher.id}" selected>${selectedTeacher.name}</option>
+            </select>
+        </c:when>
+        <c:otherwise>
+            <select name="teacher">
+                <option value="${lesson.teacher.id}" selected>${lesson.teacher.name}</option>
+                <c:forEach var="teacher" items="${teachers}">
+                    <c:if test="${teacher.id != lesson.teacher.id}">
+                        <option value="${teacher.id}">${teacher.name}</option>
+                    </c:if>
+                </c:forEach>
+            </select>
+        </c:otherwise>
+    </c:choose>
     </select>
+
     <input type="submit" value="Submit"/>
     <input type="reset" value="Reset"/>
     </div>

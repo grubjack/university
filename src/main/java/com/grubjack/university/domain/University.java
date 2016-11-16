@@ -313,6 +313,17 @@ public class University {
         return null;
     }
 
+    public Group findGroup(Student student) {
+        if (student != null) {
+            try {
+                return groupDao.findByStudent(student);
+            } catch (DaoException e) {
+                log.warn("Can't find student group");
+            }
+        }
+        return null;
+    }
+
 
     public Department findDepartment(int id) {
         try {
@@ -337,6 +348,15 @@ public class University {
             return classroomDao.findAvailable(day, time);
         } catch (DaoException e) {
             log.warn("Can't find available classrooms");
+        }
+        return Collections.emptyList();
+    }
+
+    public List<Group> findAvailableGroups(DayOfWeek day, TimeOfDay time) {
+        try {
+            return groupDao.findAvailable(day, time);
+        } catch (DaoException e) {
+            log.warn("Can't find available groups");
         }
         return Collections.emptyList();
     }

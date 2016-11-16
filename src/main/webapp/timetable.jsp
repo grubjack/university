@@ -41,41 +41,41 @@
                                     </c:otherwise>
                                 </c:choose>
                                 <c:choose>
-                                    <c:when test="${sid != null}">
+                                    <c:when test="${tid != null}">
                                         <br><br>
-                                        <a href="lessons?action=edit&day=${day}&time=${time}&sid=${sid}&id=${lesson.id}&groupname=${timetable.name}">edit</a>
-                                        <a href="lessons?action=delete&sid=${sid}&id=${lesson.id}">delete</a>
+                                        <a href="lessons?action=edit&id=${lesson.id}&day=${day}&time=${time}&tid=${tid}">edit</a>
+                                        <a href="lessons?action=delete&id=${lesson.id}">delete</a>
                                     </c:when>
                                     <c:when test="${gid != null}">
                                         <br><br>
-                                        <a href="lessons?action=edit&day=${day}&time=${time}&gid=${gid}&id=${lesson.id}&groupname=${timetable.name}">edit</a>
-                                        <a href="lessons?action=delete&gid=${gid}&id=${lesson.id}">delete</a>
+                                        <a href="lessons?action=edit&id=${lesson.id}&day=${day}&time=${time}&gid=${gid}">edit</a>
+                                        <a href="lessons?action=delete&id=${lesson.id}">delete</a>
                                     </c:when>
-                                    <c:when test="${tid != null}">
+                                    <c:when test="${sid != null}">
                                         <br><br>
-                                        <a href="lessons?action=edit&day=${day}&time=${time}&tid=${tid}&id=${lesson.id}&groupname=${timetable.name}">edit</a>
-                                        <a href="lessons?action=delete&tid=${tid}&id=${lesson.id}">delete</a>
+                                        <a href="lessons?action=edit&id=${lesson.id}&day=${day}&time=${time}&sid=${sid}">edit</a>
+                                        <a href="lessons?action=delete&id=${lesson.id}">delete</a>
                                     </c:when>
                                     <c:when test="${fid != null}">
                                         <br><br>
-                                        <a href="lessons?action=edit&day=${day}&time=${time}&fid=${fid}&id=${lesson.id}&groupname=${timetable.name}">edit</a>
-                                        <a href="lessons?action=delete&fid=${fid}&id=${lesson.id}">delete</a>
+                                        <a href="lessons?action=edit&id=${lesson.id}&day=${day}&time=${time}&fid=${fid}">edit</a>
+                                        <a href="lessons?action=delete&id=${lesson.id}">delete</a>
                                     </c:when>
                                 </c:choose>
                             </c:when>
                             <c:otherwise>
                                 <c:choose>
                                     <c:when test="${sid != null}">
-                                        <a href="lessons?action=create&day=${day}&time=${time}&sid=${sid}&groupname=${timetable.name}">add</a>
+                                        <a href="lessons?action=create&day=${day}&time=${time}&sid=${sid}">add</a>
                                     </c:when>
                                     <c:when test="${gid != null}">
-                                        <a href="lessons?action=create&day=${day}&time=${time}&gid=${gid}&groupname=${timetable.name}">add</a>
+                                        <a href="lessons?action=create&day=${day}&time=${time}&gid=${gid}">add</a>
                                     </c:when>
                                     <c:when test="${tid != null}">
-                                        <a href="lessons?action=create&day=${day}&time=${time}&tid=${tid}&groupname=${timetable.name}">add</a>
+                                        <a href="lessons?action=create&day=${day}&time=${time}&tid=${tid}">add</a>
                                     </c:when>
                                     <c:when test="${fid != null}">
-                                        <a href="lessons?action=create&day=${day}&time=${time}&fid=${fid}&groupname=${timetable.name}">add</a>
+                                        <a href="lessons?action=create&day=${day}&time=${time}&fid=${fid}">add</a>
                                     </c:when>
                                 </c:choose>
                             </c:otherwise>

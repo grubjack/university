@@ -1,7 +1,9 @@
 package com.grubjack.university.dao;
 
+import com.grubjack.university.domain.DayOfWeek;
 import com.grubjack.university.domain.Group;
 import com.grubjack.university.domain.Student;
+import com.grubjack.university.domain.TimeOfDay;
 import com.grubjack.university.exception.DaoException;
 
 import java.util.List;
@@ -20,5 +22,7 @@ public interface GroupDao extends BaseDao<Group> {
     Group findByStudent(Student student) throws DaoException;
 
     List<Group> findAll(int facultyId) throws DaoException;
+
+    List<Group> findAvailable(DayOfWeek dayOfWeek, TimeOfDay timeOfDay) throws DaoException;
 
 }
