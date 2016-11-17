@@ -12,6 +12,19 @@
 <p><a href="${pageContext.request.contextPath}/departments" class="button">Departments</a></p>
 
 <h1>${title}</h1>
+
+<form action="search" method="post">
+    <input type="hidden" name="person" value="teacher"/>
+    <ul class="search">
+        <li>
+            <input type="text" name="name" placeholder="Name"/>
+        </li>
+        <li>
+            <input type="submit" value="Search"/>
+        </li>
+    </ul>
+</form>
+
 <c:if test="${departmentId != null}">
     <p>
         <a href="teachers?action=create&did=${departmentId}" class="button">Add Teacher</a>

@@ -165,3 +165,31 @@ a:link.button, a:visited.button {
 a:hover.button, a:active.button {
     background-color: #4691A4;
 }
+
+.search li {
+    padding: 0;
+    display: block;
+    list-style: none;
+    margin: 10px 0 0 0;
+}
+
+.search label {
+    margin: 0 0 3px 0;
+    padding: 0px;
+    display: block;
+    font-weight: bold;
+}
+
+.search input[type=submit], input[type=reset], .form-style-1 input[type=button] {
+    background: #4B99AD;
+    padding: 8px 15px 8px 15px;
+    border: none;
+    color: #fff;
+}
+
+.search input[type=submit]:hover, input[type=reset]:hover, .form-style-1 input[type=button]:hover {
+    background: #4691A4;
+    box-shadow: none;
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
+}
