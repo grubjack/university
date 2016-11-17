@@ -171,3 +171,16 @@ select {
     display: inline;
     float: right;
 }
+
+a:link.button, a:visited.button {
+    background-color: #4B99AD;
+    color: white;
+    padding: 14px 25px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+}
+
+a:hover.button, a:active.button {
+    background-color: #4691A4;
+}

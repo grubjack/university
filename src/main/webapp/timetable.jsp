@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<p><a href="${pageContext.request.contextPath}/${home}">${homeTitle}</a></p>
+<p><a href="${pageContext.request.contextPath}/${home}" class="button">${homeTitle}</a></p>
 
 <h1>${title}</h1>
 <table>

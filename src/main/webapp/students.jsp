@@ -8,13 +8,13 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<p><a href="${pageContext.request.contextPath}/index.html">Home page</a></p>
-<p><a href="${pageContext.request.contextPath}/groups">Groups</a></p>
+<p><a href="${pageContext.request.contextPath}/index.html" class="button">Home page</a></p>
+<p><a href="${pageContext.request.contextPath}/groups" class="button">Groups</a></p>
 
 <h1>${title}</h1>
 <c:if test="${groupId != null}">
     <p>
-        <a href="students?action=create&gid=${groupId}">Add Student</a>
+        <a href="students?action=create&gid=${groupId}" class="button">Add Student</a>
     </p>
 </c:if>
 <table>
