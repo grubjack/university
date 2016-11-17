@@ -75,7 +75,7 @@
                                         <a href="lessons?action=create&day=${day}&time=${time}&tid=${tid}">add</a>
                                     </c:when>
                                     <c:when test="${fid != null}">
-                                        <a href="lessons?action=create&day=${day}&time=${time}&fid=${fid}">add</a>
+                                        <a href="lessons?action=create&day=${day}&time=${time}&fid=${fid}&groupname=${timetable.name}">add</a>
                                     </c:when>
                                 </c:choose>
                             </c:otherwise>

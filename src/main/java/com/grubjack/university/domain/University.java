@@ -313,18 +313,6 @@ public class University {
         return null;
     }
 
-    public Group findGroup(Student student) {
-        if (student != null) {
-            try {
-                return groupDao.findByStudent(student);
-            } catch (DaoException e) {
-                log.warn("Can't find student group");
-            }
-        }
-        return null;
-    }
-
-
     public Department findDepartment(int id) {
         try {
             return departmentDao.find(id);

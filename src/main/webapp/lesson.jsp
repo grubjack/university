@@ -39,13 +39,6 @@
                 <option value="${selectedGroup.id}" selected>${selectedGroup.name}</option>
             </select>
         </c:when>
-        <c:when test="${facultyGroups!=null}">
-            <select name="group">
-                <c:forEach var="group" items="${facultyGroups}">
-                    <option value="${group.id}">${group.name}</option>
-                </c:forEach>
-            </select>
-        </c:when>
         <c:otherwise>
             <select name="group">
                 <option value="${lesson.group.id}" selected>${lesson.group.name}</option>

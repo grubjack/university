@@ -8,8 +8,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by grubjack on 09.11.2016.
@@ -33,6 +31,7 @@ public class LessonServlet extends HttpServlet {
         String action = req.getParameter("action");
         String day = req.getParameter("day");
         String time = req.getParameter("time");
+        String groupName = req.getParameter("groupname");
 
         Lesson lesson = null;
         Group group = null;
@@ -53,27 +52,13 @@ public class LessonServlet extends HttpServlet {
 
         if (studentId != null && !studentId.isEmpty()) {
             Student student = University.getInstance().findStudent(Integer.parseInt(studentId));
-            group = University.getInstance().findGroup(student);
+            Faculty faculty = University.getInstance().findStudentFaculty(Integer.parseInt(studentId));
+            group = faculty.findGroupByStudent(student);
         }
 
-        if (facultyId != null && !facultyId.isEmpty()) {
+        if (facultyId != null && !facultyId.isEmpty() && groupName != null && !groupName.isEmpty()) {
             Faculty faculty = University.getInstance().findFaculty(Integer.parseInt(facultyId));
-
-            if (faculty != null) {
-                List<Group> groups;
-                if (lesson != null) {
-                    groups = University.getInstance().findAvailableGroups(lesson.getDayOfWeek(), lesson.getTimeOfDay());
-                } else {
-                    groups = University.getInstance().findAvailableGroups(DayOfWeek.valueOf(day), TimeOfDay.convert(time));
-                }
-                List<Group> facultyGroups = new ArrayList<>();
-                for (Group facultyGroup : faculty.getGroups()) {
-                    if (groups.contains(facultyGroup)) {
-                        facultyGroups.add(facultyGroup);
-                    }
-                }
-                req.setAttribute("facultyGroups", facultyGroups);
-            }
+            group = faculty.findGroup(groupName);
         }
 
         if ("create".equalsIgnoreCase(action)) {

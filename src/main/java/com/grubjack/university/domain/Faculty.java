@@ -173,11 +173,11 @@ public class Faculty implements Comparable<Faculty> {
 
 
     public TimetableUnit findDayTimetable(Student student, DayOfWeek dayOfWeek) {
-        return findDayTimetable(findGroup(student), dayOfWeek);
+        return findDayTimetable(findGroupByStudent(student), dayOfWeek);
     }
 
     public Timetable findTimetable(Student student) {
-        return findTimetable(findGroup(student));
+        return findTimetable(findGroupByStudent(student));
     }
 
     public TimetableUnit findDayTimetable(Teacher teacher, DayOfWeek dayOfWeek) {
@@ -261,11 +261,24 @@ public class Faculty implements Comparable<Faculty> {
     }
 
 
-    public Group findGroup(Student student) {
-        try {
-            return groupDao.findByStudent(student);
-        } catch (DaoException e) {
-            log.warn("Can't find group by student");
+    public Group findGroupByStudent(Student student) {
+        if (student != null) {
+            try {
+                return groupDao.findByStudent(student);
+            } catch (DaoException e) {
+                log.warn("Can't find group by student");
+            }
+        }
+        return null;
+    }
+
+    public Group findGroupByName(String name) {
+        if (name != null && !name.isEmpty()) {
+            try {
+                return groupDao.findByName(name);
+            } catch (DaoException e) {
+                log.warn("Can't find group by name");
+            }
         }
         return null;
     }
