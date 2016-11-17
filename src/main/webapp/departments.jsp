@@ -21,6 +21,9 @@
     <thead>
     <tr>
         <th>Name</th>
+        <c:if test="${facultyId != null}">
+            <th>Actions</th>
+        </c:if>
     </tr>
     </thead>
     <tbody>

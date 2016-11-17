@@ -23,6 +23,9 @@
         <th>Lastname</th>
         <th>Firstname</th>
         <th>Timetable</th>
+        <c:if test="${groupId != null}">
+            <th>Actions</th>
+        </c:if>
     </tr>
     </thead>
     <tbody>

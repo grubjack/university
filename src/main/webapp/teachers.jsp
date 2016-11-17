@@ -24,6 +24,9 @@
         <th>Firstname</th>
         <th>Salary</th>
         <th>Timetable</th>
+        <c:if test="${departmentId != null}">
+            <th>Actions</th>
+        </c:if>
     </tr>
     </thead>
     <tbody>

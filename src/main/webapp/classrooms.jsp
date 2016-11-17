@@ -20,6 +20,7 @@
         <th>Number</th>
         <th>Location</th>
         <th>Capacity</th>
+        <th>Actions</th>
     </tr>
     </thead>
     <tbody>
