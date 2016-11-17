@@ -121,6 +121,8 @@ public class LessonServlet extends HttpServlet {
                 req.setAttribute("lesson", lesson);
                 req.setAttribute("selectedGroup", group);
                 req.setAttribute("selectedTeacher", teacher);
+                req.setAttribute("groups", University.getInstance().findAvailableGroups(DayOfWeek.valueOf(day), TimeOfDay.convert(time)));
+                req.setAttribute("teachers", University.getInstance().findAvailableTeachers(DayOfWeek.valueOf(day), TimeOfDay.convert(time)));
                 req.setAttribute("rooms", University.getInstance().findAvailableRooms(DayOfWeek.valueOf(day), TimeOfDay.convert(time)));
             }
         }
