@@ -38,6 +38,7 @@ public class DepartmentServlet extends HttpServlet {
 
                 if ("create".equalsIgnoreCase(action)) {
                     forward = ADD_OR_EDIT;
+                    title = "Create department";
 
                 } else if ("delete".equalsIgnoreCase(action)) {
                     if (departmentId != null) {
@@ -49,14 +50,16 @@ public class DepartmentServlet extends HttpServlet {
                     forward = ADD_OR_EDIT;
                     if (departmentId != null) {
                         Department department = University.getInstance().findDepartment(Integer.parseInt(departmentId));
+                        title = "Edit department";
                         req.setAttribute("department", department);
                     }
 
 
-                }
+                } else {
 
-                departments = faculty.getDepartments();
-                title = String.format("Departments of %s faculty", faculty.getName());
+                    departments = faculty.getDepartments();
+                    title = String.format("Departments of %s faculty", faculty.getName());
+                }
             }
 
         } else {

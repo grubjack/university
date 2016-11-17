@@ -38,6 +38,7 @@ public class GroupServlet extends HttpServlet {
 
                 if ("create".equalsIgnoreCase(action)) {
                     forward = ADD_OR_EDIT;
+                    title = "Create group";
 
                 } else if ("delete".equalsIgnoreCase(action)) {
                     if (groupId != null) {
@@ -50,13 +51,14 @@ public class GroupServlet extends HttpServlet {
                     if (groupId != null) {
                         Group group = University.getInstance().findGroup(Integer.parseInt(groupId));
                         req.setAttribute("group", group);
+                        title = "Edit group";
                     }
 
 
+                } else {
+                    groups = faculty.getGroups();
+                    title = String.format("Groups of %s faculty", faculty.getName());
                 }
-
-                groups = faculty.getGroups();
-                title = String.format("Groups of %s faculty", faculty.getName());
             }
 
         } else {

@@ -7,20 +7,36 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
-    <title>Create new department</title>
+    <title>${title}</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 <form action="departments" method="post">
-    <input type="hidden" name="fid" value="${fn:escapeXml(facultyId)}"/>
-    <input type="hidden" name="id" value="${fn:escapeXml(department.id)}"/>
-    <label>Name</label>
-    <input type="text" name="name" value="${fn:escapeXml(department.name)}"/>
-    <input type="submit" value="Submit"/>
-    <input type="reset" value="Reset"/>
-    </div>
-    </fieldset>
+    <ul class="form-style-1">
+        <input type="hidden" name="fid" value="${fn:escapeXml(facultyId)}"/>
+        <input type="hidden" name="id" value="${fn:escapeXml(department.id)}"/>
+        <li>
+            <h2>${title}</h2>
+        </li>
+        <li>
+            <label>Name</label>
+            <input type="text" name="name" value="${fn:escapeXml(department.name)}" class="field-long" required/>
+        </li>
+        <li>
+            <c:choose>
+                <c:when test="${department.id == null}">
+                    <input type="submit" value="Create"/>&nbsp;
+                </c:when>
+                <c:otherwise>
+                    <input type="submit" value="Edit"/>&nbsp;
+                </c:otherwise>
+            </c:choose>
+            <input type="reset" value="Reset"/>
+        </li>
+    </ul>
 </form>
 </body>
 </html>

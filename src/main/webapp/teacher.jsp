@@ -7,24 +7,45 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
-    <title>Create new teacher</title>
+    <title>${title}</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 <form action="teachers" method="post">
-    <input type="hidden" name="did" value="${fn:escapeXml(departmentId)}"/>
-    <input type="hidden" name="id" value="${fn:escapeXml(teacher.id)}"/>
-    <label>Lastname</label>
-    <input type="text" name="lastname" value="${fn:escapeXml(teacher.lastName)}"/>
-    <label>Firstname</label>
-    <input type="text" name="firstname" value="${fn:escapeXml(teacher.firstName)}"/>
-    <label>Salary</label>
-    <input type="text" name="salary" value="${fn:escapeXml(teacher.salary)}"/>
-    <input type="submit" value="Submit"/>
-    <input type="reset" value="Reset"/>
-    </div>
-    </fieldset>
+    <ul class="form-style-1">
+        <input type="hidden" name="did" value="${fn:escapeXml(departmentId)}"/>
+        <input type="hidden" name="id" value="${fn:escapeXml(teacher.id)}"/>
+        <li>
+            <h2>${title}</h2>
+        </li>
+        <li>
+            <label>Lastname</label>
+            <input type="text" name="lastname" value="${fn:escapeXml(teacher.lastName)}" class="field-long" required/>
+        </li>
+        <li>
+            <label>Firstname</label>
+            <input type="text" name="firstname" value="${fn:escapeXml(teacher.firstName)}" class="field-long" required/>
+        </li>
+        <li>
+            <label>Salary</label>
+            <input type="number" min="10" name="salary" value="${fn:escapeXml(teacher.salary)}" class="field-long"
+                   required/>
+        </li>
+        <li>
+            <c:choose>
+                <c:when test="${teacher.id == null}">
+                    <input type="submit" value="Create"/>&nbsp;
+                </c:when>
+                <c:otherwise>
+                    <input type="submit" value="Edit"/>&nbsp;
+                </c:otherwise>
+            </c:choose>
+            <input type="reset" value="Reset"/>
+        </li>
+    </ul>
 </form>
 </body>
 </html>

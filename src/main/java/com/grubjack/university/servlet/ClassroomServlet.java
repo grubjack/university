@@ -36,10 +36,12 @@ public class ClassroomServlet extends HttpServlet {
             if (roomId != null) {
                 Classroom room = University.getInstance().findRoom(Integer.parseInt(roomId));
                 req.setAttribute("classroom", room);
+                req.setAttribute("title", "Edit classroom");
             }
 
         } else if ("create".equalsIgnoreCase(action)) {
             forward = ADD_OR_EDIT;
+            req.setAttribute("title", "Create classroom");
         } else {
             forward = LIST;
             req.setAttribute("classrooms", University.getInstance().getRooms());

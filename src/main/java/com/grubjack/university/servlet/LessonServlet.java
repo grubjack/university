@@ -63,6 +63,7 @@ public class LessonServlet extends HttpServlet {
 
         if ("create".equalsIgnoreCase(action)) {
             forward = ADD_OR_EDIT;
+            req.setAttribute("title", "Create lesson");
             req.setAttribute("selectedGroup", group);
             req.setAttribute("selectedTeacher", teacher);
             req.setAttribute("groups", University.getInstance().findAvailableGroups(DayOfWeek.valueOf(day), TimeOfDay.convert(time)));
@@ -80,6 +81,7 @@ public class LessonServlet extends HttpServlet {
             forward = ADD_OR_EDIT;
             if (lesson != null) {
                 req.setAttribute("lesson", lesson);
+                req.setAttribute("title", "Edit lesson");
                 req.setAttribute("selectedGroup", group);
                 req.setAttribute("selectedTeacher", teacher);
                 req.setAttribute("groups", University.getInstance().findAvailableGroups(lesson.getDayOfWeek(), lesson.getTimeOfDay()));

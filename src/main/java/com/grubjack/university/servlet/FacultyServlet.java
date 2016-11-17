@@ -36,10 +36,12 @@ public class FacultyServlet extends HttpServlet {
             if (facultyId != null) {
                 Faculty faculty = University.getInstance().findFaculty(Integer.parseInt(facultyId));
                 req.setAttribute("faculty", faculty);
+                req.setAttribute("title", "Edit faculty");
             }
 
         } else if ("create".equalsIgnoreCase(action)) {
             forward = ADD_OR_EDIT;
+            req.setAttribute("title", "Create faculty");
         } else {
             forward = LIST;
             req.setAttribute("faculties", University.getInstance().getFaculties());
