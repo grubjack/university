@@ -14,7 +14,28 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<form action="lessons" method="post">
+
+
+<c:choose>
+    <c:when test="${sid !=null}">
+        <c:set value="lessons?sid=${sid}" var="action"/>
+    </c:when>
+    <c:when test="${gid !=null}">
+        <c:set value="lessons?gid=${gid}" var="action"/>
+    </c:when>
+    <c:when test="${tid !=null}">
+        <c:set value="lessons?tid=${tid}" var="action"/>
+    </c:when>
+    <c:when test="${fid !=null}">
+        <c:set value="lessons?fid=${fid}" var="action"/>
+    </c:when>
+    <c:otherwise>
+        <c:set value="lessons" var="action"/>
+    </c:otherwise>
+</c:choose>
+
+
+<form action="${action}" method="post">
     <ul class="form-style-1">
         <input type="hidden" name="sid" value="${fn:escapeXml(sid)}"/>
         <input type="hidden" name="gid" value="${fn:escapeXml(gid)}"/>

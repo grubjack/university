@@ -14,7 +14,17 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<form action="teachers" method="post">
+
+<c:choose>
+    <c:when test="${departmentId !=null}">
+        <c:set value="teachers?did=${departmentId}" var="action"/>
+    </c:when>
+    <c:otherwise>
+        <c:set value="teachers" var="action"/>
+    </c:otherwise>
+</c:choose>
+
+<form action="${action}" method="post">
     <ul class="form-style-1">
         <input type="hidden" name="did" value="${fn:escapeXml(departmentId)}"/>
         <input type="hidden" name="id" value="${fn:escapeXml(teacher.id)}"/>

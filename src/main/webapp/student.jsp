@@ -14,7 +14,17 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<form action="students" method="post">
+
+<c:choose>
+    <c:when test="${groupId !=null}">
+        <c:set value="students?gid=${groupId}" var="action"/>
+    </c:when>
+    <c:otherwise>
+        <c:set value="students" var="action"/>
+    </c:otherwise>
+</c:choose>
+
+<form action="${action}" method="post">
     <ul class="form-style-1">
         <input type="hidden" name="gid" value="${fn:escapeXml(groupId)}"/>
         <input type="hidden" name="id" value="${fn:escapeXml(student.id)}"/>
