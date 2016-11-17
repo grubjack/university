@@ -91,9 +91,21 @@ public class LessonServlet extends HttpServlet {
             title = "Create lesson";
             req.setAttribute("selectedGroup", group);
             req.setAttribute("selectedTeacher", teacher);
-            req.setAttribute("groups", University.getInstance().findAvailableGroups(DayOfWeek.valueOf(day), TimeOfDay.convert(time)));
-            req.setAttribute("teachers", University.getInstance().findAvailableTeachers(DayOfWeek.valueOf(day), TimeOfDay.convert(time)));
-            req.setAttribute("rooms", University.getInstance().findAvailableRooms(DayOfWeek.valueOf(day), TimeOfDay.convert(time)));
+            List<Group> groups = University.getInstance().findAvailableGroups(DayOfWeek.valueOf(day), TimeOfDay.convert(time));
+            List<Teacher> teachers = University.getInstance().findAvailableTeachers(DayOfWeek.valueOf(day), TimeOfDay.convert(time));
+            List<Classroom> rooms = University.getInstance().findAvailableRooms(DayOfWeek.valueOf(day), TimeOfDay.convert(time));
+            if (groups.size() == 0) {
+                req.setAttribute("groupNotification", "no free groups");
+            }
+            if (teachers.size() == 0) {
+                req.setAttribute("teacherNotification", "no free teachers");
+            }
+            if (rooms.size() == 0) {
+                req.setAttribute("roomNotification", "no free rooms");
+            }
+            req.setAttribute("groups", groups);
+            req.setAttribute("teachers", teachers);
+            req.setAttribute("rooms", rooms);
         } else if ("delete".equalsIgnoreCase(action)) {
             if (lesson != null) {
                 Group lessonGroup = lesson.getGroup();
@@ -109,9 +121,7 @@ public class LessonServlet extends HttpServlet {
                 req.setAttribute("lesson", lesson);
                 req.setAttribute("selectedGroup", group);
                 req.setAttribute("selectedTeacher", teacher);
-                req.setAttribute("groups", University.getInstance().findAvailableGroups(lesson.getDayOfWeek(), lesson.getTimeOfDay()));
-                req.setAttribute("teachers", University.getInstance().findAvailableTeachers(lesson.getDayOfWeek(), lesson.getTimeOfDay()));
-                req.setAttribute("rooms", University.getInstance().findAvailableRooms(lesson.getDayOfWeek(), lesson.getTimeOfDay()));
+                req.setAttribute("rooms", University.getInstance().findAvailableRooms(DayOfWeek.valueOf(day), TimeOfDay.convert(time)));
             }
         }
 

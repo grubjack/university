@@ -51,6 +51,11 @@
             <label>Subject </label>
             <input type="text" name="subject" value="${fn:escapeXml(lesson.subject)}" class="field-long" required/>
         </li>
+        <c:if test="${roomNotification !=null}">
+            <div class="required_notification">
+                *${roomNotification}
+            </div>
+        </c:if>
         <li>
             <label>Classroom </label>
             <select name="classroom" class="field-select" required>
@@ -62,6 +67,11 @@
                 </c:forEach>
             </select>
         </li>
+        <c:if test="${groupNotification !=null}">
+            <div class="required_notification">
+                *${groupNotification}
+            </div>
+        </c:if>
         <li>
             <label>Group </label>
             <select name="group" class="field-select" required>
@@ -80,6 +90,11 @@
                 </c:choose>
             </select>
         </li>
+        <c:if test="${teacherNotification !=null}">
+            <div class="required_notification">
+                *${teacherNotification}
+            </div>
+        </c:if>
         <li>
             <label>Teacher </label>
             <select name="teacher" class="field-select" required>
