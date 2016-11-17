@@ -36,6 +36,8 @@ public class StudentServlet extends HttpServlet {
             Group group = University.getInstance().findGroup(Integer.parseInt(groupId));
             if (group != null) {
 
+                title = String.format("Student of %s group", group.getName());
+
                 if ("create".equalsIgnoreCase(action)) {
                     forward = ADD_OR_EDIT;
                     title = "Create student";
@@ -53,13 +55,8 @@ public class StudentServlet extends HttpServlet {
                         req.setAttribute("student", student);
                         title = "Edit student";
                     }
-
-
-                } else {
-
-                    students = group.getStudents();
-                    title = String.format("Student of %s group", group.getName());
                 }
+                students = group.getStudents();
             }
         } else {
             students = University.getInstance().getStudents();

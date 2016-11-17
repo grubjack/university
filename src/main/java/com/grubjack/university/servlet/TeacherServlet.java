@@ -37,6 +37,8 @@ public class TeacherServlet extends HttpServlet {
             Department department = University.getInstance().findDepartment(Integer.parseInt(departmentId));
             if (department != null) {
 
+                title = String.format("Teachers of %s department", department.getName());
+
                 if ("create".equalsIgnoreCase(action)) {
                     forward = ADD_OR_EDIT;
                     title = "Create teacher";
@@ -53,10 +55,9 @@ public class TeacherServlet extends HttpServlet {
                         req.setAttribute("teacher", teacher);
                         title = "Edit teacher";
                     }
-                } else {
-                    teachers = department.getTeachers();
-                    title = String.format("Teachers of %s department", department.getName());
                 }
+
+                teachers = department.getTeachers();
             }
         } else {
             teachers = University.getInstance().getTeachers();
