@@ -86,7 +86,7 @@ public class LessonServlet extends HttpServlet {
         }
 
         // actions
-        if ("create".equalsIgnoreCase(action)) {
+         if ("create".equalsIgnoreCase(action)) {
             forward = ADD_OR_EDIT;
             title = "Create lesson";
             req.setAttribute("selectedGroup", group);
