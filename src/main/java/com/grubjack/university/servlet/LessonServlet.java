@@ -43,6 +43,8 @@ public class LessonServlet extends HttpServlet {
         String homeTitle = "Home page";
         List<Timetable> timetables = new ArrayList<>();
 
+
+        // find group and teacher for default select
         if (lessonId != null && !lessonId.isEmpty()) {
             lesson = University.getInstance().findLesson(Integer.parseInt(lessonId));
             if (lesson != null) {
@@ -52,25 +54,38 @@ public class LessonServlet extends HttpServlet {
 
         if (teacherId != null && !teacherId.isEmpty()) {
             teacher = University.getInstance().findTeacher(Integer.parseInt(teacherId));
+            if (teacher != null) {
+                title = String.format("Timetable for teacher %s", teacher.getName());
+            }
         }
 
         if (groupId != null && !groupId.isEmpty()) {
             group = University.getInstance().findGroup(Integer.parseInt(groupId));
+            if (group != null) {
+                title = String.format("Timetable for group %s", group.getName());
+            }
         }
 
         if (studentId != null && !studentId.isEmpty()) {
             Student student = University.getInstance().findStudent(Integer.parseInt(studentId));
             Faculty faculty = University.getInstance().findStudentFaculty(Integer.parseInt(studentId));
             group = faculty.findGroupByStudent(student);
-        }
-
-        if (facultyId != null && !facultyId.isEmpty() && groupName != null && !groupName.isEmpty()) {
-            Faculty faculty = University.getInstance().findFaculty(Integer.parseInt(facultyId));
-            if (faculty != null) {
-                group = faculty.findGroup(groupName);
+            if (student != null) {
+                title = String.format("Timetable for student %s", student.getName());
             }
         }
 
+        if (facultyId != null && !facultyId.isEmpty()) {
+            Faculty faculty = University.getInstance().findFaculty(Integer.parseInt(facultyId));
+            if (faculty != null) {
+                title = String.format("Timetable for faculty %s", faculty.getName());
+                if (groupName != null && !groupName.isEmpty()) {
+                    group = faculty.findGroup(groupName);
+                }
+            }
+        }
+
+        // actions
         if ("create".equalsIgnoreCase(action)) {
             forward = ADD_OR_EDIT;
             title = "Create lesson";
@@ -100,11 +115,11 @@ public class LessonServlet extends HttpServlet {
             }
         }
 
+        // find timetable(s)
         if (facultyId != null) {
             Faculty faculty = University.getInstance().findFaculty(Integer.parseInt(facultyId));
             if (faculty != null) {
                 timetables = faculty.findGroupTimetables();
-                title = String.format("Timetable for faculty %s", faculty.getName());
                 home = "faculties";
                 homeTitle = "Faculties";
                 req.setAttribute("fid", faculty.getId());
@@ -114,7 +129,6 @@ public class LessonServlet extends HttpServlet {
             Group group2 = University.getInstance().findGroup(Integer.parseInt(groupId));
             if (faculty != null && group2 != null) {
                 timetables.add(faculty.findTimetable(group2));
-                title = String.format("Timetable for group %s", group2.getName());
                 home = "groups";
                 homeTitle = "Groups";
                 req.setAttribute("gid", group2.getId());
@@ -124,7 +138,6 @@ public class LessonServlet extends HttpServlet {
             Student student = University.getInstance().findStudent(Integer.parseInt(studentId));
             if (faculty != null && student != null) {
                 timetables.add(faculty.findTimetable(student));
-                title = String.format("Timetable for student %s", student.getName());
                 home = "students";
                 homeTitle = "Students";
                 req.setAttribute("sid", student.getId());
@@ -134,16 +147,13 @@ public class LessonServlet extends HttpServlet {
             Teacher teacher2 = University.getInstance().findTeacher(Integer.parseInt(teacherId));
             if (faculty != null && teacher2 != null) {
                 timetables.add(faculty.findTimetable(teacher2));
-                title = String.format("Timetable for teacher %s", teacher2.getName());
                 home = "teachers";
                 homeTitle = "Teachers";
                 req.setAttribute("tid", teacher2.getId());
             }
-
         } else {
             timetables = University.getInstance().findGroupTimetables();
         }
-
 
         req.setAttribute("sid", studentId);
         req.setAttribute("tid", teacherId);
@@ -151,7 +161,6 @@ public class LessonServlet extends HttpServlet {
         req.setAttribute("fid", facultyId);
         req.setAttribute("day", day);
         req.setAttribute("time", time);
-
 
         req.setAttribute("title", title);
         req.setAttribute("home", home);
@@ -186,6 +195,7 @@ public class LessonServlet extends HttpServlet {
         String gid = req.getParameter("gid");
 
         Faculty faculty = null;
+        List<Timetable> timetables = new ArrayList<>();
 
         if (fid != null && !fid.isEmpty()) {
             faculty = University.getInstance().findFaculty(Integer.parseInt(fid));
@@ -218,6 +228,27 @@ public class LessonServlet extends HttpServlet {
                 lesson.setId(Integer.parseInt(id));
                 faculty.getTimetable().findUnit(day).updateLesson(lesson);
             }
+
+            if (fid != null && !fid.isEmpty()) {
+                timetables = faculty.findGroupTimetables();
+                title = String.format("Timetable for faculty %s", faculty.getName());
+                req.setAttribute("fid", fid);
+            } else if (sid != null && !sid.isEmpty()) {
+                Student student = University.getInstance().findStudent(Integer.parseInt(sid));
+                timetables.add(faculty.findTimetable(faculty.findGroupByStudent(student)));
+                title = String.format("Timetable for student %s", student.getName());
+                req.setAttribute("sid", sid);
+            } else if (tid != null && !tid.isEmpty()) {
+                timetables.add(faculty.findTimetable(teacher));
+                title = String.format("Timetable for teacher %s", teacher.getName());
+                req.setAttribute("tid", tid);
+            } else if (gid != null && !gid.isEmpty()) {
+                timetables.add(faculty.findTimetable(group));
+                title = String.format("Timetable for group %s", group.getName());
+                req.setAttribute("gid", gid);
+            } else {
+                timetables = University.getInstance().findGroupTimetables();
+            }
         }
 
         req.setAttribute("title", title);
@@ -225,7 +256,7 @@ public class LessonServlet extends HttpServlet {
         req.setAttribute("homeTitle", homeTitle);
         req.setAttribute("days", DayOfWeek.names());
         req.setAttribute("times", TimeOfDay.names());
-        req.setAttribute("timetables", University.getInstance().findGroupTimetables());
+        req.setAttribute("timetables", timetables);
         req.getRequestDispatcher(forward).forward(req, resp);
     }
 }
