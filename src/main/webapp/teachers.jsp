@@ -35,11 +35,11 @@
             <td>${teacher.lastName}</td>
             <td>${teacher.firstName}</td>
             <td>${teacher.salary}</td>
-            <td><a href="timetable?tid=${teacher.id}">show</a></td>
+            <td><a href="lessons?tid=${teacher.id}">show</a></td>
             <c:if test="${departmentId != null}">
                 <td>
-                    <a href="teachers?action=edit&did=${departmentId}&id=${teacher.id}">Edit</a><br/>
-                    <a href="teachers?action=delete&did=${departmentId}&id=${teacher.id}">Delete</a><br/>
+                    <a href="teachers?did=${departmentId}&action=edit&id=${teacher.id}">Edit</a><br/>
+                    <a href="teachers?did=${departmentId}&action=delete&id=${teacher.id}">Delete</a><br/>
                 </td>
             </c:if>
         </tr>

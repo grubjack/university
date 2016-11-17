@@ -30,7 +30,7 @@
             <td>${faculty.name}</td>
             <td><a href="groups?fid=${faculty.id}">show</a></td>
             <td><a href="departments?fid=${faculty.id}">show</a></td>
-            <td><a href="timetable?fid=${faculty.id}">show</a></td>
+            <td><a href="lessons?fid=${faculty.id}">show</a></td>
             <td>
                 <a href="faculties?action=edit&id=${faculty.id}">Edit</a><br/>
                 <a href="faculties?action=delete&id=${faculty.id}">Delete</a><br/>

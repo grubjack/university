@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by grubjack on 09.11.2016.
@@ -20,7 +22,6 @@ public class LessonServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
 
         String forward = LIST;
         String lessonId = req.getParameter("id");
@@ -37,9 +38,16 @@ public class LessonServlet extends HttpServlet {
         Group group = null;
         Teacher teacher = null;
 
+        String title = "Timetable";
+        String home = "index.html";
+        String homeTitle = "Home page";
+        List<Timetable> timetables = new ArrayList<>();
+
         if (lessonId != null && !lessonId.isEmpty()) {
             lesson = University.getInstance().findLesson(Integer.parseInt(lessonId));
-            group = lesson.getGroup();
+            if (lesson != null) {
+                group = lesson.getGroup();
+            }
         }
 
         if (teacherId != null && !teacherId.isEmpty()) {
@@ -58,12 +66,14 @@ public class LessonServlet extends HttpServlet {
 
         if (facultyId != null && !facultyId.isEmpty() && groupName != null && !groupName.isEmpty()) {
             Faculty faculty = University.getInstance().findFaculty(Integer.parseInt(facultyId));
-            group = faculty.findGroup(groupName);
+            if (faculty != null) {
+                group = faculty.findGroup(groupName);
+            }
         }
 
         if ("create".equalsIgnoreCase(action)) {
             forward = ADD_OR_EDIT;
-            req.setAttribute("title", "Create lesson");
+            title = "Create lesson";
             req.setAttribute("selectedGroup", group);
             req.setAttribute("selectedTeacher", teacher);
             req.setAttribute("groups", University.getInstance().findAvailableGroups(DayOfWeek.valueOf(day), TimeOfDay.convert(time)));
@@ -80,17 +90,60 @@ public class LessonServlet extends HttpServlet {
         } else if ("edit".equalsIgnoreCase(action)) {
             forward = ADD_OR_EDIT;
             if (lesson != null) {
+                title = "Edit lesson";
                 req.setAttribute("lesson", lesson);
-                req.setAttribute("title", "Edit lesson");
                 req.setAttribute("selectedGroup", group);
                 req.setAttribute("selectedTeacher", teacher);
                 req.setAttribute("groups", University.getInstance().findAvailableGroups(lesson.getDayOfWeek(), lesson.getTimeOfDay()));
                 req.setAttribute("teachers", University.getInstance().findAvailableTeachers(lesson.getDayOfWeek(), lesson.getTimeOfDay()));
                 req.setAttribute("rooms", University.getInstance().findAvailableRooms(lesson.getDayOfWeek(), lesson.getTimeOfDay()));
             }
-        } else {
-            req.setAttribute("lessons", University.getInstance().getLessons());
         }
+
+        if (facultyId != null) {
+            Faculty faculty = University.getInstance().findFaculty(Integer.parseInt(facultyId));
+            if (faculty != null) {
+                timetables = faculty.findGroupTimetables();
+                title = String.format("Timetable for faculty %s", faculty.getName());
+                home = "faculties";
+                homeTitle = "Faculties";
+                req.setAttribute("fid", faculty.getId());
+            }
+        } else if (groupId != null) {
+            Faculty faculty = University.getInstance().findGroupFaculty(Integer.parseInt(groupId));
+            Group group2 = University.getInstance().findGroup(Integer.parseInt(groupId));
+            if (faculty != null && group2 != null) {
+                timetables.add(faculty.findTimetable(group2));
+                title = String.format("Timetable for group %s", group2.getName());
+                home = "groups";
+                homeTitle = "Groups";
+                req.setAttribute("gid", group2.getId());
+            }
+        } else if (studentId != null) {
+            Faculty faculty = University.getInstance().findStudentFaculty(Integer.parseInt(studentId));
+            Student student = University.getInstance().findStudent(Integer.parseInt(studentId));
+            if (faculty != null && student != null) {
+                timetables.add(faculty.findTimetable(student));
+                title = String.format("Timetable for student %s", student.getName());
+                home = "students";
+                homeTitle = "Students";
+                req.setAttribute("sid", student.getId());
+            }
+        } else if (teacherId != null) {
+            Faculty faculty = University.getInstance().findTeacherFaculty(Integer.parseInt(teacherId));
+            Teacher teacher2 = University.getInstance().findTeacher(Integer.parseInt(teacherId));
+            if (faculty != null && teacher2 != null) {
+                timetables.add(faculty.findTimetable(teacher2));
+                title = String.format("Timetable for teacher %s", teacher2.getName());
+                home = "teachers";
+                homeTitle = "Teachers";
+                req.setAttribute("tid", teacher2.getId());
+            }
+
+        } else {
+            timetables = University.getInstance().findGroupTimetables();
+        }
+
 
         req.setAttribute("sid", studentId);
         req.setAttribute("tid", teacherId);
@@ -98,13 +151,25 @@ public class LessonServlet extends HttpServlet {
         req.setAttribute("fid", facultyId);
         req.setAttribute("day", day);
         req.setAttribute("time", time);
-        req.setAttribute("lessons", University.getInstance().getLessons());
+
+
+        req.setAttribute("title", title);
+        req.setAttribute("home", home);
+        req.setAttribute("homeTitle", homeTitle);
+        req.setAttribute("days", DayOfWeek.names());
+        req.setAttribute("times", TimeOfDay.names());
+        req.setAttribute("timetables", timetables);
         req.getRequestDispatcher(forward).forward(req, resp);
+
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String forward = LIST;
+
+        String title = "Timetable";
+        String home = "index.html";
+        String homeTitle = "Home page";
 
         String id = req.getParameter("id");
         String day = req.getParameter("day");
@@ -155,7 +220,12 @@ public class LessonServlet extends HttpServlet {
             }
         }
 
-        req.setAttribute("lessons", University.getInstance().getLessons());
+        req.setAttribute("title", title);
+        req.setAttribute("home", home);
+        req.setAttribute("homeTitle", homeTitle);
+        req.setAttribute("days", DayOfWeek.names());
+        req.setAttribute("times", TimeOfDay.names());
+        req.setAttribute("timetables", University.getInstance().findGroupTimetables());
         req.getRequestDispatcher(forward).forward(req, resp);
     }
 }

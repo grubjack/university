@@ -31,11 +31,11 @@
     <c:forEach var="group" items="${groups}">
         <tr>
             <td><a href="students?gid=${group.id}">${group.name}</a></td>
-            <td><a href="timetable?gid=${group.id}">show</a></td>
+            <td><a href="lessons?gid=${group.id}">show</a></td>
             <c:if test="${facultyId != null}">
                 <td>
-                    <a href="groups?action=edit&fid=${facultyId}&id=${group.id}">Edit</a><br/>
-                    <a href="groups?action=delete&fid=${facultyId}&id=${group.id}">Delete</a><br/>
+                    <a href="groups?fid=${facultyId}&action=edit&id=${group.id}">Edit</a><br/>
+                    <a href="groups?fid=${facultyId}&action=delete&id=${group.id}">Delete</a><br/>
                 </td>
             </c:if>
         </tr>

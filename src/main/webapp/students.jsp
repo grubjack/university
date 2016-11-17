@@ -33,11 +33,11 @@
         <tr>
             <td>${student.lastName}</td>
             <td>${student.firstName}</td>
-            <td><a href="timetable?sid=${student.id}">show</a></td>
+            <td><a href="lessons?sid=${student.id}">show</a></td>
             <c:if test="${groupId != null}">
                 <td>
-                    <a href="students?action=edit&gid=${groupId}&id=${student.id}">Edit</a><br/>
-                    <a href="students?action=delete&gid=${groupId}&id=${student.id}">Delete</a><br/>
+                    <a href="students?gid=${groupId}&action=edit&id=${student.id}">Edit</a><br/>
+                    <a href="students?gid=${groupId}&action=delete&id=${student.id}">Delete</a><br/>
                 </td>
             </c:if>
         </tr>

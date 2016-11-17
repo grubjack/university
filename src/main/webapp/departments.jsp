@@ -32,8 +32,8 @@
             <td><a href="teachers?did=${department.id}">${department.name}</a></td>
             <c:if test="${facultyId != null}">
                 <td>
-                    <a href="departments?action=edit&fid=${facultyId}&id=${department.id}">Edit</a><br/>
-                    <a href="departments?action=delete&fid=${facultyId}&id=${department.id}">Delete</a><br/>
+                    <a href="departments?fid=${facultyId}&action=edit&id=${department.id}">Edit</a><br/>
+                    <a href="departments?fid=${facultyId}&action=delete&id=${department.id}">Delete</a><br/>
                 </td>
             </c:if>
         </tr>
