@@ -121,6 +121,17 @@ public class LessonServlet extends HttpServlet {
                 req.setAttribute("lesson", lesson);
                 req.setAttribute("selectedGroup", group);
                 req.setAttribute("selectedTeacher", teacher);
+                List<Group> groups = University.getInstance().findAvailableGroups(DayOfWeek.valueOf(day), TimeOfDay.convert(time));
+                List<Teacher> teachers = University.getInstance().findAvailableTeachers(DayOfWeek.valueOf(day), TimeOfDay.convert(time));
+                if (groups.size() == 0 && group == null) {
+                    req.setAttribute("groupNotification", "no free groups");
+                }
+                if (teachers.size() == 0 && teacher == null) {
+                    req.setAttribute("teacherNotification", "no free teachers");
+                }
+
+                req.setAttribute("groups", groups);
+                req.setAttribute("teachers", teachers);
                 req.setAttribute("rooms", University.getInstance().findAvailableRooms(DayOfWeek.valueOf(day), TimeOfDay.convert(time)));
             }
         }
