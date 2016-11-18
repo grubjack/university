@@ -12,6 +12,19 @@
 <p><a href="${pageContext.request.contextPath}/faculties" class="button">Faculties</a></p>
 
 <h1>${title}</h1>
+
+<form action="search" method="post">
+    <input type="hidden" name="entity" value="group"/>
+    <ul class="search">
+        <li>
+            <input type="text" name="name" placeholder="Name"/>
+        </li>
+        <li>
+            <input type="submit" value="Search"/>
+        </li>
+    </ul>
+</form>
+
 <c:if test="${facultyId != null}">
     <p>
         <a href="groups?action=create&fid=${facultyId}" class="button">Add Group</a>

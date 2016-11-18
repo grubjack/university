@@ -10,7 +10,7 @@
 <body>
 <p><a href="${pageContext.request.contextPath}/index.html" class="button">Home page</a></p>
 
-<h1>List of classrooms</h1>
+<h1>Classrooms</h1>
 <p>
     <a href="classrooms?action=create" class="button">Add Classroom</a>
 </p>

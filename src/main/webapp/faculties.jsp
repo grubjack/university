@@ -10,7 +10,20 @@
 <body>
 <p><a href="${pageContext.request.contextPath}/index.html" class="button">Home page</a></p>
 
-<h1>List of faculties</h1>
+<h1>Faculties</h1>
+
+<form action="search" method="post">
+    <input type="hidden" name="entity" value="faculty"/>
+    <ul class="search">
+        <li>
+            <input type="text" name="name" placeholder="Name"/>
+        </li>
+        <li>
+            <input type="submit" value="Search"/>
+        </li>
+    </ul>
+</form>
+
 <p>
     <a href="faculties?action=create" class="button">Add Faculty</a>
 </p>

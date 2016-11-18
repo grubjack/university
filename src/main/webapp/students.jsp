@@ -14,7 +14,7 @@
 <h1>${title}</h1>
 
 <form action="search" method="post">
-    <input type="hidden" name="person" value="student"/>
+    <input type="hidden" name="entity" value="student"/>
     <ul class="search">
         <li>
             <input type="text" name="name" placeholder="Name"/>
