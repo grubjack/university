@@ -31,26 +31,68 @@ public class SearchServlet extends HttpServlet {
 
                 if (entity.equalsIgnoreCase("student")) {
 
+                    String gid = req.getParameter("gid");
+
                     List<Student> students = new ArrayList<>();
-                    for (Student student : University.getInstance().getStudents()) {
-                        if (student.getName().toLowerCase().contains(name.toLowerCase())) {
-                            students.add(student);
+
+                    if (gid != null && !gid.isEmpty()) {
+                        page = "students.jsp?gid=" + gid;
+                        req.setAttribute("groupId", gid);
+                        Group group = University.getInstance().findGroup(Integer.parseInt(gid));
+                        if (group != null) {
+                            title = String.format("Students of %s group", group.getName());
+                            for (Student student : group.getStudents()) {
+                                if (student.getName().toLowerCase().contains(name.toLowerCase())) {
+                                    students.add(student);
+                                }
+                            }
                         }
+
+                    } else {
+                        title = "Students";
+                        page = "students.jsp";
+
+                        for (Student student : University.getInstance().getStudents()) {
+
+                            if (student.getName().toLowerCase().contains(name.toLowerCase())) {
+                                students.add(student);
+                            }
+                        }
+
                     }
-                    title = "Students";
-                    page = "students.jsp";
+
                     req.setAttribute("students", students);
 
                 } else if (entity.equalsIgnoreCase("teacher")) {
 
+                    String did = req.getParameter("did");
                     List<Teacher> teachers = new ArrayList<>();
-                    for (Teacher teacher : University.getInstance().getTeachers()) {
-                        if (teacher.getName().toLowerCase().contains(name.toLowerCase())) {
-                            teachers.add(teacher);
+
+                    if (did != null && !did.isEmpty()) {
+                        page = "teachers.jsp?did=" + did;
+                        req.setAttribute("departmentId", did);
+                        Department department = University.getInstance().findDepartment(Integer.parseInt(did));
+                        if (department != null) {
+                            title = String.format("Teachers of %s department", department.getName());
+                            for (Teacher teacher : department.getTeachers()) {
+                                if (teacher.getName().toLowerCase().contains(name.toLowerCase())) {
+                                    teachers.add(teacher);
+                                }
+                            }
                         }
+
+
+                    } else {
+                        title = "Teachers";
+                        page = "teachers.jsp";
+
+                        for (Teacher teacher : University.getInstance().getTeachers()) {
+                            if (teacher.getName().toLowerCase().contains(name.toLowerCase())) {
+                                teachers.add(teacher);
+                            }
+                        }
+
                     }
-                    title = "Teachers";
-                    page = "teachers.jsp";
                     req.setAttribute("teachers", teachers);
 
                 } else if (entity.equalsIgnoreCase("faculty")) {
@@ -67,26 +109,66 @@ public class SearchServlet extends HttpServlet {
 
                 } else if (entity.equalsIgnoreCase("department")) {
 
+                    String fid = req.getParameter("fid");
                     List<Department> departments = new ArrayList<>();
-                    for (Department department : University.getInstance().getDepartments()) {
-                        if (department.getName().toLowerCase().contains(name.toLowerCase())) {
-                            departments.add(department);
+
+                    if (fid != null && !fid.isEmpty()) {
+                        page = "departments.jsp?fid=" + fid;
+                        req.setAttribute("facultyId", fid);
+
+                        Faculty faculty = University.getInstance().findFaculty(Integer.parseInt(fid));
+                        if (faculty != null) {
+                            title = String.format("Departments of %s faculty", faculty.getName());
+                            for (Department department : faculty.getDepartments()) {
+                                if (department.getName().toLowerCase().contains(name.toLowerCase())) {
+                                    departments.add(department);
+                                }
+                            }
+                        }
+
+                    } else {
+                        title = "Departments";
+                        page = "departments.jsp";
+
+                        for (Department department : University.getInstance().getDepartments()) {
+                            if (department.getName().toLowerCase().contains(name.toLowerCase())) {
+                                departments.add(department);
+                            }
                         }
                     }
-                    title = "Departments";
-                    page = "departments.jsp";
+
                     req.setAttribute("departments", departments);
 
                 } else if (entity.equalsIgnoreCase("group")) {
 
+                    String fid = req.getParameter("fid");
                     List<Group> groups = new ArrayList<>();
-                    for (Group group : University.getInstance().getGroups()) {
-                        if (group.getName().toLowerCase().contains(name.toLowerCase())) {
-                            groups.add(group);
+
+                    if (fid != null && !fid.isEmpty()) {
+                        page = "groups.jsp?fid=" + fid;
+                        req.setAttribute("facultyId", fid);
+
+                        Faculty faculty = University.getInstance().findFaculty(Integer.parseInt(fid));
+                        if (faculty != null) {
+                            title = String.format("Groups of %s faculty", faculty.getName());
+                            for (Group group : faculty.getGroups()) {
+                                if (group.getName().toLowerCase().contains(name.toLowerCase())) {
+                                    groups.add(group);
+                                }
+                            }
+                        }
+
+                    } else {
+                        title = "Groups";
+                        page = "groups.jsp";
+
+                        for (Group group : University.getInstance().getGroups()) {
+                            if (group.getName().toLowerCase().contains(name.toLowerCase())) {
+                                groups.add(group);
+                            }
                         }
                     }
-                    title = "Groups";
-                    page = "groups.jsp";
+
                     req.setAttribute("groups", groups);
                 }
 

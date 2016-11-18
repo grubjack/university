@@ -36,7 +36,7 @@ public class StudentServlet extends HttpServlet {
             Group group = University.getInstance().findGroup(Integer.parseInt(groupId));
             if (group != null) {
 
-                title = String.format("Student of %s group", group.getName());
+                title = String.format("Students of %s group", group.getName());
 
                 if ("create".equalsIgnoreCase(action)) {
                     forward = ADD_OR_EDIT;

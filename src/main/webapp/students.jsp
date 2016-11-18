@@ -14,6 +14,9 @@
 <h1>${title}</h1>
 
 <form action="search" method="post">
+    <c:if test="${groupId !=null}">
+        <input type="hidden" name="gid" value="${groupId}"/>
+    </c:if>
     <input type="hidden" name="entity" value="student"/>
     <ul class="search">
         <li>
