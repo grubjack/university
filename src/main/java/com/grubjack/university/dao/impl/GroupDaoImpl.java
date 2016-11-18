@@ -1,8 +1,10 @@
 package com.grubjack.university.dao.impl;
 
 import com.grubjack.university.dao.GroupDao;
+import com.grubjack.university.domain.DayOfWeek;
 import com.grubjack.university.domain.Group;
 import com.grubjack.university.domain.Student;
+import com.grubjack.university.domain.TimeOfDay;
 import com.grubjack.university.exception.DaoException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -336,6 +338,55 @@ public class GroupDaoImpl implements GroupDao {
         } catch (SQLException e) {
             log.error("Can't find faculty groups", e);
             throw new DaoException("Can't find faculty groups", e);
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    log.error("Can't close result set", e);
+                }
+            }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    log.error("Can't close statement", e);
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    log.error("Can't close connection", e);
+                }
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public List<Group> findAvailable(DayOfWeek dayOfWeek, TimeOfDay timeOfDay) throws DaoException {
+        log.info("Finding available groups on " + dayOfWeek.toString() + " at " + timeOfDay.toString());
+        List<Group> result = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement("SELECT * FROM groups WHERE id NOT IN " +
+                    "(SELECT g.id FROM lessons l INNER JOIN groups g ON l.group_id = g.id WHERE l.week_day=? and l.day_time=?)");
+            statement.setString(1, dayOfWeek.toString());
+            statement.setString(2, timeOfDay.toString());
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                Group group = new Group();
+                group.setId(resultSet.getInt("id"));
+                group.setName(resultSet.getString("name"));
+                result.add(group);
+            }
+        } catch (SQLException e) {
+            log.error("Can't find available groups", e);
+            throw new DaoException("Can't find available groups", e);
         } finally {
             if (resultSet != null) {
                 try {

@@ -50,8 +50,10 @@ public class University {
     public void createRoom(Classroom classroom) {
         if (classroom != null && !getRooms().contains(classroom)) {
             try {
-                classroomDao.create(classroom);
                 getRooms().add(classroom);
+                lessons = null;
+                timetables = null;
+                classroomDao.create(classroom);
             } catch (DaoException e) {
                 log.warn("Can't create classroom");
             }
@@ -61,8 +63,10 @@ public class University {
     public void deleteRoom(Classroom classroom) {
         if (classroom != null) {
             try {
-                classroomDao.delete(classroom.getId());
                 getRooms().remove(classroom);
+                lessons = null;
+                timetables = null;
+                classroomDao.delete(classroom.getId());
             } catch (DaoException e) {
                 log.warn("Can't delete classroom");
             }
@@ -78,9 +82,11 @@ public class University {
         }
         if (oldRoom != null) {
             try {
-                classroomDao.update(classroom);
                 getRooms().remove(oldRoom);
                 getRooms().add(classroom);
+                lessons = null;
+                timetables = null;
+                classroomDao.update(classroom);
             } catch (DaoException e) {
                 log.warn("Can't update classroom");
             }
@@ -101,8 +107,8 @@ public class University {
     public void createFaculty(Faculty faculty) {
         if (faculty != null && !getFaculties().contains(faculty)) {
             try {
-                facultyDao.create(faculty);
                 getFaculties().add(faculty);
+                facultyDao.create(faculty);
             } catch (DaoException e) {
                 log.warn("Can't create faculty");
             }
@@ -112,8 +118,14 @@ public class University {
     public void deleteFaculty(Faculty faculty) {
         if (faculty != null) {
             try {
-                facultyDao.delete(faculty.getId());
                 getFaculties().remove(faculty);
+                getGroups().removeAll(faculty.getGroups());
+                getDepartments().removeAll(faculty.getDepartments());
+                students = null;
+                teachers = null;
+                lessons = null;
+                timetables = null;
+                facultyDao.delete(faculty.getId());
             } catch (DaoException e) {
                 log.warn("Can't delete faculty");
             }
@@ -129,9 +141,9 @@ public class University {
         }
         if (oldFaculty != null) {
             try {
-                facultyDao.update(faculty);
                 getFaculties().remove(oldFaculty);
                 getFaculties().add(faculty);
+                facultyDao.update(faculty);
             } catch (DaoException e) {
                 log.warn("Can't update faculty");
             }
@@ -264,6 +276,16 @@ public class University {
         return null;
     }
 
+    public Classroom findRoom(int id) {
+        try {
+            return classroomDao.find(id);
+        } catch (DaoException e) {
+            log.warn("Can't find classroom");
+        }
+        return null;
+    }
+
+
     public Faculty findGroupFaculty(int groupId) {
         try {
             return facultyDao.findByGroup(groupId);
@@ -291,7 +313,6 @@ public class University {
         return null;
     }
 
-
     public Department findDepartment(int id) {
         try {
             return departmentDao.find(id);
@@ -299,6 +320,33 @@ public class University {
             log.warn("Can't find department");
         }
         return null;
+    }
+
+    public List<Teacher> findAvailableTeachers(DayOfWeek day, TimeOfDay time) {
+        try {
+            return teacherDao.findAvailable(day, time);
+        } catch (DaoException e) {
+            log.warn("Can't find available teachers");
+        }
+        return Collections.emptyList();
+    }
+
+    public List<Classroom> findAvailableRooms(DayOfWeek day, TimeOfDay time) {
+        try {
+            return classroomDao.findAvailable(day, time);
+        } catch (DaoException e) {
+            log.warn("Can't find available classrooms");
+        }
+        return Collections.emptyList();
+    }
+
+    public List<Group> findAvailableGroups(DayOfWeek day, TimeOfDay time) {
+        try {
+            return groupDao.findAvailable(day, time);
+        } catch (DaoException e) {
+            log.warn("Can't find available groups");
+        }
+        return Collections.emptyList();
     }
 
 
@@ -352,5 +400,29 @@ public class University {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setDepartments(List<Department> departments) {
+        this.departments = departments;
+    }
+
+    public void setGroups(List<Group> groups) {
+        this.groups = groups;
+    }
+
+    public void setStudents(List<Student> students) {
+        this.students = students;
+    }
+
+    public void setTeachers(List<Teacher> teachers) {
+        this.teachers = teachers;
+    }
+
+    public void setLessons(List<Lesson> lessons) {
+        this.lessons = lessons;
+    }
+
+    public void setTimetables(List<Timetable> timetables) {
+        this.timetables = timetables;
     }
 }

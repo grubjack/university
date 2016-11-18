@@ -8,22 +8,52 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<p><a href="${pageContext.request.contextPath}/index.html">Home page</a></p>
-<p><a href="${pageContext.request.contextPath}/faculties">Faculties</a></p>
+<p><a href="${pageContext.request.contextPath}/index.html" class="button">Home page</a></p>
+<p><a href="${pageContext.request.contextPath}/faculties" class="button">Faculties</a></p>
 
 <h1>${title}</h1>
+
+<form action="search" method="post">
+    <c:if test="${facultyId !=null}">
+        <input type="hidden" name="fid" value="${facultyId}"/>
+    </c:if>
+    <input type="hidden" name="entity" value="group"/>
+    <ul class="search">
+        <li>
+            <input type="text" name="name" placeholder="Name"/>
+        </li>
+        <li>
+            <input type="submit" value="Search"/>
+        </li>
+    </ul>
+</form>
+
+<c:if test="${facultyId != null}">
+    <p>
+        <a href="groups?action=create&fid=${facultyId}" class="button">Add Group</a>
+    </p>
+</c:if>
 <table>
     <thead>
     <tr>
         <th>Name</th>
         <th>Timetable</th>
+        <c:if test="${facultyId != null}">
+            <th>Actions</th>
+        </c:if>
     </tr>
     </thead>
     <tbody>
     <c:forEach var="group" items="${groups}">
         <tr>
-            <td><a href="students?id=${group.getId()}">${group.name}</a></td>
-            <td><a href="timetable?gid=${group.getId()}">show</a></td>
+            <td><a href="students?gid=${group.id}">${group.name}</a></td>
+            <td><a href="lessons?gid=${group.id}">show</a></td>
+            <c:if test="${facultyId != null}">
+                <td>
+                    <a href="groups?fid=${facultyId}&action=edit&id=${group.id}">Edit</a><br/>
+                    <a href="groups?fid=${facultyId}&action=delete&id=${group.id}">Delete</a><br/>
+                </td>
+            </c:if>
         </tr>
     </c:forEach>
     </tbody>

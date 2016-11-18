@@ -2,7 +2,6 @@ package com.grubjack.university.domain;
 
 import com.grubjack.university.dao.DaoFactory;
 import com.grubjack.university.dao.LessonDao;
-import com.grubjack.university.exception.DaoException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,51 +44,6 @@ public class Timetable {
         int result = name != null ? name.hashCode() : 0;
         result = 31 * result + (units != null ? units.hashCode() : 0);
         return result;
-    }
-
-    public void createUnit(TimetableUnit unit) {
-        if (unit != null && !units.contains(unit)) {
-            try {
-                for (Lesson lesson : unit.getLessons()) {
-                    lessonDao.create(lesson);
-                }
-                units.add(unit);
-            } catch (DaoException e) {
-                log.warn("Can't create timetable unit");
-            }
-        }
-    }
-
-    public void deleteUnit(TimetableUnit unit) {
-        if (unit != null) {
-            try {
-                lessonDao.delete(unit.getLessons());
-                units.remove(unit);
-            } catch (DaoException e) {
-                log.warn("Can't delete timetable unit");
-            }
-        }
-    }
-
-    public void updateUnit(TimetableUnit unit) {
-        TimetableUnit oldUnit = null;
-        if (unit != null) {
-            try {
-                oldUnit = new TimetableUnit(unit.getDayOfWeek());
-                oldUnit.setLessons(lessonDao.findByDay(unit.getDayOfWeek()));
-            } catch (DaoException e) {
-                log.warn("Can't find unit");
-            }
-        }
-        if (oldUnit != null) {
-            try {
-                lessonDao.update(unit.getLessons());
-                units.remove(oldUnit);
-                units.add(unit);
-            } catch (DaoException e) {
-                log.warn("Can't update timetable unit");
-            }
-        }
     }
 
     public TimetableUnit findUnit(String day) {

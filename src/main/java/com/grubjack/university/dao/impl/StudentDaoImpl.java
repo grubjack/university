@@ -1,5 +1,7 @@
 package com.grubjack.university.dao.impl;
 
+import com.grubjack.university.domain.DayOfWeek;
+import com.grubjack.university.domain.TimeOfDay;
 import com.grubjack.university.exception.DaoException;
 import com.grubjack.university.dao.PersonDao;
 import com.grubjack.university.domain.Student;
@@ -567,5 +569,10 @@ public class StudentDaoImpl implements PersonDao<Student> {
             }
         }
         return result;
+    }
+
+    @Override
+    public List<Student> findAvailable(DayOfWeek dayOfWeek, TimeOfDay timeOfDay) throws DaoException {
+        return null;
     }
 }

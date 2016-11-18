@@ -8,20 +8,50 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<p><a href="${pageContext.request.contextPath}/index.html">Home page</a></p>
-<p><a href="${pageContext.request.contextPath}/faculties">Faculties</a></p>
+<p><a href="${pageContext.request.contextPath}/index.html" class="button">Home page</a></p>
+<p><a href="${pageContext.request.contextPath}/faculties" class="button">Faculties</a></p>
 
 <h1>${title}</h1>
+
+<form action="search" method="post">
+    <c:if test="${facultyId !=null}">
+        <input type="hidden" name="fid" value="${facultyId}"/>
+    </c:if>
+    <input type="hidden" name="entity" value="department"/>
+    <ul class="search">
+        <li>
+            <input type="text" name="name" placeholder="Name"/>
+        </li>
+        <li>
+            <input type="submit" value="Search"/>
+        </li>
+    </ul>
+</form>
+
+<c:if test="${facultyId != null}">
+    <p>
+        <a href="departments?action=create&fid=${facultyId}" class="button">Add Department</a>
+    </p>
+</c:if>
 <table>
     <thead>
     <tr>
         <th>Name</th>
+        <c:if test="${facultyId != null}">
+            <th>Actions</th>
+        </c:if>
     </tr>
     </thead>
     <tbody>
     <c:forEach var="department" items="${departments}">
         <tr>
-            <td><a href="teachers?id=${department.getId()}">${department.name}</a></td>
+            <td><a href="teachers?did=${department.id}">${department.name}</a></td>
+            <c:if test="${facultyId != null}">
+                <td>
+                    <a href="departments?fid=${facultyId}&action=edit&id=${department.id}">Edit</a><br/>
+                    <a href="departments?fid=${facultyId}&action=delete&id=${department.id}">Delete</a><br/>
+                </td>
+            </c:if>
         </tr>
     </c:forEach>
     </tbody>

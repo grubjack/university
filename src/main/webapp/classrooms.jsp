@@ -8,15 +8,19 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<p><a href="${pageContext.request.contextPath}/index.html">Home page</a></p>
+<p><a href="${pageContext.request.contextPath}/index.html" class="button">Home page</a></p>
 
-<h1>List of classrooms</h1>
+<h1>Classrooms</h1>
+<p>
+    <a href="classrooms?action=create" class="button">Add Classroom</a>
+</p>
 <table>
     <thead>
     <tr>
         <th>Number</th>
         <th>Location</th>
         <th>Capacity</th>
+        <th>Actions</th>
     </tr>
     </thead>
     <tbody>
@@ -25,6 +29,10 @@
             <td>${classroom.number}</td>
             <td>${classroom.location}</td>
             <td>${classroom.capacity}</td>
+            <td>
+                <a href="classrooms?action=edit&id=${classroom.id}">Edit</a><br/>
+                <a href="classrooms?action=delete&id=${classroom.id}">Delete</a><br/>
+            </td>
         </tr>
     </c:forEach>
     </tbody>

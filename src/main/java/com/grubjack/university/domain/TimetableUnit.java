@@ -61,8 +61,10 @@ public class TimetableUnit {
     public void createLesson(Lesson lesson) {
         if (lesson != null && !getLessons().contains(lesson)) {
             try {
-                lessonDao.create(lesson);
                 getLessons().add(lesson);
+                University.getInstance().getLessons().add(lesson);
+                University.getInstance().setTimetables(null);
+                lessonDao.create(lesson);
             } catch (DaoException e) {
                 log.warn("Can't create lesson");
             }
@@ -72,8 +74,10 @@ public class TimetableUnit {
     public void deleteLesson(Lesson lesson) {
         if (lesson != null) {
             try {
-                lessonDao.delete(lesson.getId());
                 getLessons().remove(lesson);
+                University.getInstance().getLessons().remove(lesson);
+                University.getInstance().setTimetables(null);
+                lessonDao.delete(lesson.getId());
             } catch (DaoException e) {
                 log.warn("Can't delete lesson");
             }
@@ -89,9 +93,16 @@ public class TimetableUnit {
         }
         if (oldLesson != null) {
             try {
+                int index = getLessons().indexOf(oldLesson);
+                int index2 = University.getInstance().getLessons().indexOf(oldLesson);
+                if (index != -1) {
+                    getLessons().set(index, lesson);
+                }
+                if (index2 != -1) {
+                    University.getInstance().getLessons().set(index2, lesson);
+                }
+                University.getInstance().setTimetables(null);
                 lessonDao.update(lesson);
-                getLessons().remove(oldLesson);
-                getLessons().add(lesson);
             } catch (DaoException e) {
                 log.warn("Can't update lesson");
             }
