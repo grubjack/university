@@ -27,6 +27,10 @@ public class Group implements Comparable<Group> {
     @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "group")
     private List<Student> students;
 
+    @ManyToOne
+    @JoinColumn(name = "faculty_id", nullable = false)
+    private Faculty faculty;
+
     private static Logger log = LoggerFactory.getLogger(Group.class);
 
     private PersonDao<Student> studentDao = DaoFactory.getInstance().getStudentDao();
@@ -161,6 +165,14 @@ public class Group implements Comparable<Group> {
 
     public void setStudents(List<Student> students) {
         this.students = students;
+    }
+
+    public Faculty getFaculty() {
+        return faculty;
+    }
+
+    public void setFaculty(Faculty faculty) {
+        this.faculty = faculty;
     }
 
     @Override
