@@ -1,12 +1,26 @@
 package com.grubjack.university.domain;
 
+import javax.persistence.*;
+
 /**
  * Created by grubjack on 28.10.2016.
  */
+@Entity
+@Table(name = "classrooms")
 public class Classroom implements Comparable<Classroom> {
+
+    @Id
+    @SequenceGenerator(name = "global_seq", sequenceName = "global_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "global_seq")
     private int id;
+
+    @Column(name = "number", nullable = false, unique = true)
     private String number;
+
+    @Column(name = "location", nullable = false)
     private String location;
+
+    @Column(name = "capacity", nullable = false)
     private int capacity;
 
     public Classroom() {

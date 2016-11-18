@@ -1,10 +1,20 @@
 package com.grubjack.university.domain;
 
+import javax.persistence.*;
+
 /**
  * Created by grubjack on 28.10.2016.
  */
-public class Teacher extends Person{
+@Entity
+@Table(name = "teachers")
+public class Teacher extends Person {
+
+    @Column(name = "salary", nullable = false)
     private int salary;
+
+    @ManyToOne
+    @JoinColumn(name = "department_id", nullable = false)
+    private Department department;
 
     public Teacher() {
     }
@@ -41,4 +51,11 @@ public class Teacher extends Person{
         this.salary = salary;
     }
 
+    public Department getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
+    }
 }

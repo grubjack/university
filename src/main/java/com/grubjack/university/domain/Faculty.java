@@ -8,6 +8,7 @@ import com.grubjack.university.exception.DaoException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -16,12 +17,26 @@ import java.util.List;
 /**
  * Created by grubjack on 28.10.2016.
  */
+@Entity
+@Table(name = "faculties")
 public class Faculty implements Comparable<Faculty> {
     private static Logger log = LoggerFactory.getLogger(Faculty.class);
+
+    @Id
+    @SequenceGenerator(name = "global_seq", sequenceName = "global_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "global_seq")
     private int id;
+
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
+
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "faculty")
     private List<Department> departments;
+
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "faculty")
     private List<Group> groups;
+
+
     private Timetable timetable;
     private DepartmentDao departmentDao = DaoFactory.getInstance().getDepartmentDao();
     private GroupDao groupDao = DaoFactory.getInstance().getGroupDao();

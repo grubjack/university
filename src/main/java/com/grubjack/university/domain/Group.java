@@ -6,15 +6,25 @@ import com.grubjack.university.exception.DaoException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.persistence.*;
 import java.util.Collections;
 import java.util.List;
 
 /**
  * Created by grubjack on 28.10.2016.
  */
+@Entity
+@Table(name = "groups")
 public class Group implements Comparable<Group> {
+    @Id
+    @SequenceGenerator(name = "global_seq", sequenceName = "global_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "global_seq")
     private int id;
+
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
+
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "group")
     private List<Student> students;
 
     private static Logger log = LoggerFactory.getLogger(Group.class);

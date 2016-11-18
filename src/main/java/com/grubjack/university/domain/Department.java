@@ -6,16 +6,34 @@ import com.grubjack.university.exception.DaoException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.persistence.*;
 import java.util.Collections;
 import java.util.List;
 
 /**
  * Created by grubjack on 28.10.2016.
  */
+@Entity
+@Table(name = "departments")
 public class Department implements Comparable<Department> {
+
+    @Id
+    @SequenceGenerator(name = "global_seq", sequenceName = "global_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "global_seq")
     private int id;
+
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
+
+
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "department")
     private List<Teacher> teachers;
+
+    @ManyToOne
+    @JoinColumn(name = "faculty_id", nullable = false)
+    private Faculty faculty;
+
+
     private PersonDao<Teacher> teacherDao = DaoFactory.getInstance().getTeacherDao();
 
     private static Logger log = LoggerFactory.getLogger(Department.class);
@@ -155,6 +173,14 @@ public class Department implements Comparable<Department> {
 
     public void setTeachers(List<Teacher> teachers) {
         this.teachers = teachers;
+    }
+
+    public Faculty getFaculty() {
+        return faculty;
+    }
+
+    public void setFaculty(Faculty faculty) {
+        this.faculty = faculty;
     }
 
     @Override

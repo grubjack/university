@@ -1,11 +1,21 @@
 package com.grubjack.university.domain;
 
+import javax.persistence.*;
+
 /**
  * Created by grubjack on 28.10.2016.
  */
+@MappedSuperclass
 public class Person implements Comparable<Person> {
+    @Id
+    @SequenceGenerator(name = "global_seq", sequenceName = "global_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "global_seq")
     private int id;
+
+    @Column(name = "firstname", nullable = false)
     private String firstName;
+
+    @Column(name = "lastname", nullable = false)
     private String lastName;
 
     public Person() {

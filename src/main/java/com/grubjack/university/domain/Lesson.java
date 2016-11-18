@@ -1,15 +1,42 @@
 package com.grubjack.university.domain;
 
+import javax.persistence.*;
+
 /**
  * Created by grubjack on 28.10.2016.
  */
+
+@Entity
+@Table(name = "lessons")
 public class Lesson implements Comparable<Lesson> {
+
+    @Id
+    @SequenceGenerator(name = "global_seq", sequenceName = "global_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "global_seq")
     private int id;
+
+    @Column(name = "subject", nullable = false, unique = true)
     private String subject;
+
+    @ManyToOne
+    @JoinColumn(name = "teacher_id", nullable = false)
     private Teacher teacher;
+
+    @ManyToOne
+    @JoinColumn(name = "group_id", nullable = false)
     private Group group;
+
+    @ManyToOne
+    @JoinColumn(name = "classroom_id", nullable = false)
     private Classroom classroom;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "week_day")
     private DayOfWeek dayOfWeek;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "day_time")
+    @Convert(converter = DayTimeEnumConverter.class )
     private TimeOfDay timeOfDay;
 
     public Lesson() {
