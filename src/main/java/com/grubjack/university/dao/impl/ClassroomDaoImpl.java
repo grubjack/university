@@ -7,19 +7,32 @@ import com.grubjack.university.domain.TimeOfDay;
 import com.grubjack.university.exception.DaoException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.grubjack.university.dao.DaoFactory.getConnection;
 
 /**
  * Created by grubjack on 03.11.2016.
  */
 public class ClassroomDaoImpl implements ClassroomDao {
     private static Logger log = LoggerFactory.getLogger(ClassroomDaoImpl.class);
+
+    @Autowired
+    private DataSource dataSource;
+
+
+    public DataSource getDataSource() {
+        return dataSource;
+    }
+
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
     @Override
     public void create(Classroom classroom) throws DaoException {
@@ -28,7 +41,7 @@ public class ClassroomDaoImpl implements ClassroomDao {
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try {
-            connection = getConnection();
+            connection = dataSource.getConnection();
             statement = connection.prepareStatement("INSERT INTO classrooms (number,location,capacity) VALUES (?,?,?)", Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, classroom.getNumber());
             statement.setString(2, classroom.getLocation());
@@ -73,7 +86,7 @@ public class ClassroomDaoImpl implements ClassroomDao {
         Connection connection = null;
         PreparedStatement statement = null;
         try {
-            connection = getConnection();
+            connection = dataSource.getConnection();
             statement = connection.prepareStatement("UPDATE classrooms SET number=?,location=?,capacity=? WHERE id=?");
             statement.setString(1, classroom.getNumber());
             statement.setString(2, classroom.getLocation());
@@ -107,7 +120,7 @@ public class ClassroomDaoImpl implements ClassroomDao {
         Connection connection = null;
         PreparedStatement statement = null;
         try {
-            connection = getConnection();
+            connection = dataSource.getConnection();
             statement = connection.prepareStatement("DELETE FROM classrooms WHERE id=?");
             statement.setInt(1, id);
             statement.execute();
@@ -140,7 +153,7 @@ public class ClassroomDaoImpl implements ClassroomDao {
         ResultSet resultSet = null;
         Classroom classroom = null;
         try {
-            connection = getConnection();
+            connection = dataSource.getConnection();
             statement = connection.prepareStatement("SELECT * FROM classrooms WHERE id=?");
             statement.setInt(1, id);
             resultSet = statement.executeQuery();
@@ -188,7 +201,7 @@ public class ClassroomDaoImpl implements ClassroomDao {
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try {
-            connection = getConnection();
+            connection = dataSource.getConnection();
             statement = connection.prepareStatement("SELECT * FROM classrooms");
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
@@ -236,7 +249,7 @@ public class ClassroomDaoImpl implements ClassroomDao {
         ResultSet resultSet = null;
         Classroom classroom = null;
         try {
-            connection = getConnection();
+            connection = dataSource.getConnection();
             statement = connection.prepareStatement("SELECT * FROM classrooms WHERE UPPER(number) LIKE UPPER(?)");
             statement.setString(1, number);
             resultSet = statement.executeQuery();
@@ -284,7 +297,7 @@ public class ClassroomDaoImpl implements ClassroomDao {
         ResultSet resultSet = null;
         List<Classroom> result = new ArrayList<>();
         try {
-            connection = getConnection();
+            connection = dataSource.getConnection();
             statement = connection.prepareStatement("SELECT * FROM classrooms WHERE id NOT IN " +
                     "(SELECT r.id FROM lessons l INNER JOIN classrooms r ON l.room_id = r.id WHERE l.week_day=? and l.day_time=?)");
             statement.setString(1, dayOfWeek.toString());
