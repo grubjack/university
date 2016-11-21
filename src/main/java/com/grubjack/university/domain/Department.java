@@ -33,7 +33,7 @@ public class Department implements Comparable<Department> {
     @JoinColumn(name = "faculty_id", nullable = false)
     private Faculty faculty;
 
-
+    @Transient
     private PersonDao<Teacher> teacherDao = DaoFactory.getInstance().getTeacherDao();
 
     private static Logger log = LoggerFactory.getLogger(Department.class);

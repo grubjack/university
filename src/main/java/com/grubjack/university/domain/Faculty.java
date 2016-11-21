@@ -36,10 +36,16 @@ public class Faculty implements Comparable<Faculty> {
     @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "faculty")
     private List<Group> groups;
 
-
+    @Transient
     private Timetable timetable;
+
+    @Transient
     private DepartmentDao departmentDao = DaoFactory.getInstance().getDepartmentDao();
+
+    @Transient
     private GroupDao groupDao = DaoFactory.getInstance().getGroupDao();
+
+    @Transient
     private LessonDao lessonDao = DaoFactory.getInstance().getLessonDao();
 
     public Faculty() {

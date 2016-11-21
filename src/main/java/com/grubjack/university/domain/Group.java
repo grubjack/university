@@ -33,6 +33,7 @@ public class Group implements Comparable<Group> {
 
     private static Logger log = LoggerFactory.getLogger(Group.class);
 
+    @Transient
     private PersonDao<Student> studentDao = DaoFactory.getInstance().getStudentDao();
 
     public Group() {
