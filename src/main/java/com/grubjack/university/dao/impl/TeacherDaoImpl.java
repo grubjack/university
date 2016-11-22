@@ -20,7 +20,7 @@ import java.util.List;
  * Created by grubjack on 03.11.2016.
  */
 
-@Repository
+@Repository("teacherDao")
 @Transactional
 public class TeacherDaoImpl implements PersonDao<Teacher> {
 
