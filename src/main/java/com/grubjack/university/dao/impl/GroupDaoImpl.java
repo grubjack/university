@@ -5,411 +5,128 @@ import com.grubjack.university.domain.DayOfWeek;
 import com.grubjack.university.domain.Group;
 import com.grubjack.university.domain.Student;
 import com.grubjack.university.domain.TimeOfDay;
-import com.grubjack.university.exception.DaoException;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.*;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-
-import static com.grubjack.university.dao.DaoFactory.getConnection;
 
 /**
  * Created by grubjack on 03.11.2016.
  */
+
+@Repository("groupDao")
+@Transactional
 public class GroupDaoImpl implements GroupDao {
     private static Logger log = LoggerFactory.getLogger(GroupDaoImpl.class);
 
-    public GroupDaoImpl() {
+    @Autowired
+    private SessionFactory sessionFactory;
+
+    private Session getCurrentSession() {
+        return sessionFactory.getCurrentSession();
     }
 
     @Override
-    public void create(Group group, int facultyId) throws DaoException {
-        log.info("Creating new group " + group.getName());
-        Connection connection = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-        try {
-            connection = getConnection();
-            statement = connection.prepareStatement("INSERT INTO groups (name, faculty_id) VALUES (?,?)", Statement.RETURN_GENERATED_KEYS);
-            statement.setString(1, group.getName());
-            statement.setInt(2, facultyId);
-            statement.execute();
-            resultSet = statement.getGeneratedKeys();
-            if (resultSet.next()) {
-                group.setId(resultSet.getInt(1));
-                log.info("Group is created with id = " + group.getId());
-            }
-        } catch (SQLException e) {
-            log.error("Can't create group", e);
-            throw new DaoException("Can't create group", e);
-        } finally {
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                    log.error("Can't close result set", e);
-                }
-            }
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    log.error("Can't close statement", e);
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    log.error("Can't close connection", e);
-                }
-            }
+    public void create(Group group, int facultyId) {
+        if (group != null && group.getFaculty() != null && group.getFaculty().getId() == facultyId) {
+            log.info("Creating new group " + group.getName());
+            getCurrentSession().save(group);
+            log.info("Group is created with id = " + group.getId());
         }
     }
 
     @Override
-    public void update(Group group, int facultyId) throws DaoException {
+    public void update(Group group, int facultyId) {
         log.info("Updating group with id " + group.getId());
-        Connection connection = null;
-        PreparedStatement statement = null;
-        try {
-            connection = getConnection();
-            statement = connection.prepareStatement("UPDATE groups SET name=?,faculty_id=? WHERE id=?");
-            statement.setString(1, group.getName());
-            statement.setInt(2, facultyId);
-            statement.setInt(3, group.getId());
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            log.error("Can't update group", e);
-            throw new DaoException("Can't update group", e);
-        } finally {
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    log.error("Can't close statement", e);
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    log.error("Can't close connection", e);
-                }
+        if (group != null) {
+            Group groupToUpdate = find(group.getId());
+            if (groupToUpdate != null && groupToUpdate.getFaculty() != null && groupToUpdate.getFaculty().getId() == facultyId) {
+                groupToUpdate.setName(group.getName());
+                log.info("Updating group with id " + group.getId());
+                getCurrentSession().update(groupToUpdate);
             }
         }
     }
 
     @Override
-    public void delete(int id) throws DaoException {
-        log.info("Deleting group with id " + id);
-        Connection connection = null;
-        PreparedStatement statement = null;
-        try {
-            connection = getConnection();
-            statement = connection.prepareStatement("DELETE FROM groups WHERE id=?");
-            statement.setInt(1, id);
-            statement.execute();
-        } catch (SQLException e) {
-            log.error("Can't delete group", e);
-            throw new DaoException("Can't delete group", e);
-        } finally {
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    log.error("Can't close statement", e);
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    log.error("Can't close connection", e);
-                }
-            }
+    public void delete(int id) {
+        Group group = find(id);
+        if (group != null) {
+            log.info("Deleting group with id " + id);
+            getCurrentSession().delete(group);
         }
     }
 
     @Override
-    public Group find(int id) throws DaoException {
+    @Transactional(readOnly = true)
+    public Group find(int id) {
         log.info("Finding group with id " + id);
-        Connection connection = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-        Group group = null;
-        try {
-            connection = getConnection();
-            statement = connection.prepareStatement("SELECT * FROM groups WHERE id=?");
-            statement.setInt(1, id);
-            resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                group = new Group();
-                group.setId(id);
-                group.setName(resultSet.getString("name"));
-            }
-        } catch (SQLException e) {
-            log.error("Can't find group", e);
-            throw new DaoException("Can't find group", e);
-        } finally {
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                    log.error("Can't close result set", e);
-                }
-            }
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    log.error("Can't close statement", e);
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    log.error("Can't close connection", e);
-                }
-            }
-        }
-        return group;
+        return getCurrentSession().get(Group.class, id);
     }
 
     @Override
-    public Group findByStudent(Student student) throws DaoException {
-        log.info("Finding group by student with id " + student.getId());
-        Connection connection = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-        Group group = null;
-        try {
-            connection = getConnection();
-            statement = connection.prepareStatement("SELECT g.* FROM groups g JOIN students s ON g.id = s.group_id WHERE s.id=?");
-            statement.setInt(1, student.getId());
-            resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                group = new Group();
-                group.setId(resultSet.getInt("id"));
-                group.setName(resultSet.getString("name"));
-            }
-        } catch (SQLException e) {
-            log.error("Can't find group", e);
-            throw new DaoException("Can't find group", e);
-        } finally {
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                    log.error("Can't close result set", e);
-                }
-            }
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    log.error("Can't close statement", e);
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    log.error("Can't close connection", e);
-                }
+    @Transactional(readOnly = true)
+    public Group findByStudent(Student student) {
+        if (student != null) {
+            log.info("Finding group by student with id " + student.getId());
+            Student findStudent = getCurrentSession().get(Student.class, student.getId());
+            if (findStudent != null) {
+                return findStudent.getGroup();
             }
         }
-        return group;
+        return null;
     }
 
     @Override
-    public List<Group> findAll() throws DaoException {
+    @Transactional(readOnly = true)
+    public List<Group> findAll() {
         log.info("Finding all groups");
-        List<Group> result = new ArrayList<>();
-        Connection connection = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-        try {
-            connection = getConnection();
-            statement = connection.prepareStatement("SELECT * FROM groups");
-            resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                Group group = new Group();
-                group.setId(resultSet.getInt("id"));
-                group.setName(resultSet.getString("name"));
-                result.add(group);
-            }
-        } catch (SQLException e) {
-            log.error("Can't find groups", e);
-            throw new DaoException("Can't find groups", e);
-        } finally {
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                    log.error("Can't close result set", e);
-                }
-            }
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    log.error("Can't close statement", e);
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    log.error("Can't close connection", e);
-                }
-            }
-        }
-        return result;
+        return getCurrentSession().createQuery("from Group").list();
     }
 
     @Override
-    public Group findByName(String name) throws DaoException {
-        log.info("Finding group with name " + name);
-        Connection connection = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-        Group group = null;
-        try {
-            connection = getConnection();
-            statement = connection.prepareStatement("SELECT * FROM groups WHERE UPPER(name) LIKE UPPER(?)");
-            statement.setString(1, name);
-            resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                group = new Group();
-                group.setId(resultSet.getInt("id"));
-                group.setName(resultSet.getString("name"));
-            }
-        } catch (SQLException e) {
-            log.error("Can't find group by name", e);
-            throw new DaoException("Can't find group by name", e);
-        } finally {
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                    log.error("Can't close result set", e);
-                }
-            }
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    log.error("Can't close statement", e);
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    log.error("Can't close connection", e);
-                }
-            }
+    @Transactional(readOnly = true)
+    public Group findByName(String name) {
+        if (name != null) {
+            log.info("Finding group with name " + name);
+            return (Group) getCurrentSession().createQuery("from Group where lower(name)=:name")
+                    .setParameter("name", name.toLowerCase()).uniqueResult();
         }
-        return group;
+        return null;
     }
 
     @Override
-    public List<Group> findAll(int facultyId) throws DaoException {
+    @Transactional(readOnly = true)
+    public List<Group> findAll(int facultyId) {
         log.info("Finding all groups with facultyId " + facultyId);
-        List<Group> result = new ArrayList<>();
-        Connection connection = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-        try {
-            connection = getConnection();
-            statement = connection.prepareStatement("SELECT * FROM groups WHERE faculty_id=?");
-            statement.setInt(1, facultyId);
-            resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                Group group = new Group();
-                group.setId(resultSet.getInt("id"));
-                group.setName(resultSet.getString("name"));
-                result.add(group);
-            }
-        } catch (SQLException e) {
-            log.error("Can't find faculty groups", e);
-            throw new DaoException("Can't find faculty groups", e);
-        } finally {
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                    log.error("Can't close result set", e);
-                }
-            }
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    log.error("Can't close statement", e);
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    log.error("Can't close connection", e);
-                }
-            }
-        }
-        return result;
+        return getCurrentSession().createQuery("from Group g where g.faculty.id=:facultyId").setParameter("facultyId", facultyId).list();
     }
 
     @Override
-    public List<Group> findAvailable(DayOfWeek dayOfWeek, TimeOfDay timeOfDay) throws DaoException {
-        log.info("Finding available groups on " + dayOfWeek.toString() + " at " + timeOfDay.toString());
-        List<Group> result = new ArrayList<>();
-        Connection connection = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-        try {
-            connection = getConnection();
-            statement = connection.prepareStatement("SELECT * FROM groups WHERE id NOT IN " +
-                    "(SELECT g.id FROM lessons l INNER JOIN groups g ON l.group_id = g.id WHERE l.week_day=? and l.day_time=?)");
-            statement.setString(1, dayOfWeek.toString());
-            statement.setString(2, timeOfDay.toString());
-            resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                Group group = new Group();
-                group.setId(resultSet.getInt("id"));
-                group.setName(resultSet.getString("name"));
-                result.add(group);
-            }
-        } catch (SQLException e) {
-            log.error("Can't find available groups", e);
-            throw new DaoException("Can't find available groups", e);
-        } finally {
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                    log.error("Can't close result set", e);
-                }
-            }
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    log.error("Can't close statement", e);
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    log.error("Can't close connection", e);
-                }
-            }
+    @Transactional(readOnly = true)
+    public List<Group> findAvailable(DayOfWeek dayOfWeek, TimeOfDay timeOfDay) {
+        if (dayOfWeek != null && timeOfDay != null) {
+            log.info("Finding available groups on " + dayOfWeek.toString() + " at " + timeOfDay.toString());
+            return getCurrentSession().createQuery("from Group where id not in " +
+                    "(SELECT g.id from Lesson l inner join l.group g WHERE l.dayOfWeek=:day AND l.timeOfDay=:time)")
+                    .setParameter("day", dayOfWeek)
+                    .setParameter("time", timeOfDay)
+                    .list();
         }
-        return result;
+        return Collections.emptyList();
+    }
+
+    public SessionFactory getSessionFactory() {
+        return sessionFactory;
+    }
+
+    public void setSessionFactory(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
     }
 }

@@ -3,7 +3,6 @@ package com.grubjack.university.dao;
 import com.grubjack.university.domain.Classroom;
 import com.grubjack.university.domain.DayOfWeek;
 import com.grubjack.university.domain.TimeOfDay;
-import com.grubjack.university.exception.DaoException;
 
 import java.util.List;
 
@@ -12,11 +11,11 @@ import java.util.List;
  */
 public interface ClassroomDao extends BaseDao<Classroom> {
 
-    void create(Classroom classroom) throws DaoException;
+    void create(Classroom classroom);
 
-    void update(Classroom classroom) throws DaoException;
+    void update(Classroom classroom);
 
-    Classroom findByNumber(String number) throws DaoException;
+    Classroom findByNumber(String number);
 
-    List<Classroom> findAvailable(DayOfWeek dayOfWeek, TimeOfDay timeOfDay) throws DaoException;
+    List<Classroom> findAvailable(DayOfWeek dayOfWeek, TimeOfDay timeOfDay);
 }

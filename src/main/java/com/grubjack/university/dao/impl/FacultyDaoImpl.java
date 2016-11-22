@@ -2,409 +2,130 @@ package com.grubjack.university.dao.impl;
 
 import com.grubjack.university.dao.FacultyDao;
 import com.grubjack.university.domain.Faculty;
-import com.grubjack.university.exception.DaoException;
+import com.grubjack.university.domain.Group;
+import com.grubjack.university.domain.Student;
+import com.grubjack.university.domain.Teacher;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
-
-import static com.grubjack.university.dao.DaoFactory.getConnection;
 
 /**
  * Created by grubjack on 03.11.2016.
  */
+
+@Repository("facultyDao")
+@Transactional
 public class FacultyDaoImpl implements FacultyDao {
 
     private static Logger log = LoggerFactory.getLogger(FacultyDaoImpl.class);
 
+    @Autowired
+    private SessionFactory sessionFactory;
+
+    private Session getCurrentSession() {
+        return sessionFactory.getCurrentSession();
+    }
+
     @Override
-    public void create(Faculty faculty) throws DaoException {
-        log.info("Creating new faculty " + faculty.getName());
-        Connection connection = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-        try {
-            connection = getConnection();
-            statement = connection.prepareStatement("INSERT INTO faculties (name) VALUES (?)", Statement.RETURN_GENERATED_KEYS);
-            statement.setString(1, faculty.getName());
-            statement.execute();
-            resultSet = statement.getGeneratedKeys();
-            if (resultSet.next()) {
-                faculty.setId(resultSet.getInt(1));
-                log.info("Faculty is created with id = " + faculty.getId());
-            }
-        } catch (SQLException e) {
-            log.error("Can't create faculty", e);
-            throw new DaoException("Can't create faculty", e);
-        } finally {
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                    log.error("Can't close result set", e);
-                }
-            }
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    log.error("Can't close statement", e);
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    log.error("Can't close connection", e);
-                }
+    public void create(Faculty faculty) {
+        if (faculty != null) {
+            log.info("Creating new faculty " + faculty.getName());
+            getCurrentSession().save(faculty);
+            log.info("Faculty is created with id = " + faculty.getId());
+        }
+    }
+
+    @Override
+    public void update(Faculty faculty) {
+        if (faculty != null) {
+            Faculty facultyToUpdate = find(faculty.getId());
+            if (facultyToUpdate != null) {
+                facultyToUpdate.setName(faculty.getName());
+                log.info("Updating faculty with id " + faculty.getId());
+                getCurrentSession().update(facultyToUpdate);
             }
         }
     }
 
     @Override
-    public void update(Faculty faculty) throws DaoException {
-        log.info("Updating faculty with id " + faculty.getId());
-        Connection connection = null;
-        PreparedStatement statement = null;
-        try {
-            connection = getConnection();
-            statement = connection.prepareStatement("UPDATE faculties SET name=? WHERE id=?");
-            statement.setString(1, faculty.getName());
-            statement.setInt(2, faculty.getId());
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            log.error("Can't update faculty", e);
-            throw new DaoException("Can't update faculty", e);
-        } finally {
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    log.error("Can't close statement", e);
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    log.error("Can't close connection", e);
-                }
-            }
+    public void delete(int id) {
+        Faculty faculty = find(id);
+        if (faculty != null) {
+            log.info("Deleting faculty with id " + id);
+            getCurrentSession().delete(faculty);
         }
     }
 
     @Override
-    public void delete(int id) throws DaoException {
-        log.info("Deleting faculty with id " + id);
-        Connection connection = null;
-        PreparedStatement statement = null;
-        try {
-            connection = getConnection();
-            statement = connection.prepareStatement("DELETE FROM faculties WHERE id=?");
-            statement.setInt(1, id);
-            statement.execute();
-        } catch (SQLException e) {
-            log.error("Can't delete faculty", e);
-            throw new DaoException("Can't delete faculty", e);
-        } finally {
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    log.error("Can't close statement", e);
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    log.error("Can't close connection", e);
-                }
-            }
-        }
-    }
-
-    @Override
-    public Faculty find(int id) throws DaoException {
+    @Transactional(readOnly = true)
+    public Faculty find(int id) {
         log.info("Finding faculty with id " + id);
-        Connection connection = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-        Faculty faculty = null;
-        try {
-            connection = getConnection();
-            statement = connection.prepareStatement("SELECT * FROM faculties WHERE id=?");
-            statement.setInt(1, id);
-            resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                faculty = new Faculty();
-                faculty.setId(id);
-                faculty.setName(resultSet.getString("name"));
-            }
-        } catch (SQLException e) {
-            log.error("Can't find faculty", e);
-            throw new DaoException("Can't find faculty", e);
-        } finally {
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                    log.error("Can't close result set", e);
-                }
-            }
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    log.error("Can't close statement", e);
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    log.error("Can't close connection", e);
-                }
-            }
-        }
-        return faculty;
+        return getCurrentSession().get(Faculty.class, id);
     }
 
     @Override
-    public List<Faculty> findAll() throws DaoException {
+    @Transactional(readOnly = true)
+    public List<Faculty> findAll() {
         log.info("Finding all faculties");
-        List<Faculty> result = new ArrayList<>();
-        Connection connection = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-        try {
-            connection = getConnection();
-            statement = connection.prepareStatement("SELECT * FROM faculties");
-            resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                Faculty faculty = new Faculty();
-                faculty.setId(resultSet.getInt("id"));
-                faculty.setName(resultSet.getString("name"));
-                result.add(faculty);
-            }
-        } catch (SQLException e) {
-            log.error("Can't find faculties", e);
-            throw new DaoException("Can't find faculties", e);
-        } finally {
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                    log.error("Can't close result set", e);
-                }
-            }
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    log.error("Can't close statement", e);
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    log.error("Can't close connection", e);
-                }
-            }
-        }
-        return result;
+        return getCurrentSession().createQuery("from Faculty").list();
     }
 
     @Override
-    public Faculty findByName(String name) throws DaoException {
-        log.info("Finding faculty with name " + name);
-        Connection connection = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-        Faculty faculty = null;
-        try {
-            connection = getConnection();
-            statement = connection.prepareStatement("SELECT * FROM faculties WHERE UPPER(name) LIKE UPPER(?)");
-            statement.setString(1, name);
-            resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                faculty = new Faculty();
-                faculty.setId(resultSet.getInt("id"));
-                faculty.setName(resultSet.getString("name"));
-            }
-        } catch (SQLException e) {
-            log.error("Can't find faculty by name", e);
-            throw new DaoException("Can't find faculty by name", e);
-        } finally {
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                    log.error("Can't close result set", e);
-                }
-            }
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    log.error("Can't close statement", e);
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    log.error("Can't close connection", e);
-                }
-            }
+    @Transactional(readOnly = true)
+    public Faculty findByName(String name) {
+        if (name != null) {
+            log.info("Finding faculty with name " + name);
+            return (Faculty) getCurrentSession().createQuery("from Faculty where lower(name)=:name")
+                    .setParameter("name", name.toLowerCase())
+                    .uniqueResult();
         }
-        return faculty;
+        return null;
     }
 
     @Override
-    public Faculty findByGroup(int groupId) throws DaoException {
+    @Transactional(readOnly = true)
+    public Faculty findByGroup(int groupId) {
         log.info("Finding faculty by group id " + groupId);
-        Connection connection = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-        Faculty faculty = null;
-        try {
-            connection = getConnection();
-            statement = connection.prepareStatement("SELECT f.* FROM faculties f INNER JOIN " +
-                    "groups g ON f.id=g.faculty_id WHERE g.id=?");
-            statement.setInt(1, groupId);
-            resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                faculty = new Faculty();
-                faculty.setId(resultSet.getInt("id"));
-                faculty.setName(resultSet.getString("name"));
-            }
-        } catch (SQLException e) {
-            log.error("Can't find faculty by group id", e);
-            throw new DaoException("Can't find faculty by group id", e);
-        } finally {
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                    log.error("Can't close result set", e);
-                }
-            }
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    log.error("Can't close statement", e);
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    log.error("Can't close connection", e);
-                }
-            }
+        Group group = getCurrentSession().get(Group.class, groupId);
+        if (group != null) {
+            return group.getFaculty();
         }
-        return faculty;
+        return null;
     }
 
     @Override
-    public Faculty findByStudent(int studentId) throws DaoException {
+    @Transactional(readOnly = true)
+    public Faculty findByStudent(int studentId) {
         log.info("Finding faculty by student id " + studentId);
-        Connection connection = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-        Faculty faculty = null;
-        try {
-            connection = getConnection();
-            statement = connection.prepareStatement("SELECT f.* FROM faculties f INNER JOIN " +
-                    "groups g ON f.id=g.faculty_id INNER JOIN " +
-                    "students s ON g.id=s.group_id WHERE s.id=?");
-            statement.setInt(1, studentId);
-            resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                faculty = new Faculty();
-                faculty.setId(resultSet.getInt("id"));
-                faculty.setName(resultSet.getString("name"));
-            }
-        } catch (SQLException e) {
-            log.error("Can't find faculty by student id", e);
-            throw new DaoException("Can't find faculty by student id", e);
-        } finally {
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                    log.error("Can't close result set", e);
-                }
-            }
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    log.error("Can't close statement", e);
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    log.error("Can't close connection", e);
-                }
-            }
+        Student student = getCurrentSession().get(Student.class, studentId);
+        if (student != null && student.getGroup() != null) {
+            return student.getGroup().getFaculty();
         }
-        return faculty;
+        return null;
     }
 
     @Override
-    public Faculty findByTeacher(int teacherId) throws DaoException {
+    @Transactional(readOnly = true)
+    public Faculty findByTeacher(int teacherId) {
         log.info("Finding faculty by teacher id " + teacherId);
-        Connection connection = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-        Faculty faculty = null;
-        try {
-            connection = getConnection();
-            statement = connection.prepareStatement("SELECT f.* FROM faculties f INNER JOIN " +
-                    "departments d ON f.id=d.faculty_id INNER JOIN " +
-                    "teachers t ON d.id = t.department_id WHERE t.id=?");
-            statement.setInt(1, teacherId);
-            resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                faculty = new Faculty();
-                faculty.setId(resultSet.getInt("id"));
-                faculty.setName(resultSet.getString("name"));
-            }
-        } catch (SQLException e) {
-            log.error("Can't find faculty by teacher id", e);
-            throw new DaoException("Can't find faculty by teacher id", e);
-        } finally {
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                    log.error("Can't close result set", e);
-                }
-            }
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    log.error("Can't close statement", e);
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    log.error("Can't close connection", e);
-                }
-            }
+        Teacher teacher = getCurrentSession().get(Teacher.class, teacherId);
+        if (teacher != null && teacher.getDepartment() != null) {
+            return teacher.getDepartment().getFaculty();
         }
-        return faculty;
+        return null;
     }
 
+    public SessionFactory getSessionFactory() {
+        return sessionFactory;
+    }
+
+    public void setSessionFactory(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 }

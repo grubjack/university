@@ -1,7 +1,5 @@
 package com.grubjack.university.dao;
 
-import com.grubjack.university.exception.DaoException;
-
 import java.util.List;
 
 /**
@@ -9,9 +7,9 @@ import java.util.List;
  */
 public interface BaseDao<T> {
 
-    void delete(int id) throws DaoException;
+    void delete(int id);
 
-    T find(int id) throws DaoException;
+    T find(int id);
 
-    List<T> findAll() throws DaoException;
+    List<T> findAll();
 }

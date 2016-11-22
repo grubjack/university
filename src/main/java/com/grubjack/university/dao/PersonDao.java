@@ -2,7 +2,6 @@ package com.grubjack.university.dao;
 
 import com.grubjack.university.domain.DayOfWeek;
 import com.grubjack.university.domain.TimeOfDay;
-import com.grubjack.university.exception.DaoException;
 
 import java.util.List;
 
@@ -11,24 +10,24 @@ import java.util.List;
  */
 public interface PersonDao<T> extends BaseDao<T> {
 
-    void create(T t, int unitId) throws DaoException;
+    void create(T t, int unitId);
 
-    void update(T t, int unitId) throws DaoException;
+    void update(T t, int unitId);
 
-    List<T> findByFirstName(String firstName) throws DaoException;
+    List<T> findByFirstName(String firstName);
 
-    List<T> findByFirstName(int unitId, String firstName) throws DaoException;
+    List<T> findByFirstName(int unitId, String firstName);
 
-    List<T> findByLastName(String lastName) throws DaoException;
+    List<T> findByLastName(String lastName);
 
-    List<T> findByLastName(int unitId, String lastName) throws DaoException;
+    List<T> findByLastName(int unitId, String lastName);
 
-    List<T> findByName(String firstName, String lastName) throws DaoException;
+    List<T> findByName(String firstName, String lastName);
 
-    List<T> findByName(int unitId, String firstName, String lastName) throws DaoException;
+    List<T> findByName(int unitId, String firstName, String lastName);
 
-    List<T> findAll(int unitId) throws DaoException;
+    List<T> findAll(int unitId);
 
-    List<T> findAvailable(DayOfWeek dayOfWeek, TimeOfDay timeOfDay) throws DaoException;
+    List<T> findAvailable(DayOfWeek dayOfWeek, TimeOfDay timeOfDay);
 
 }
