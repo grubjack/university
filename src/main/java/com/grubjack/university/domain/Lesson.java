@@ -27,16 +27,15 @@ public class Lesson implements Comparable<Lesson> {
     private Group group;
 
     @ManyToOne
-    @JoinColumn(name = "classroom_id", nullable = false)
+    @JoinColumn(name = "room_id", nullable = false)
     private Classroom classroom;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "week_day")
     private DayOfWeek dayOfWeek;
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = DayTimeEnumConverter.class)
     @Column(name = "day_time")
-    @Convert(converter = DayTimeEnumConverter.class )
     private TimeOfDay timeOfDay;
 
     public Lesson() {
