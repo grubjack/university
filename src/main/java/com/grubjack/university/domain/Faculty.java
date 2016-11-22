@@ -4,6 +4,8 @@ import com.grubjack.university.dao.DaoFactory;
 import com.grubjack.university.dao.DepartmentDao;
 import com.grubjack.university.dao.GroupDao;
 import com.grubjack.university.dao.LessonDao;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -25,10 +27,12 @@ public class Faculty implements Comparable<Faculty> {
     @Column(name = "name", nullable = false, unique = true)
     private String name;
 
-    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "faculty")
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "faculty",fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SELECT)
     private List<Department> departments;
 
-    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "faculty")
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "faculty",fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SELECT)
     private List<Group> groups;
 
     @Transient

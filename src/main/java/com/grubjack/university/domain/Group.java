@@ -2,6 +2,8 @@ package com.grubjack.university.domain;
 
 import com.grubjack.university.dao.DaoFactory;
 import com.grubjack.university.dao.PersonDao;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.util.List;
@@ -20,7 +22,8 @@ public class Group implements Comparable<Group> {
     @Column(name = "name", nullable = false, unique = true)
     private String name;
 
-    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "group")
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "group", fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SELECT)
     private List<Student> students;
 
     @ManyToOne

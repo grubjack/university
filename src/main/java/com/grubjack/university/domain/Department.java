@@ -2,6 +2,8 @@ package com.grubjack.university.domain;
 
 import com.grubjack.university.dao.DaoFactory;
 import com.grubjack.university.dao.PersonDao;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.util.List;
@@ -22,7 +24,8 @@ public class Department implements Comparable<Department> {
     private String name;
 
 
-    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "department")
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "department",fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SELECT)
     private List<Teacher> teachers;
 
     @ManyToOne
