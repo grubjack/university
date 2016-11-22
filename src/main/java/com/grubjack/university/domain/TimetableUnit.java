@@ -2,7 +2,6 @@ package com.grubjack.university.domain;
 
 import com.grubjack.university.dao.DaoFactory;
 import com.grubjack.university.dao.LessonDao;
-import com.grubjack.university.exception.DaoException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,52 +59,35 @@ public class TimetableUnit {
 
     public void createLesson(Lesson lesson) {
         if (lesson != null && !getLessons().contains(lesson)) {
-            try {
-                getLessons().add(lesson);
-                University.getInstance().getLessons().add(lesson);
-                University.getInstance().setTimetables(null);
-                lessonDao.create(lesson);
-            } catch (DaoException e) {
-                log.warn("Can't create lesson");
-            }
+            getLessons().add(lesson);
+            University.getInstance().getLessons().add(lesson);
+            University.getInstance().setTimetables(null);
+            lessonDao.create(lesson);
         }
     }
 
     public void deleteLesson(Lesson lesson) {
         if (lesson != null) {
-            try {
-                getLessons().remove(lesson);
-                University.getInstance().getLessons().remove(lesson);
-                University.getInstance().setTimetables(null);
-                lessonDao.delete(lesson.getId());
-            } catch (DaoException e) {
-                log.warn("Can't delete lesson");
-            }
+            getLessons().remove(lesson);
+            University.getInstance().getLessons().remove(lesson);
+            University.getInstance().setTimetables(null);
+            lessonDao.delete(lesson.getId());
         }
     }
 
     public void updateLesson(Lesson lesson) {
-        Lesson oldLesson = null;
-        try {
-            oldLesson = lessonDao.find(lesson.getId());
-        } catch (DaoException e) {
-            log.warn("Can't find lesson");
-        }
+        Lesson oldLesson = lessonDao.find(lesson.getId());
         if (oldLesson != null) {
-            try {
-                int index = getLessons().indexOf(oldLesson);
-                int index2 = University.getInstance().getLessons().indexOf(oldLesson);
-                if (index != -1) {
-                    getLessons().set(index, lesson);
-                }
-                if (index2 != -1) {
-                    University.getInstance().getLessons().set(index2, lesson);
-                }
-                University.getInstance().setTimetables(null);
-                lessonDao.update(lesson);
-            } catch (DaoException e) {
-                log.warn("Can't update lesson");
+            int index = getLessons().indexOf(oldLesson);
+            int index2 = University.getInstance().getLessons().indexOf(oldLesson);
+            if (index != -1) {
+                getLessons().set(index, lesson);
             }
+            if (index2 != -1) {
+                University.getInstance().getLessons().set(index2, lesson);
+            }
+            University.getInstance().setTimetables(null);
+            lessonDao.update(lesson);
         }
     }
 

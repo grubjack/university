@@ -2,12 +2,8 @@ package com.grubjack.university.domain;
 
 import com.grubjack.university.dao.DaoFactory;
 import com.grubjack.university.dao.PersonDao;
-import com.grubjack.university.exception.DaoException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.persistence.*;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -35,8 +31,6 @@ public class Department implements Comparable<Department> {
 
     @Transient
     private PersonDao<Teacher> teacherDao = DaoFactory.getInstance().getTeacherDao();
-
-    private static Logger log = LoggerFactory.getLogger(Department.class);
 
     public Department() {
     }
@@ -67,81 +61,49 @@ public class Department implements Comparable<Department> {
 
     public void createTeacher(Teacher teacher) {
         if (teacher != null && !getTeachers().contains(teacher)) {
-            try {
-                getTeachers().add(teacher);
-                University.getInstance().getTeachers().add(teacher);
-                University.getInstance().setLessons(null);
-                University.getInstance().setTimetables(null);
-                teacherDao.create(teacher, id);
-            } catch (DaoException e) {
-                log.warn("Can't create teacher");
-            }
+            getTeachers().add(teacher);
+            University.getInstance().getTeachers().add(teacher);
+            University.getInstance().setLessons(null);
+            University.getInstance().setTimetables(null);
+            teacherDao.create(teacher, id);
         }
     }
 
     public void deleteTeacher(Teacher teacher) {
         if (teacher != null) {
-            try {
-                getTeachers().remove(teacher);
-                University.getInstance().getTeachers().remove(teacher);
-                University.getInstance().setLessons(null);
-                University.getInstance().setTimetables(null);
-                teacherDao.delete(teacher.getId());
-            } catch (DaoException e) {
-                log.warn("Can't delete teacher");
-            }
+            getTeachers().remove(teacher);
+            University.getInstance().getTeachers().remove(teacher);
+            University.getInstance().setLessons(null);
+            University.getInstance().setTimetables(null);
+            teacherDao.delete(teacher.getId());
         }
     }
 
     public void updateTeacher(Teacher teacher) {
-        Teacher oldTeacher = null;
-        try {
-            oldTeacher = teacherDao.find(teacher.getId());
-        } catch (DaoException e) {
-            log.warn("Can't find teacher");
-        }
+        Teacher oldTeacher = teacherDao.find(teacher.getId());
         if (oldTeacher != null) {
-            try {
-                int index = getTeachers().indexOf(oldTeacher);
-                int index2 = University.getInstance().getTeachers().indexOf(oldTeacher);
-                if (index != -1) {
-                    getTeachers().set(index, teacher);
-                }
-                if (index2 != -1) {
-                    University.getInstance().getTeachers().set(index2, teacher);
-                }
-                teacherDao.update(teacher, id);
-            } catch (DaoException e) {
-                log.warn("Can't update teacher");
+            int index = getTeachers().indexOf(oldTeacher);
+            int index2 = University.getInstance().getTeachers().indexOf(oldTeacher);
+            if (index != -1) {
+                getTeachers().set(index, teacher);
             }
+            if (index2 != -1) {
+                University.getInstance().getTeachers().set(index2, teacher);
+            }
+            teacherDao.update(teacher, id);
         }
     }
 
     public List<Teacher> findTeachersByFirstName(String firstName) {
-        try {
-            return teacherDao.findByFirstName(id, firstName);
-        } catch (DaoException e) {
-            log.warn("Can't find teacher by firstname");
-        }
-        return Collections.emptyList();
+        return teacherDao.findByFirstName(id, firstName);
     }
 
     public List<Teacher> findTeachersByLastName(String lastName) {
-        try {
-            return teacherDao.findByLastName(id, lastName);
-        } catch (DaoException e) {
-            log.warn("Can't find teacher by lastname");
-        }
-        return Collections.emptyList();
+        return teacherDao.findByLastName(id, lastName);
     }
 
     public List<Teacher> findTeachersByName(String firstName, String lastName) {
-        try {
-            return teacherDao.findByName(id, firstName, lastName);
-        } catch (DaoException e) {
-            log.warn("Can't find teacher by name");
-        }
-        return Collections.emptyList();
+        return teacherDao.findByName(id, firstName, lastName);
     }
 
     public int getId() {
@@ -162,11 +124,7 @@ public class Department implements Comparable<Department> {
 
     public List<Teacher> getTeachers() {
         if (teachers == null) {
-            try {
-                teachers = teacherDao.findAll(id);
-            } catch (DaoException e) {
-                log.warn("Can't find teachers");
-            }
+            teachers = teacherDao.findAll(id);
         }
         return teachers;
     }
