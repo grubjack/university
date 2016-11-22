@@ -3,15 +3,6 @@ package com.grubjack.university.dao;
 import com.grubjack.university.dao.impl.*;
 import com.grubjack.university.domain.Student;
 import com.grubjack.university.domain.Teacher;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.SQLException;
 
 /**
  * Created by grubjack on 03.11.2016.
@@ -19,21 +10,7 @@ import java.sql.SQLException;
 public final class DaoFactory {
     private static DaoFactory instance;
 
-    private static Logger log = LoggerFactory.getLogger(DaoFactory.class);
-
     private DaoFactory() {
-    }
-
-    public static Connection getConnection() {
-        Connection connection = null;
-        try {
-            Context context = new InitialContext();
-            DataSource dataSource = (DataSource) context.lookup("java:comp/env/jdbc/UniversityDB");
-            connection = dataSource.getConnection();
-        } catch (NamingException | SQLException e) {
-            log.error("Can't find datasource in jndi context", e);
-        }
-        return connection;
     }
 
     public static DaoFactory getInstance() {
