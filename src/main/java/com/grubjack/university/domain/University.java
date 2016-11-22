@@ -1,9 +1,8 @@
 package com.grubjack.university.domain;
 
 import com.grubjack.university.dao.*;
-import com.grubjack.university.exception.DaoException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,13 +12,12 @@ import java.util.List;
 /**
  * Created by grubjack on 28.10.2016.
  */
+@Service
 public class University {
-    private static University instance;
     private String name;
 
     private List<Classroom> rooms;
     private List<Faculty> faculties;
-
     private List<Department> departments;
     private List<Group> groups;
     private List<Student> students;
@@ -27,185 +25,140 @@ public class University {
     private List<Lesson> lessons;
     private List<Timetable> timetables;
 
-    private DepartmentDao departmentDao = DaoFactory.getInstance().getDepartmentDao();
-    private FacultyDao facultyDao = DaoFactory.getInstance().getFacultyDao();
-    private ClassroomDao classroomDao = DaoFactory.getInstance().getClassroomDao();
-    private GroupDao groupDao = DaoFactory.getInstance().getGroupDao();
-    private PersonDao<Teacher> teacherDao = DaoFactory.getInstance().getTeacherDao();
-    private PersonDao<Student> studentDao = DaoFactory.getInstance().getStudentDao();
-    private LessonDao lessonDao = DaoFactory.getInstance().getLessonDao();
+    @Autowired
+    private DepartmentDao departmentDao;
+    @Autowired
+    private FacultyDao facultyDao;
+    @Autowired
+    private ClassroomDao classroomDao;
+    @Autowired
+    private GroupDao groupDao;
+    @Autowired
+    private PersonDao<Teacher> teacherDao;
+    @Autowired
+    private PersonDao<Student> studentDao;
+    @Autowired
+    private LessonDao lessonDao;
 
-    private static Logger log = LoggerFactory.getLogger(University.class);
-
-    private University() {
-    }
-
-    public static University getInstance() {
-        if (instance == null) {
-            instance = new University();
-        }
-        return instance;
+    public University() {
     }
 
     public void createRoom(Classroom classroom) {
         if (classroom != null && !getRooms().contains(classroom)) {
-            try {
-                getRooms().add(classroom);
-                lessons = null;
-                timetables = null;
-                classroomDao.create(classroom);
-            } catch (DaoException e) {
-                log.warn("Can't create classroom");
-            }
+            getRooms().add(classroom);
+            lessons = null;
+            timetables = null;
+            classroomDao.create(classroom);
         }
     }
 
     public void deleteRoom(Classroom classroom) {
         if (classroom != null) {
-            try {
-                getRooms().remove(classroom);
-                lessons = null;
-                timetables = null;
-                classroomDao.delete(classroom.getId());
-            } catch (DaoException e) {
-                log.warn("Can't delete classroom");
-            }
+            getRooms().remove(classroom);
+            lessons = null;
+            timetables = null;
+            classroomDao.delete(classroom.getId());
         }
     }
 
     public void updateRoom(Classroom classroom) {
-        Classroom oldRoom = null;
-        try {
-            oldRoom = classroomDao.find(classroom.getId());
-        } catch (DaoException e) {
-            log.warn("Can't find classroom");
-        }
+        Classroom oldRoom = classroomDao.find(classroom.getId());
         if (oldRoom != null) {
-            try {
-                getRooms().remove(oldRoom);
-                getRooms().add(classroom);
-                lessons = null;
-                timetables = null;
-                classroomDao.update(classroom);
-            } catch (DaoException e) {
-                log.warn("Can't update classroom");
-            }
+            getRooms().remove(oldRoom);
+            getRooms().add(classroom);
+            lessons = null;
+            timetables = null;
+            classroomDao.update(classroom);
         }
     }
 
     public Classroom findByNumber(String number) {
         if (number != null) {
-            try {
-                return classroomDao.findByNumber(number);
-            } catch (DaoException e) {
-                log.warn("Can't find classroom by number");
-            }
+            return classroomDao.findByNumber(number);
         }
         return null;
     }
 
     public void createFaculty(Faculty faculty) {
         if (faculty != null && !getFaculties().contains(faculty)) {
-            try {
-                getFaculties().add(faculty);
-                facultyDao.create(faculty);
-            } catch (DaoException e) {
-                log.warn("Can't create faculty");
-            }
+            getFaculties().add(faculty);
+            facultyDao.create(faculty);
         }
     }
 
     public void deleteFaculty(Faculty faculty) {
         if (faculty != null) {
-            try {
-                getFaculties().remove(faculty);
-                getGroups().removeAll(faculty.getGroups());
-                getDepartments().removeAll(faculty.getDepartments());
-                students = null;
-                teachers = null;
-                lessons = null;
-                timetables = null;
-                facultyDao.delete(faculty.getId());
-            } catch (DaoException e) {
-                log.warn("Can't delete faculty");
-            }
+            getFaculties().remove(faculty);
+            getGroups().removeAll(faculty.getGroups());
+            getDepartments().removeAll(faculty.getDepartments());
+            students = null;
+            teachers = null;
+            lessons = null;
+            timetables = null;
+            facultyDao.delete(faculty.getId());
         }
     }
 
     public void updateFaculty(Faculty faculty) {
-        Faculty oldFaculty = null;
-        try {
-            oldFaculty = facultyDao.find(faculty.getId());
-        } catch (DaoException e) {
-            log.warn("Can't find faculty");
-        }
+        Faculty oldFaculty = facultyDao.find(faculty.getId());
         if (oldFaculty != null) {
-            try {
-                getFaculties().remove(oldFaculty);
-                getFaculties().add(faculty);
-                facultyDao.update(faculty);
-            } catch (DaoException e) {
-                log.warn("Can't update faculty");
-            }
+            getFaculties().remove(oldFaculty);
+            getFaculties().add(faculty);
+            facultyDao.update(faculty);
         }
     }
 
     public List<Student> getStudents() {
         if (students == null) {
-            try {
-                students = studentDao.findAll();
-            } catch (DaoException e) {
-                log.warn("Can't find all students");
-            }
+            students = studentDao.findAll();
         }
         Collections.sort(students);
         return students;
     }
 
+    public void setStudents(List<Student> students) {
+        this.students = students;
+    }
+
     public List<Teacher> getTeachers() {
         if (teachers == null) {
-            try {
-                teachers = teacherDao.findAll();
-            } catch (DaoException e) {
-                log.warn("Can't find all teachers");
-            }
+            teachers = teacherDao.findAll();
         }
         Collections.sort(teachers);
         return teachers;
     }
 
+    public void setTeachers(List<Teacher> teachers) {
+        this.teachers = teachers;
+    }
+
     public List<Lesson> getLessons() {
         if (lessons == null) {
-            try {
-                lessons = lessonDao.findAll();
-            } catch (DaoException e) {
-                log.warn("Can't find all lessons");
-            }
+            lessons = lessonDao.findAll();
         }
         Collections.sort(lessons);
         return lessons;
     }
 
+    public void setLessons(List<Lesson> lessons) {
+        this.lessons = lessons;
+    }
+
     public List<Department> getDepartments() {
         if (departments == null) {
-            try {
-                departments = departmentDao.findAll();
-            } catch (DaoException e) {
-                log.warn("Can't find all departments");
-            }
+            departments = departmentDao.findAll();
         }
         Collections.sort(departments);
         return departments;
     }
 
+    public void setDepartments(List<Department> departments) {
+        this.departments = departments;
+    }
 
     public List<Classroom> getRooms() {
         if (rooms == null) {
-            try {
-                rooms = classroomDao.findAll();
-            } catch (DaoException e) {
-                log.warn("Can't find classrooms");
-            }
+            rooms = classroomDao.findAll();
         }
         Collections.sort(rooms);
         return rooms;
@@ -217,11 +170,7 @@ public class University {
 
     public List<Faculty> getFaculties() {
         if (faculties == null) {
-            try {
-                faculties = facultyDao.findAll();
-            } catch (DaoException e) {
-                log.warn("Can't find faculties");
-            }
+            faculties = facultyDao.findAll();
         }
         Collections.sort(faculties);
         return faculties;
@@ -232,134 +181,67 @@ public class University {
     }
 
     public Faculty findFaculty(int id) {
-        try {
-            return facultyDao.find(id);
-        } catch (DaoException e) {
-            log.warn("Can't find faculty");
-        }
-        return null;
+        return facultyDao.find(id);
     }
 
     public Group findGroup(int id) {
-        try {
-            return groupDao.find(id);
-        } catch (DaoException e) {
-            log.warn("Can't find group");
-        }
-        return null;
+        return groupDao.find(id);
     }
 
     public Teacher findTeacher(int id) {
-        try {
-            return teacherDao.find(id);
-        } catch (DaoException e) {
-            log.warn("Can't find teacher");
-        }
-        return null;
+        return teacherDao.find(id);
     }
 
     public Student findStudent(int id) {
-        try {
-            return studentDao.find(id);
-        } catch (DaoException e) {
-            log.warn("Can't find student");
-        }
-        return null;
+        return studentDao.find(id);
     }
 
     public Lesson findLesson(int id) {
-        try {
-            return lessonDao.find(id);
-        } catch (DaoException e) {
-            log.warn("Can't find lesson");
-        }
-        return null;
+        return lessonDao.find(id);
     }
 
     public Classroom findRoom(int id) {
-        try {
-            return classroomDao.find(id);
-        } catch (DaoException e) {
-            log.warn("Can't find classroom");
-        }
-        return null;
+        return classroomDao.find(id);
     }
 
-
     public Faculty findGroupFaculty(int groupId) {
-        try {
-            return facultyDao.findByGroup(groupId);
-        } catch (DaoException e) {
-            log.warn("Can't find group faculty");
-        }
-        return null;
+        return facultyDao.findByGroup(groupId);
     }
 
     public Faculty findStudentFaculty(int studentId) {
-        try {
-            return facultyDao.findByStudent(studentId);
-        } catch (DaoException e) {
-            log.warn("Can't find student faculty");
-        }
-        return null;
+        return facultyDao.findByStudent(studentId);
     }
 
     public Faculty findTeacherFaculty(int teacherId) {
-        try {
-            return facultyDao.findByTeacher(teacherId);
-        } catch (DaoException e) {
-            log.warn("Can't find teacher faculty");
-        }
-        return null;
+        return facultyDao.findByTeacher(teacherId);
     }
 
     public Department findDepartment(int id) {
-        try {
-            return departmentDao.find(id);
-        } catch (DaoException e) {
-            log.warn("Can't find department");
-        }
-        return null;
+        return departmentDao.find(id);
     }
 
     public List<Teacher> findAvailableTeachers(DayOfWeek day, TimeOfDay time) {
-        try {
-            return teacherDao.findAvailable(day, time);
-        } catch (DaoException e) {
-            log.warn("Can't find available teachers");
-        }
-        return Collections.emptyList();
+        return teacherDao.findAvailable(day, time);
     }
 
     public List<Classroom> findAvailableRooms(DayOfWeek day, TimeOfDay time) {
-        try {
-            return classroomDao.findAvailable(day, time);
-        } catch (DaoException e) {
-            log.warn("Can't find available classrooms");
-        }
-        return Collections.emptyList();
+        return classroomDao.findAvailable(day, time);
     }
 
     public List<Group> findAvailableGroups(DayOfWeek day, TimeOfDay time) {
-        try {
-            return groupDao.findAvailable(day, time);
-        } catch (DaoException e) {
-            log.warn("Can't find available groups");
-        }
-        return Collections.emptyList();
+        return groupDao.findAvailable(day, time);
     }
-
 
     public List<Group> getGroups() {
         if (groups == null) {
-            try {
-                groups = groupDao.findAll();
-            } catch (DaoException e) {
-                log.warn("Can't find all groups");
-            }
+            groups = groupDao.findAll();
         }
         Collections.sort(groups);
         return groups;
+    }
+
+    public void setGroups(List<Group> groups) {
+        this.groups = groups;
     }
 
     public List<Timetable> findGroupTimetables() {
@@ -402,27 +284,69 @@ public class University {
         this.name = name;
     }
 
-    public void setDepartments(List<Department> departments) {
-        this.departments = departments;
-    }
-
-    public void setGroups(List<Group> groups) {
-        this.groups = groups;
-    }
-
-    public void setStudents(List<Student> students) {
-        this.students = students;
-    }
-
-    public void setTeachers(List<Teacher> teachers) {
-        this.teachers = teachers;
-    }
-
-    public void setLessons(List<Lesson> lessons) {
-        this.lessons = lessons;
-    }
-
     public void setTimetables(List<Timetable> timetables) {
         this.timetables = timetables;
     }
+
+    public DepartmentDao getDepartmentDao() {
+        return departmentDao;
+    }
+
+    public void setDepartmentDao(DepartmentDao departmentDao) {
+        this.departmentDao = departmentDao;
+    }
+
+    public FacultyDao getFacultyDao() {
+        return facultyDao;
+    }
+
+    public void setFacultyDao(FacultyDao facultyDao) {
+        this.facultyDao = facultyDao;
+    }
+
+    public ClassroomDao getClassroomDao() {
+        return classroomDao;
+    }
+
+    public void setClassroomDao(ClassroomDao classroomDao) {
+        this.classroomDao = classroomDao;
+    }
+
+    public GroupDao getGroupDao() {
+        return groupDao;
+    }
+
+    public void setGroupDao(GroupDao groupDao) {
+        this.groupDao = groupDao;
+    }
+
+    public PersonDao<Teacher> getTeacherDao() {
+        return teacherDao;
+    }
+
+    public void setTeacherDao(PersonDao<Teacher> teacherDao) {
+        this.teacherDao = teacherDao;
+    }
+
+    public PersonDao<Student> getStudentDao() {
+        return studentDao;
+    }
+
+    public void setStudentDao(PersonDao<Student> studentDao) {
+        this.studentDao = studentDao;
+    }
+
+    public LessonDao getLessonDao() {
+        return lessonDao;
+    }
+
+    public void setLessonDao(LessonDao lessonDao) {
+        this.lessonDao = lessonDao;
+    }
+
+    public List<Timetable> getTimetables() {
+        return timetables;
+    }
+
+
 }
