@@ -60,8 +60,6 @@ public class TimetableUnit {
     public void createLesson(Lesson lesson) {
         if (lesson != null && !getLessons().contains(lesson)) {
             getLessons().add(lesson);
-            University.getInstance().getLessons().add(lesson);
-            University.getInstance().setTimetables(null);
             lessonDao.create(lesson);
         }
     }
@@ -69,8 +67,6 @@ public class TimetableUnit {
     public void deleteLesson(Lesson lesson) {
         if (lesson != null) {
             getLessons().remove(lesson);
-            University.getInstance().getLessons().remove(lesson);
-            University.getInstance().setTimetables(null);
             lessonDao.delete(lesson.getId());
         }
     }
@@ -79,18 +75,12 @@ public class TimetableUnit {
         Lesson oldLesson = lessonDao.find(lesson.getId());
         if (oldLesson != null) {
             int index = getLessons().indexOf(oldLesson);
-            int index2 = University.getInstance().getLessons().indexOf(oldLesson);
             if (index != -1) {
                 getLessons().set(index, lesson);
             }
-            if (index2 != -1) {
-                University.getInstance().getLessons().set(index2, lesson);
-            }
-            University.getInstance().setTimetables(null);
             lessonDao.update(lesson);
         }
     }
-
 
     public List<Lesson> getLessons() {
         return lessons;

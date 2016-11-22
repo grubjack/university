@@ -27,11 +27,11 @@ public class Faculty implements Comparable<Faculty> {
     @Column(name = "name", nullable = false, unique = true)
     private String name;
 
-    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "faculty",fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "faculty", fetch = FetchType.EAGER)
     @Fetch(FetchMode.SELECT)
     private List<Department> departments;
 
-    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "faculty",fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "faculty", fetch = FetchType.EAGER)
     @Fetch(FetchMode.SELECT)
     private List<Group> groups;
 
@@ -80,8 +80,6 @@ public class Faculty implements Comparable<Faculty> {
     public void createGroup(Group group) {
         if (group != null && !getGroups().contains(group)) {
             getGroups().add(group);
-            University.getInstance().getGroups().add(group);
-            University.getInstance().setTimetables(null);
             groupDao.create(group, id);
         }
     }
@@ -89,9 +87,6 @@ public class Faculty implements Comparable<Faculty> {
     public void deleteGroup(Group group) {
         if (group != null) {
             getGroups().remove(group);
-            University.getInstance().getGroups().remove(group);
-            University.getInstance().getStudents().removeAll(group.getStudents());
-            University.getInstance().setTimetables(null);
             groupDao.delete(group.getId());
         }
     }
@@ -104,12 +99,8 @@ public class Faculty implements Comparable<Faculty> {
         Group oldGroup = groupDao.find(group.getId());
         if (oldGroup != null) {
             int index = getGroups().indexOf(oldGroup);
-            int index2 = University.getInstance().getGroups().indexOf(oldGroup);
             if (index != -1) {
                 getGroups().set(index, group);
-            }
-            if (index2 != -1) {
-                University.getInstance().getGroups().set(index2, group);
             }
             groupDao.update(group, id);
         }
@@ -118,7 +109,6 @@ public class Faculty implements Comparable<Faculty> {
     public void createDepartment(Department department) {
         if (department != null && !getDepartments().contains(department)) {
             getDepartments().add(department);
-            University.getInstance().getDepartments().add(department);
             departmentDao.create(department, id);
         }
     }
@@ -126,10 +116,6 @@ public class Faculty implements Comparable<Faculty> {
     public void deleteDepartment(Department department) {
         if (department != null) {
             getDepartments().remove(department);
-            University.getInstance().getDepartments().remove(department);
-            University.getInstance().getTeachers().removeAll(department.getTeachers());
-            University.getInstance().setLessons(null);
-            University.getInstance().setTimetables(null);
             departmentDao.delete(department.getId());
         }
     }
@@ -141,12 +127,8 @@ public class Faculty implements Comparable<Faculty> {
             getDepartments().add(department);
 
             int index = getDepartments().indexOf(oldDepartment);
-            int index2 = University.getInstance().getDepartments().indexOf(oldDepartment);
             if (index != -1) {
                 getDepartments().set(index, department);
-            }
-            if (index2 != -1) {
-                University.getInstance().getDepartments().set(index2, department);
             }
             departmentDao.update(department, id);
         }

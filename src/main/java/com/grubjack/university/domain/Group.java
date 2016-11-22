@@ -60,7 +60,6 @@ public class Group implements Comparable<Group> {
     public void createStudent(Student student) {
         if (student != null && !getStudents().contains(student)) {
             getStudents().add(student);
-            University.getInstance().getStudents().add(student);
             studentDao.create(student, id);
         }
     }
@@ -68,7 +67,6 @@ public class Group implements Comparable<Group> {
     public void deleteStudent(Student student) {
         if (student != null) {
             getStudents().remove(student);
-            University.getInstance().getStudents().remove(student);
             studentDao.delete(student.getId());
         }
     }
@@ -77,12 +75,8 @@ public class Group implements Comparable<Group> {
         Student oldStudent = studentDao.find(student.getId());
         if (oldStudent != null) {
             int index = getStudents().indexOf(oldStudent);
-            int index2 = University.getInstance().getStudents().indexOf(oldStudent);
             if (index != -1) {
                 getStudents().set(index, student);
-            }
-            if (index2 != -1) {
-                University.getInstance().getStudents().set(index2, student);
             }
             studentDao.update(student, id);
         }

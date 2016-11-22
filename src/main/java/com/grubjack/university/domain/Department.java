@@ -65,9 +65,6 @@ public class Department implements Comparable<Department> {
     public void createTeacher(Teacher teacher) {
         if (teacher != null && !getTeachers().contains(teacher)) {
             getTeachers().add(teacher);
-            University.getInstance().getTeachers().add(teacher);
-            University.getInstance().setLessons(null);
-            University.getInstance().setTimetables(null);
             teacherDao.create(teacher, id);
         }
     }
@@ -75,9 +72,6 @@ public class Department implements Comparable<Department> {
     public void deleteTeacher(Teacher teacher) {
         if (teacher != null) {
             getTeachers().remove(teacher);
-            University.getInstance().getTeachers().remove(teacher);
-            University.getInstance().setLessons(null);
-            University.getInstance().setTimetables(null);
             teacherDao.delete(teacher.getId());
         }
     }
@@ -86,12 +80,8 @@ public class Department implements Comparable<Department> {
         Teacher oldTeacher = teacherDao.find(teacher.getId());
         if (oldTeacher != null) {
             int index = getTeachers().indexOf(oldTeacher);
-            int index2 = University.getInstance().getTeachers().indexOf(oldTeacher);
             if (index != -1) {
                 getTeachers().set(index, teacher);
-            }
-            if (index2 != -1) {
-                University.getInstance().getTeachers().set(index2, teacher);
             }
             teacherDao.update(teacher, id);
         }
