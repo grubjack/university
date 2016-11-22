@@ -20,7 +20,7 @@ import java.util.List;
  * Created by grubjack on 03.11.2016.
  */
 
-@Repository("groupDao")
+@Repository
 @Transactional
 public class GroupDaoImpl implements GroupDao {
     private static Logger log = LoggerFactory.getLogger(GroupDaoImpl.class);

@@ -17,7 +17,8 @@ import java.util.List;
 /**
  * Created by grubjack on 03.11.2016.
  */
-@Repository("lessonDao")
+
+@Repository
 @Transactional
 public class LessonDaoImpl implements LessonDao {
     private static Logger log = LoggerFactory.getLogger(LessonDaoImpl.class);

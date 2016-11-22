@@ -19,7 +19,7 @@ import java.util.List;
  * Created by grubjack on 03.11.2016.
  */
 
-@Repository("facultyDao")
+@Repository
 @Transactional
 public class FacultyDaoImpl implements FacultyDao {
 
