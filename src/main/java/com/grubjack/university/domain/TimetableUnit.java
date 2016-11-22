@@ -2,8 +2,6 @@ package com.grubjack.university.domain;
 
 import com.grubjack.university.dao.DaoFactory;
 import com.grubjack.university.dao.LessonDao;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,8 +15,6 @@ public class TimetableUnit {
 
     private LessonDao lessonDao = DaoFactory.getInstance().getLessonDao();
 
-    private static Logger log = LoggerFactory.getLogger(TimetableUnit.class);
-
     public TimetableUnit(DayOfWeek dayOfWeek) {
         this.dayOfWeek = dayOfWeek;
 
@@ -27,7 +23,6 @@ public class TimetableUnit {
     public TimetableUnit() {
 
     }
-
 
     @Override
     public boolean equals(Object o) {
