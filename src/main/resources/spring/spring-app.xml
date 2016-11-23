@@ -36,7 +36,7 @@
         <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQL9Dialect</prop>
         <prop key="hibernate.max_fetch_depth">3</prop>
         <prop key="hibernate.format_sql">false</prop>
-        <prop key="hibernate.show_sql">false</prop>
+        <prop key="hibernate.show_sql">true</prop>
     </util:properties>
 
     <bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager"
