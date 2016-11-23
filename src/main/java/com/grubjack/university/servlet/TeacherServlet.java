@@ -2,9 +2,11 @@ package com.grubjack.university.servlet;
 
 import com.grubjack.university.domain.Department;
 import com.grubjack.university.domain.Teacher;
+import com.grubjack.university.domain.University;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -14,7 +16,7 @@ import java.util.List;
  * Created by grubjack on 09.11.2016.
  */
 @WebServlet("/teachers")
-public class TeacherServlet extends AbstractHttpServlet {
+public class TeacherServlet extends HttpServlet {
 
     public static final String LIST = "teachers.jsp";
     public static final String ADD_OR_EDIT = "teacher.jsp";
@@ -32,7 +34,7 @@ public class TeacherServlet extends AbstractHttpServlet {
         List<Teacher> teachers = null;
 
         if (departmentId != null) {
-            Department department = university.findDepartment(Integer.parseInt(departmentId));
+            Department department = University.getInstance().findDepartment(Integer.parseInt(departmentId));
             if (department != null) {
 
                 title = String.format("Teachers of %s department", department.getName());
@@ -42,14 +44,14 @@ public class TeacherServlet extends AbstractHttpServlet {
                     title = "Create teacher";
                 } else if ("delete".equalsIgnoreCase(action)) {
                     if (teacherId != null) {
-                        Teacher teacher = university.findTeacher(Integer.parseInt(teacherId));
+                        Teacher teacher = University.getInstance().findTeacher(Integer.parseInt(teacherId));
                         department.deleteTeacher(teacher);
                     }
 
                 } else if ("edit".equalsIgnoreCase(action)) {
                     forward = ADD_OR_EDIT;
                     if (teacherId != null) {
-                        Teacher teacher = university.findTeacher(Integer.parseInt(teacherId));
+                        Teacher teacher = University.getInstance().findTeacher(Integer.parseInt(teacherId));
                         req.setAttribute("teacher", teacher);
                         title = "Edit teacher";
                     }
@@ -58,7 +60,7 @@ public class TeacherServlet extends AbstractHttpServlet {
                 teachers = department.getTeachers();
             }
         } else {
-            teachers = university.getTeachers();
+            teachers = University.getInstance().getTeachers();
         }
 
         req.setAttribute("departmentId", departmentId);
@@ -78,7 +80,7 @@ public class TeacherServlet extends AbstractHttpServlet {
         String title = "Teachers";
 
         if (departmentId != null) {
-            Department department = university.findDepartment(Integer.parseInt(departmentId));
+            Department department = University.getInstance().findDepartment(Integer.parseInt(departmentId));
             if (department != null && firstname != null && !firstname.isEmpty() && lastname != null && !lastname.isEmpty() && salary != null && !salary.isEmpty()) {
 
                 Teacher teacher = new Teacher(firstname, lastname, Integer.parseInt(salary));

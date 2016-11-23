@@ -2,9 +2,11 @@ package com.grubjack.university.servlet;
 
 import com.grubjack.university.domain.Group;
 import com.grubjack.university.domain.Student;
+import com.grubjack.university.domain.University;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -14,7 +16,7 @@ import java.util.List;
  * Created by grubjack on 09.11.2016.
  */
 @WebServlet("/students")
-public class StudentServlet extends AbstractHttpServlet {
+public class StudentServlet extends HttpServlet {
 
     public static final String LIST = "students.jsp";
     public static final String ADD_OR_EDIT = "student.jsp";
@@ -31,7 +33,7 @@ public class StudentServlet extends AbstractHttpServlet {
         List<Student> students = null;
 
         if (groupId != null) {
-            Group group = university.findGroup(Integer.parseInt(groupId));
+            Group group = University.getInstance().findGroup(Integer.parseInt(groupId));
             if (group != null) {
 
                 title = String.format("Students of %s group", group.getName());
@@ -42,14 +44,14 @@ public class StudentServlet extends AbstractHttpServlet {
 
                 } else if ("delete".equalsIgnoreCase(action)) {
                     if (studentId != null) {
-                        Student student = university.findStudent(Integer.parseInt(studentId));
+                        Student student = University.getInstance().findStudent(Integer.parseInt(studentId));
                         group.deleteStudent(student);
                     }
 
                 } else if ("edit".equalsIgnoreCase(action)) {
                     forward = ADD_OR_EDIT;
                     if (studentId != null) {
-                        Student student = university.findStudent(Integer.parseInt(studentId));
+                        Student student = University.getInstance().findStudent(Integer.parseInt(studentId));
                         req.setAttribute("student", student);
                         title = "Edit student";
                     }
@@ -57,7 +59,7 @@ public class StudentServlet extends AbstractHttpServlet {
                 students = group.getStudents();
             }
         } else {
-            students = university.getStudents();
+            students = University.getInstance().getStudents();
         }
 
         req.setAttribute("groupId", groupId);
@@ -76,7 +78,7 @@ public class StudentServlet extends AbstractHttpServlet {
         String title = "Students";
 
         if (groupId != null) {
-            Group group = university.findGroup(Integer.parseInt(groupId));
+            Group group = University.getInstance().findGroup(Integer.parseInt(groupId));
             if (group != null && firstname != null && !firstname.isEmpty() && lastname != null && !lastname.isEmpty()) {
 
                 Student student = new Student(firstname, lastname);

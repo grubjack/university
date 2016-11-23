@@ -1,9 +1,11 @@
 package com.grubjack.university.servlet;
 
 import com.grubjack.university.domain.Classroom;
+import com.grubjack.university.domain.University;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -12,7 +14,7 @@ import java.io.IOException;
  * Created by grubjack on 09.11.2016.
  */
 @WebServlet("/classrooms")
-public class ClassroomServlet extends AbstractHttpServlet {
+public class ClassroomServlet extends HttpServlet {
 
     public static final String LIST = "classrooms.jsp";
     public static final String ADD_OR_EDIT = "classroom.jsp";
@@ -25,14 +27,14 @@ public class ClassroomServlet extends AbstractHttpServlet {
 
         if ("delete".equalsIgnoreCase(action)) {
             if (roomId != null) {
-                Classroom room = university.findRoom(Integer.parseInt(roomId));
-                university.deleteRoom(room);
-                req.setAttribute("classrooms", university.getRooms());
+                Classroom room = University.getInstance().findRoom(Integer.parseInt(roomId));
+                University.getInstance().deleteRoom(room);
+                req.setAttribute("classrooms", University.getInstance().getRooms());
             }
         } else if ("edit".equalsIgnoreCase(action)) {
             forward = ADD_OR_EDIT;
             if (roomId != null) {
-                Classroom room = university.findRoom(Integer.parseInt(roomId));
+                Classroom room = University.getInstance().findRoom(Integer.parseInt(roomId));
                 req.setAttribute("classroom", room);
                 req.setAttribute("title", "Edit classroom");
             }
@@ -42,7 +44,7 @@ public class ClassroomServlet extends AbstractHttpServlet {
             req.setAttribute("title", "Create classroom");
         } else {
             forward = LIST;
-            req.setAttribute("classrooms", university.getRooms());
+            req.setAttribute("classrooms", University.getInstance().getRooms());
         }
 
         req.getRequestDispatcher(forward).forward(req, resp);
@@ -59,13 +61,13 @@ public class ClassroomServlet extends AbstractHttpServlet {
             Classroom classroom = new Classroom(number, location, Integer.parseInt(capacity));
 
             if (id == null || id.isEmpty()) {
-                university.createRoom(classroom);
+                University.getInstance().createRoom(classroom);
             } else {
                 classroom.setId(Integer.parseInt(id));
-                university.updateRoom(classroom);
+                University.getInstance().updateRoom(classroom);
             }
         }
-        req.setAttribute("classrooms", university.getRooms());
+        req.setAttribute("classrooms", University.getInstance().getRooms());
         req.getRequestDispatcher(LIST).forward(req, resp);
     }
 }

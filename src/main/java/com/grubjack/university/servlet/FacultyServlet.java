@@ -1,9 +1,11 @@
 package com.grubjack.university.servlet;
 
 import com.grubjack.university.domain.Faculty;
+import com.grubjack.university.domain.University;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -12,7 +14,7 @@ import java.io.IOException;
  * Created by grubjack on 09.11.2016.
  */
 @WebServlet("/faculties")
-public class FacultyServlet extends AbstractHttpServlet {
+public class FacultyServlet extends HttpServlet {
 
     public static final String LIST = "faculties.jsp";
     public static final String ADD_OR_EDIT = "faculty.jsp";
@@ -25,14 +27,14 @@ public class FacultyServlet extends AbstractHttpServlet {
 
         if ("delete".equalsIgnoreCase(action)) {
             if (facultyId != null) {
-                Faculty faculty = university.findFaculty(Integer.parseInt(facultyId));
-                university.deleteFaculty(faculty);
-                req.setAttribute("faculties", university.getFaculties());
+                Faculty faculty = University.getInstance().findFaculty(Integer.parseInt(facultyId));
+                University.getInstance().deleteFaculty(faculty);
+                req.setAttribute("faculties", University.getInstance().getFaculties());
             }
         } else if ("edit".equalsIgnoreCase(action)) {
             forward = ADD_OR_EDIT;
             if (facultyId != null) {
-                Faculty faculty = university.findFaculty(Integer.parseInt(facultyId));
+                Faculty faculty = University.getInstance().findFaculty(Integer.parseInt(facultyId));
                 req.setAttribute("faculty", faculty);
                 req.setAttribute("title", "Edit faculty");
             }
@@ -42,7 +44,7 @@ public class FacultyServlet extends AbstractHttpServlet {
             req.setAttribute("title", "Create faculty");
         } else {
             forward = LIST;
-            req.setAttribute("faculties", university.getFaculties());
+            req.setAttribute("faculties", University.getInstance().getFaculties());
         }
 
         req.getRequestDispatcher(forward).forward(req, resp);
@@ -57,13 +59,13 @@ public class FacultyServlet extends AbstractHttpServlet {
             Faculty faculty = new Faculty(name);
 
             if (id == null || id.isEmpty()) {
-                university.createFaculty(faculty);
+                University.getInstance().createFaculty(faculty);
             } else {
                 faculty.setId(Integer.parseInt(id));
-                university.updateFaculty(faculty);
+                University.getInstance().updateFaculty(faculty);
             }
         }
-        req.setAttribute("faculties", university.getFaculties());
+        req.setAttribute("faculties", University.getInstance().getFaculties());
         req.getRequestDispatcher(LIST).forward(req, resp);
     }
 }
