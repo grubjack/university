@@ -1,6 +1,5 @@
 package com.grubjack.university.domain;
 
-import com.grubjack.university.dao.DaoFactory;
 import com.grubjack.university.dao.PersonDao;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -24,7 +23,7 @@ public class Department implements Comparable<Department> {
     private String name;
 
 
-    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "department",fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "department", fetch = FetchType.EAGER)
     @Fetch(FetchMode.SELECT)
     private List<Teacher> teachers;
 
@@ -33,7 +32,7 @@ public class Department implements Comparable<Department> {
     private Faculty faculty;
 
     @Transient
-    private PersonDao<Teacher> teacherDao = DaoFactory.getInstance().getTeacherDao();
+    private PersonDao<Teacher> teacherDao;
 
     public Department() {
     }

@@ -1,6 +1,5 @@
 package com.grubjack.university.domain;
 
-import com.grubjack.university.dao.DaoFactory;
 import com.grubjack.university.dao.LessonDao;
 
 import java.util.ArrayList;
@@ -13,7 +12,7 @@ public class TimetableUnit {
     private DayOfWeek dayOfWeek;
     private List<Lesson> lessons = new ArrayList<>();
 
-    private LessonDao lessonDao = DaoFactory.getInstance().getLessonDao();
+    private LessonDao lessonDao;
 
     public TimetableUnit(DayOfWeek dayOfWeek) {
         this.dayOfWeek = dayOfWeek;

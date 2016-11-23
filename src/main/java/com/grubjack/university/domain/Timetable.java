@@ -1,6 +1,5 @@
 package com.grubjack.university.domain;
 
-import com.grubjack.university.dao.DaoFactory;
 import com.grubjack.university.dao.LessonDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +16,7 @@ public class Timetable {
 
     private static Logger log = LoggerFactory.getLogger(Timetable.class);
 
-    private LessonDao lessonDao = DaoFactory.getInstance().getLessonDao();
+    private LessonDao lessonDao;
 
     public Timetable() {
     }
