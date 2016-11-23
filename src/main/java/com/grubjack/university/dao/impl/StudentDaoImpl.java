@@ -28,8 +28,9 @@ public class StudentDaoImpl implements PersonDao<Student> {
         if (student != null && student.getGroup() != null && student.getGroup().getId() == groupId) {
             log.info("Creating new student " + student.getName());
             Session session = getSession();
+            session.getTransaction().begin();
             session.save(student);
-            session.flush();
+            session.getTransaction().commit();
             session.close();
             log.info("Student is created with id = " + student.getId());
         }
@@ -44,8 +45,9 @@ public class StudentDaoImpl implements PersonDao<Student> {
                 studentToUpdate.setLastName(student.getLastName());
                 log.info("Updating student with id " + student.getId());
                 Session session = getSession();
+                session.getTransaction().begin();
                 session.update(studentToUpdate);
-                session.flush();
+                session.getTransaction().commit();
                 session.close();
             }
         }
@@ -57,7 +59,9 @@ public class StudentDaoImpl implements PersonDao<Student> {
         if (student != null) {
             log.info("Deleting student with id " + id);
             Session session = getSession();
+            session.getTransaction().begin();
             session.delete(student);
+            session.getTransaction().commit();
             session.close();
         }
     }

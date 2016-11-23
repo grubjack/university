@@ -28,8 +28,9 @@ public class ClassroomDaoImpl implements ClassroomDao {
         if (classroom != null) {
             log.info("Creating new classroom " + classroom.getNumber());
             Session session = getSession();
+            session.getTransaction().begin();
             session.save(classroom);
-            session.flush();
+            session.getTransaction().commit();
             session.close();
             log.info("Classroom is created with id = " + classroom.getId());
         }
@@ -44,8 +45,9 @@ public class ClassroomDaoImpl implements ClassroomDao {
             classroomToUpdate.setCapacity(classroom.getCapacity());
             log.info("Updating classroom with id " + classroom.getId());
             Session session = getSession();
+            session.getTransaction().begin();
             session.update(classroomToUpdate);
-            session.flush();
+            session.getTransaction().commit();
             session.close();
         }
     }
@@ -56,7 +58,9 @@ public class ClassroomDaoImpl implements ClassroomDao {
         if (classroom != null) {
             log.info("Deleting classroom with id " + id);
             Session session = getSession();
+            session.getTransaction().begin();
             session.delete(classroom);
+            session.getTransaction().commit();
             session.close();
         }
     }

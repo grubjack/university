@@ -28,8 +28,9 @@ public class GroupDaoImpl implements GroupDao {
         if (group != null && group.getFaculty() != null && group.getFaculty().getId() == facultyId) {
             log.info("Creating new group " + group.getName());
             Session session = getSession();
+            session.getTransaction().begin();
             session.save(group);
-            session.flush();
+            session.getTransaction().commit();
             session.close();
             log.info("Group is created with id = " + group.getId());
         }
@@ -44,8 +45,9 @@ public class GroupDaoImpl implements GroupDao {
                 groupToUpdate.setName(group.getName());
                 log.info("Updating group with id " + group.getId());
                 Session session = getSession();
+                session.getTransaction().begin();
                 session.update(groupToUpdate);
-                session.flush();
+                session.getTransaction().commit();
                 session.close();
             }
         }
@@ -57,7 +59,9 @@ public class GroupDaoImpl implements GroupDao {
         if (group != null) {
             log.info("Deleting group with id " + id);
             Session session = getSession();
+            session.getTransaction().begin();
             session.delete(group);
+            session.getTransaction().commit();
             session.close();
         }
     }

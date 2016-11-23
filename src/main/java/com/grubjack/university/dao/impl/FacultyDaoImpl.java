@@ -28,8 +28,9 @@ public class FacultyDaoImpl implements FacultyDao {
         if (faculty != null) {
             log.info("Creating new faculty " + faculty.getName());
             Session session = getSession();
+            session.getTransaction().begin();
             session.save(faculty);
-            session.flush();
+            session.getTransaction().commit();
             session.close();
             log.info("Faculty is created with id = " + faculty.getId());
         }
@@ -43,8 +44,9 @@ public class FacultyDaoImpl implements FacultyDao {
                 facultyToUpdate.setName(faculty.getName());
                 log.info("Updating faculty with id " + faculty.getId());
                 Session session = getSession();
+                session.getTransaction().begin();
                 session.update(facultyToUpdate);
-                session.flush();
+                session.getTransaction().commit();
                 session.close();
             }
         }
@@ -56,7 +58,9 @@ public class FacultyDaoImpl implements FacultyDao {
         if (faculty != null) {
             log.info("Deleting faculty with id " + id);
             Session session = getSession();
+            session.getTransaction().begin();
             session.delete(faculty);
+            session.getTransaction().commit();
             session.close();
         }
     }

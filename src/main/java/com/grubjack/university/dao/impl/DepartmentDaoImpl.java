@@ -25,8 +25,9 @@ public class DepartmentDaoImpl implements DepartmentDao {
         if (department != null && department.getFaculty() != null && department.getFaculty().getId() == facultyId) {
             log.info("Creating new department " + department.getName());
             Session session = getSession();
+            session.getTransaction().begin();
             session.save(department);
-            session.flush();
+            session.getTransaction().commit();
             session.close();
             log.info("Department is created with id = " + department.getId());
         }
@@ -40,8 +41,9 @@ public class DepartmentDaoImpl implements DepartmentDao {
                 departmentToUpdate.setName(department.getName());
                 log.info("Updating department with id " + department.getId());
                 Session session = getSession();
+                session.getTransaction().begin();
                 session.update(departmentToUpdate);
-                session.flush();
+                session.getTransaction().commit();
                 session.close();
             }
         }
@@ -53,7 +55,9 @@ public class DepartmentDaoImpl implements DepartmentDao {
         if (department != null) {
             log.info("Deleting department with id " + id);
             Session session = getSession();
+            session.getTransaction().begin();
             session.delete(department);
+            session.getTransaction().commit();
             session.close();
         }
     }

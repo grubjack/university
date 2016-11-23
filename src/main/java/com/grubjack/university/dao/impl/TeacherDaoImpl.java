@@ -29,8 +29,9 @@ public class TeacherDaoImpl implements PersonDao<Teacher> {
         if (teacher != null && teacher.getDepartment() != null && teacher.getDepartment().getId() == departmentId) {
             log.info("Creating new teacher " + teacher.getName());
             Session session = getSession();
+            session.getTransaction().begin();
             session.save(teacher);
-            session.flush();
+            session.getTransaction().commit();
             session.close();
             log.info("Teacher is created with id = " + teacher.getId());
         }
@@ -46,8 +47,9 @@ public class TeacherDaoImpl implements PersonDao<Teacher> {
                 teacherToUpdate.setSalary(teacher.getSalary());
                 log.info("Updating teacher with id " + teacher.getId());
                 Session session = getSession();
+                session.getTransaction().begin();
                 session.update(teacherToUpdate);
-                session.flush();
+                session.getTransaction().commit();
                 session.close();
             }
         }
@@ -59,7 +61,9 @@ public class TeacherDaoImpl implements PersonDao<Teacher> {
         if (teacher != null) {
             log.info("Deleting teacher with id " + id);
             Session session = getSession();
+            session.getTransaction().begin();
             session.delete(teacher);
+            session.getTransaction().commit();
             session.close();
         }
     }

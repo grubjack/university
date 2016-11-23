@@ -28,8 +28,9 @@ public class LessonDaoImpl implements LessonDao {
         if (lesson != null) {
             log.info("Creating new lesson");
             Session session = getSession();
+            session.getTransaction().begin();
             session.save(lesson);
-            session.flush();
+            session.getTransaction().commit();
             session.close();
             log.info("Lesson is created with id = " + lesson.getId());
         }
@@ -46,8 +47,9 @@ public class LessonDaoImpl implements LessonDao {
             lessonToUpdate.setTeacher(lesson.getTeacher());
             lessonToUpdate.setGroup(lesson.getGroup());
             Session session = getSession();
+            session.getTransaction().begin();
             session.update(lessonToUpdate);
-            session.flush();
+            session.getTransaction().commit();
             session.close();
             log.info("Updating lesson with id " + lesson.getId());
         }
@@ -59,7 +61,9 @@ public class LessonDaoImpl implements LessonDao {
         if (lesson != null) {
             log.info("Deleting lesson with id " + id);
             Session session = getSession();
+            session.getTransaction().begin();
             session.delete(lesson);
+            session.getTransaction().commit();
             session.close();
         }
     }
