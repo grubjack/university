@@ -1,42 +1,36 @@
 package com.grubjack.university.dao.impl;
 
+import com.grubjack.university.dao.DaoFactory;
 import com.grubjack.university.dao.FacultyDao;
 import com.grubjack.university.domain.Faculty;
 import com.grubjack.university.domain.Group;
 import com.grubjack.university.domain.Student;
 import com.grubjack.university.domain.Teacher;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 /**
  * Created by grubjack on 03.11.2016.
  */
-
-@Repository
-@Transactional
 public class FacultyDaoImpl implements FacultyDao {
 
     private static Logger log = LoggerFactory.getLogger(FacultyDaoImpl.class);
 
-    @Autowired
-    private SessionFactory sessionFactory;
-
-    private Session getCurrentSession() {
-        return sessionFactory.getCurrentSession();
+    private Session getSession() {
+        return DaoFactory.getSessionFactory().openSession();
     }
 
     @Override
     public void create(Faculty faculty) {
         if (faculty != null) {
             log.info("Creating new faculty " + faculty.getName());
-            getCurrentSession().save(faculty);
+            Session session = getSession();
+            session.save(faculty);
+            session.flush();
+            session.close();
             log.info("Faculty is created with id = " + faculty.getId());
         }
     }
@@ -48,7 +42,10 @@ public class FacultyDaoImpl implements FacultyDao {
             if (facultyToUpdate != null) {
                 facultyToUpdate.setName(faculty.getName());
                 log.info("Updating faculty with id " + faculty.getId());
-                getCurrentSession().update(facultyToUpdate);
+                Session session = getSession();
+                session.update(facultyToUpdate);
+                session.flush();
+                session.close();
             }
         }
     }
@@ -58,41 +55,54 @@ public class FacultyDaoImpl implements FacultyDao {
         Faculty faculty = find(id);
         if (faculty != null) {
             log.info("Deleting faculty with id " + id);
-            getCurrentSession().delete(faculty);
+            Session session = getSession();
+            session.delete(faculty);
+            session.close();
         }
     }
 
     @Override
-    @Transactional(readOnly = true)
+
     public Faculty find(int id) {
         log.info("Finding faculty with id " + id);
-        return getCurrentSession().get(Faculty.class, id);
+        Session session = getSession();
+        Faculty result = session.get(Faculty.class, id);
+        session.close();
+        return result;
     }
 
     @Override
-    @Transactional(readOnly = true)
+
     public List<Faculty> findAll() {
         log.info("Finding all faculties");
-        return getCurrentSession().createQuery("from Faculty").list();
+        Session session = getSession();
+        List<Faculty> result = session.createQuery("from Faculty").list();
+        session.close();
+        return result;
     }
 
     @Override
-    @Transactional(readOnly = true)
+
     public Faculty findByName(String name) {
         if (name != null) {
             log.info("Finding faculty with name " + name);
-            return (Faculty) getCurrentSession().createQuery("from Faculty where lower(name)=:name")
+            Session session = getSession();
+            Faculty result = (Faculty) session.createQuery("from Faculty where lower(name)=:name")
                     .setParameter("name", name.toLowerCase())
                     .uniqueResult();
+            session.close();
+            return result;
         }
         return null;
     }
 
     @Override
-    @Transactional(readOnly = true)
+
     public Faculty findByGroup(int groupId) {
         log.info("Finding faculty by group id " + groupId);
-        Group group = getCurrentSession().get(Group.class, groupId);
+        Session session = getSession();
+        Group group = session.get(Group.class, groupId);
+        session.close();
         if (group != null) {
             return group.getFaculty();
         }
@@ -100,10 +110,12 @@ public class FacultyDaoImpl implements FacultyDao {
     }
 
     @Override
-    @Transactional(readOnly = true)
+
     public Faculty findByStudent(int studentId) {
         log.info("Finding faculty by student id " + studentId);
-        Student student = getCurrentSession().get(Student.class, studentId);
+        Session session = getSession();
+        Student student = session.get(Student.class, studentId);
+        session.close();
         if (student != null && student.getGroup() != null) {
             return student.getGroup().getFaculty();
         }
@@ -111,21 +123,15 @@ public class FacultyDaoImpl implements FacultyDao {
     }
 
     @Override
-    @Transactional(readOnly = true)
+
     public Faculty findByTeacher(int teacherId) {
         log.info("Finding faculty by teacher id " + teacherId);
-        Teacher teacher = getCurrentSession().get(Teacher.class, teacherId);
+        Session session = getSession();
+        Teacher teacher = session.get(Teacher.class, teacherId);
+        session.close();
         if (teacher != null && teacher.getDepartment() != null) {
             return teacher.getDepartment().getFaculty();
         }
         return null;
-    }
-
-    public SessionFactory getSessionFactory() {
-        return sessionFactory;
-    }
-
-    public void setSessionFactory(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
     }
 }
