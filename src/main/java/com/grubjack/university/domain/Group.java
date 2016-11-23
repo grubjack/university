@@ -1,5 +1,6 @@
 package com.grubjack.university.domain;
 
+import com.grubjack.university.dao.DaoFactory;
 import com.grubjack.university.dao.PersonDao;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -30,7 +31,7 @@ public class Group implements Comparable<Group> {
     private Faculty faculty;
 
     @Transient
-    private PersonDao<Student> studentDao;
+    private PersonDao<Student> studentDao = DaoFactory.getInstance().getStudentDao();
 
     public Group() {
     }

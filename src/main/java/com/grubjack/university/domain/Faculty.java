@@ -1,5 +1,6 @@
 package com.grubjack.university.domain;
 
+import com.grubjack.university.dao.DaoFactory;
 import com.grubjack.university.dao.DepartmentDao;
 import com.grubjack.university.dao.GroupDao;
 import com.grubjack.university.dao.LessonDao;
@@ -38,13 +39,13 @@ public class Faculty implements Comparable<Faculty> {
     private Timetable timetable;
 
     @Transient
-    private DepartmentDao departmentDao;
+    private DepartmentDao departmentDao = DaoFactory.getInstance().getDepartmentDao();
 
     @Transient
-    private GroupDao groupDao;
+    private GroupDao groupDao = DaoFactory.getInstance().getGroupDao();
 
     @Transient
-    private LessonDao lessonDao;
+    private LessonDao lessonDao = DaoFactory.getInstance().getLessonDao();
 
     public Faculty() {
     }

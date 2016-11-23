@@ -1,8 +1,6 @@
 package com.grubjack.university.domain;
 
 import com.grubjack.university.dao.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,8 +10,9 @@ import java.util.List;
 /**
  * Created by grubjack on 28.10.2016.
  */
-@Service
 public class University {
+    private static University instance;
+
     private String name;
 
     private List<Classroom> rooms;
@@ -25,22 +24,22 @@ public class University {
     private List<Lesson> lessons;
     private List<Timetable> timetables;
 
-    @Autowired
-    private DepartmentDao departmentDao;
-    @Autowired
-    private FacultyDao facultyDao;
-    @Autowired
-    private ClassroomDao classroomDao;
-    @Autowired
-    private GroupDao groupDao;
-    @Autowired
-    private PersonDao<Teacher> teacherDao;
-    @Autowired
-    private PersonDao<Student> studentDao;
-    @Autowired
-    private LessonDao lessonDao;
+    private DepartmentDao departmentDao = DaoFactory.getInstance().getDepartmentDao();
+    private FacultyDao facultyDao = DaoFactory.getInstance().getFacultyDao();
+    private ClassroomDao classroomDao = DaoFactory.getInstance().getClassroomDao();
+    private GroupDao groupDao = DaoFactory.getInstance().getGroupDao();
+    private PersonDao<Teacher> teacherDao = DaoFactory.getInstance().getTeacherDao();
+    private PersonDao<Student> studentDao = DaoFactory.getInstance().getStudentDao();
+    private LessonDao lessonDao = DaoFactory.getInstance().getLessonDao();
 
-    public University() {
+    private University() {
+    }
+
+    public static University getInstance() {
+        if (instance == null) {
+            instance = new University();
+        }
+        return instance;
     }
 
     public void createRoom(Classroom classroom) {
@@ -347,6 +346,4 @@ public class University {
     public List<Timetable> getTimetables() {
         return timetables;
     }
-
-
 }
