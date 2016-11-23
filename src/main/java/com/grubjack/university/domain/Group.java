@@ -47,8 +47,7 @@ public class Group implements Comparable<Group> {
 
         Group group = (Group) o;
 
-        if (name != null ? !name.equals(group.name) : group.name != null) return false;
-        return students != null ? students.equals(group.students) : group.students == null;
+        return name != null ? name.equals(group.name) : group.name == null;
 
     }
 
@@ -58,15 +57,18 @@ public class Group implements Comparable<Group> {
     }
 
     public void createStudent(Student student) {
-        if (student != null && !getStudents().contains(student)) {
-            getStudents().add(student);
+        if (student != null && !students.contains(student)) {
+            student.setGroup(this);
+            students.add(student);
+            University.getInstance().getStudents().add(student);
             studentDao.create(student, id);
         }
     }
 
     public void deleteStudent(Student student) {
         if (student != null) {
-            getStudents().remove(student);
+            students.remove(student);
+            University.getInstance().getStudents().remove(student);
             studentDao.delete(student.getId());
         }
     }
@@ -74,9 +76,13 @@ public class Group implements Comparable<Group> {
     public void updateStudent(Student student) {
         Student oldStudent = studentDao.find(student.getId());
         if (oldStudent != null) {
-            int index = getStudents().indexOf(oldStudent);
+            int index = students.indexOf(oldStudent);
+            int index2 = University.getInstance().getStudents().indexOf(oldStudent);
             if (index != -1) {
-                getStudents().set(index, student);
+                students.set(index, student);
+            }
+            if (index2 != -1) {
+                University.getInstance().getStudents().set(index2, student);
             }
             studentDao.update(student, id);
         }
@@ -112,9 +118,6 @@ public class Group implements Comparable<Group> {
     }
 
     public List<Student> getStudents() {
-        if (students == null) {
-            students = studentDao.findAll(id);
-        }
         return students;
     }
 

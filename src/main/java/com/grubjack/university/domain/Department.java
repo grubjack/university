@@ -50,28 +50,32 @@ public class Department implements Comparable<Department> {
 
         Department that = (Department) o;
 
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        return teachers != null ? teachers.equals(that.teachers) : that.teachers == null;
+        return name != null ? name.equals(that.name) : that.name == null;
 
     }
 
     @Override
     public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + (teachers != null ? teachers.hashCode() : 0);
-        return result;
+        return name != null ? name.hashCode() : 0;
     }
 
     public void createTeacher(Teacher teacher) {
-        if (teacher != null && !getTeachers().contains(teacher)) {
-            getTeachers().add(teacher);
+        if (teacher != null && !teachers.contains(teacher)) {
+            teacher.setDepartment(this);
+            teachers.add(teacher);
+            University.getInstance().getTeachers().add(teacher);
+            University.getInstance().setLessons(null);
+            University.getInstance().setTimetables(null);
             teacherDao.create(teacher, id);
         }
     }
 
     public void deleteTeacher(Teacher teacher) {
         if (teacher != null) {
-            getTeachers().remove(teacher);
+            teachers.remove(teacher);
+            University.getInstance().getTeachers().remove(teacher);
+            University.getInstance().setLessons(null);
+            University.getInstance().setTimetables(null);
             teacherDao.delete(teacher.getId());
         }
     }
@@ -79,9 +83,13 @@ public class Department implements Comparable<Department> {
     public void updateTeacher(Teacher teacher) {
         Teacher oldTeacher = teacherDao.find(teacher.getId());
         if (oldTeacher != null) {
-            int index = getTeachers().indexOf(oldTeacher);
+            int index = teachers.indexOf(oldTeacher);
+            int index2 = University.getInstance().getTeachers().indexOf(oldTeacher);
             if (index != -1) {
-                getTeachers().set(index, teacher);
+                teachers.set(index, teacher);
+            }
+            if (index2 != -1) {
+                University.getInstance().getTeachers().set(index2, teacher);
             }
             teacherDao.update(teacher, id);
         }
@@ -116,9 +124,6 @@ public class Department implements Comparable<Department> {
     }
 
     public List<Teacher> getTeachers() {
-        if (teachers == null) {
-            teachers = teacherDao.findAll(id);
-        }
         return teachers;
     }
 
