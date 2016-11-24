@@ -1,6 +1,5 @@
 package com.grubjack.university.dao.impl;
 
-import com.grubjack.university.dao.DaoFactory;
 import com.grubjack.university.dao.LessonDao;
 import com.grubjack.university.domain.DayOfWeek;
 import com.grubjack.university.domain.Lesson;
@@ -8,6 +7,9 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
@@ -15,23 +17,23 @@ import java.util.List;
 /**
  * Created by grubjack on 03.11.2016.
  */
+@Repository
+@Transactional
 public class LessonDaoImpl implements LessonDao {
-    private SessionFactory sessionFactory;
     private static Logger log = LoggerFactory.getLogger(LessonDaoImpl.class);
 
+    @Autowired
+    private SessionFactory sessionFactory;
+
     private Session getSession() {
-        return DaoFactory.getSessionFactory().openSession();
+        return sessionFactory.getCurrentSession();
     }
 
     @Override
     public void create(Lesson lesson) {
         if (lesson != null) {
             log.info("Creating new lesson");
-            Session session = getSession();
-            session.getTransaction().begin();
-            session.save(lesson);
-            session.getTransaction().commit();
-            session.close();
+            getSession().save(lesson);
             log.info("Lesson is created with id = " + lesson.getId());
         }
     }
@@ -46,11 +48,7 @@ public class LessonDaoImpl implements LessonDao {
             lessonToUpdate.setClassroom(lesson.getClassroom());
             lessonToUpdate.setTeacher(lesson.getTeacher());
             lessonToUpdate.setGroup(lesson.getGroup());
-            Session session = getSession();
-            session.getTransaction().begin();
-            session.update(lessonToUpdate);
-            session.getTransaction().commit();
-            session.close();
+            getSession().update(lessonToUpdate);
             log.info("Updating lesson with id " + lesson.getId());
         }
     }
@@ -60,92 +58,82 @@ public class LessonDaoImpl implements LessonDao {
         Lesson lesson = find(id);
         if (lesson != null) {
             log.info("Deleting lesson with id " + id);
-            Session session = getSession();
-            session.getTransaction().begin();
-            session.delete(lesson);
-            session.getTransaction().commit();
-            session.close();
+            getSession().delete(lesson);
         }
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Lesson find(int id) {
         log.info("Finding lesson with id " + id);
-        Session session = getSession();
-        Lesson result = session.get(Lesson.class, id);
-        session.close();
-        return result;
+        return getSession().get(Lesson.class, id);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Lesson> findFacultyLessons(int facultyId) {
         log.info("Finding lessons for facultyId " + facultyId);
-        Session session = getSession();
-        List<Lesson> result = session.createQuery("from Lesson l where l.group.faculty.id=:facultyId")
+        return getSession().createQuery("from Lesson l where l.group.faculty.id=:facultyId")
                 .setParameter("facultyId", facultyId)
                 .list();
-        session.close();
-        return result;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Lesson> findAll() {
         log.info("Finding all lessons");
-        Session session = getSession();
-        List<Lesson> result = session.createQuery("from Lesson").list();
-        session.close();
-        return result;
+        return getSession().createQuery("from Lesson").list();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Lesson> findGroupLessons(int groupId, DayOfWeek dayOfWeek) {
         if (dayOfWeek != null) {
             log.info("Finding lessons for groupId " + groupId + " on " + dayOfWeek);
-            Session session = getSession();
-            List<Lesson> result = session.createQuery("from Lesson l where l.group.id=:groupId and l.dayOfWeek=:day")
+            return getSession().createQuery("from Lesson l where l.group.id=:groupId and l.dayOfWeek=:day")
                     .setParameter("groupId", groupId)
                     .setParameter("day", dayOfWeek)
                     .list();
-            session.close();
-            return result;
         }
         return Collections.emptyList();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Lesson> findTeacherLessons(int teacherId, DayOfWeek dayOfWeek) {
         if (dayOfWeek != null) {
             log.info("Finding lessons for teacherId " + teacherId + " on " + dayOfWeek);
-            Session session = getSession();
-            List<Lesson> result = session.createQuery("from Lesson l where l.teacher.id=:teacherId and l.dayOfWeek=:day")
+            return getSession().createQuery("from Lesson l where l.teacher.id=:teacherId and l.dayOfWeek=:day")
                     .setParameter("teacherId", teacherId)
                     .setParameter("day", dayOfWeek)
                     .list();
-            session.close();
-            return result;
         }
         return Collections.emptyList();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Lesson> findGroupLessons(int groupId) {
         log.info("Finding lessons for groupId " + groupId);
-        Session session = getSession();
-        List<Lesson> result = session.createQuery("from Lesson l where l.group.id=:groupId")
+        return getSession().createQuery("from Lesson l where l.group.id=:groupId")
                 .setParameter("groupId", groupId)
                 .list();
-        session.close();
-        return result;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Lesson> findTeacherLessons(int teacherId) {
         log.info("Finding lessons for teacherId " + teacherId);
-        Session session = getSession();
-        List<Lesson> result = session.createQuery("from Lesson l where l.teacher.id=:teacherId")
+        return getSession().createQuery("from Lesson l where l.teacher.id=:teacherId")
                 .setParameter("teacherId", teacherId)
                 .list();
-        session.close();
-        return result;
+    }
+
+    public SessionFactory getSessionFactory() {
+        return sessionFactory;
+    }
+
+    public void setSessionFactory(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
     }
 }

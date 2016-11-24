@@ -1,34 +1,38 @@
 package com.grubjack.university.dao.impl;
 
-import com.grubjack.university.dao.DaoFactory;
 import com.grubjack.university.dao.DepartmentDao;
 import com.grubjack.university.domain.Department;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 /**
  * Created by grubjack on 03.11.2016.
  */
+@Repository
+@Transactional
 public class DepartmentDaoImpl implements DepartmentDao {
 
     private static Logger log = LoggerFactory.getLogger(DepartmentDaoImpl.class);
 
+    @Autowired
+    private SessionFactory sessionFactory;
+
     private Session getSession() {
-        return DaoFactory.getSessionFactory().openSession();
+        return sessionFactory.getCurrentSession();
     }
 
     @Override
     public void create(Department department, int facultyId) {
         if (department != null && department.getFaculty() != null && department.getFaculty().getId() == facultyId) {
             log.info("Creating new department " + department.getName());
-            Session session = getSession();
-            session.getTransaction().begin();
-            session.save(department);
-            session.getTransaction().commit();
-            session.close();
+            getSession().save(department);
             log.info("Department is created with id = " + department.getId());
         }
     }
@@ -40,11 +44,7 @@ public class DepartmentDaoImpl implements DepartmentDao {
             if (departmentToUpdate != null && departmentToUpdate.getFaculty() != null && departmentToUpdate.getFaculty().getId() == facultyId) {
                 departmentToUpdate.setName(department.getName());
                 log.info("Updating department with id " + department.getId());
-                Session session = getSession();
-                session.getTransaction().begin();
-                session.update(departmentToUpdate);
-                session.getTransaction().commit();
-                session.close();
+                getSession().update(departmentToUpdate);
             }
         }
     }
@@ -54,49 +54,45 @@ public class DepartmentDaoImpl implements DepartmentDao {
         Department department = find(id);
         if (department != null) {
             log.info("Deleting department with id " + id);
-            Session session = getSession();
-            session.getTransaction().begin();
-            session.delete(department);
-            session.getTransaction().commit();
-            session.close();
+            getSession().delete(department);
         }
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Department find(int id) {
         log.info("Finding department with id " + id);
-        Session session = getSession();
-        Department result = session.get(Department.class, id);
-        session.close();
-        return result;
+        return getSession().get(Department.class, id);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Department> findAll() {
         log.info("Finding all departments");
-        Session session = getSession();
-        List<Department> result = session.createQuery("from Department").list();
-        session.close();
-        return result;
+        return getSession().createQuery("from Department").list();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Department findByName(String name) {
         log.info("Finding department with name " + name);
-        Session session = getSession();
-        Department result = (Department) session.createQuery("from Department where lower(name)=:name")
+        return (Department) getSession().createQuery("from Department where lower(name)=:name")
                 .setParameter("name", name.toLowerCase()).uniqueResult();
-        session.close();
-        return result;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Department> findAll(int facultyId) {
         log.info("Finding all departments with facultyId " + facultyId);
-        Session session = getSession();
-        List<Department> result = session.createQuery("from Department d where d.faculty.id=:facultyId")
+        return getSession().createQuery("from Department d where d.faculty.id=:facultyId")
                 .setParameter("facultyId", facultyId).list();
-        session.close();
-        return result;
+    }
+
+    public SessionFactory getSessionFactory() {
+        return sessionFactory;
+    }
+
+    public void setSessionFactory(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
     }
 }
