@@ -1,9 +1,9 @@
 package com.grubjack.university.domain;
 
-import com.grubjack.university.dao.DaoFactory;
 import com.grubjack.university.dao.DepartmentDao;
 import com.grubjack.university.dao.GroupDao;
 import com.grubjack.university.dao.LessonDao;
+import com.grubjack.university.servlet.AbstractHttpServlet;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -38,15 +38,6 @@ public class Faculty implements Comparable<Faculty> {
     @Transient
     private Timetable timetable;
 
-    @Transient
-    private DepartmentDao departmentDao = DaoFactory.getInstance().getDepartmentDao();
-
-    @Transient
-    private GroupDao groupDao = DaoFactory.getInstance().getGroupDao();
-
-    @Transient
-    private LessonDao lessonDao = DaoFactory.getInstance().getLessonDao();
-
     public Faculty() {
     }
 
@@ -72,73 +63,87 @@ public class Faculty implements Comparable<Faculty> {
 
     public void createGroup(Group group) {
         if (group != null && !groups.contains(group)) {
+            University university = (University) AbstractHttpServlet.getContext().getBean("university");
+            GroupDao groupDao = (GroupDao) AbstractHttpServlet.getContext().getBean("groupDaoImpl");
             group.setFaculty(this);
             groups.add(group);
-            University.getInstance().getGroups().add(group);
-            University.getInstance().setTimetables(null);
+            university.getGroups().add(group);
+            university.setTimetables(null);
             groupDao.create(group, id);
         }
     }
 
     public void deleteGroup(Group group) {
         if (group != null) {
+            University university = (University) AbstractHttpServlet.getContext().getBean("university");
+            GroupDao groupDao = (GroupDao) AbstractHttpServlet.getContext().getBean("groupDaoImpl");
             groups.remove(group);
-            University.getInstance().getGroups().remove(group);
-            University.getInstance().getStudents().removeAll(group.getStudents());
-            University.getInstance().setTimetables(null);
+            university.getGroups().remove(group);
+            university.getStudents().removeAll(group.getStudents());
+            university.setTimetables(null);
             groupDao.delete(group.getId());
         }
     }
 
     public Group findGroup(String name) {
+        GroupDao groupDao = (GroupDao) AbstractHttpServlet.getContext().getBean("groupDaoImpl");
         return groupDao.findByName(name);
     }
 
     public void updateGroup(Group group) {
+        University university = (University) AbstractHttpServlet.getContext().getBean("university");
+        GroupDao groupDao = (GroupDao) AbstractHttpServlet.getContext().getBean("groupDaoImpl");
         Group oldGroup = groupDao.find(group.getId());
         if (oldGroup != null) {
             int index = groups.indexOf(oldGroup);
-            int index2 = University.getInstance().getGroups().indexOf(oldGroup);
+            int index2 = university.getGroups().indexOf(oldGroup);
             if (index != -1) {
                 groups.set(index, group);
             }
             if (index2 != -1) {
-                University.getInstance().getGroups().set(index2, group);
+                university.getGroups().set(index2, group);
             }
+            university.setTimetables(null);
             groupDao.update(group, id);
         }
     }
 
     public void createDepartment(Department department) {
         if (department != null && !departments.contains(department)) {
+            University university = (University) AbstractHttpServlet.getContext().getBean("university");
+            DepartmentDao departmentDao = (DepartmentDao) AbstractHttpServlet.getContext().getBean("departmentDaoImpl");
             department.setFaculty(this);
             departments.add(department);
-            University.getInstance().getDepartments().add(department);
+            university.getDepartments().add(department);
             departmentDao.create(department, id);
         }
     }
 
     public void deleteDepartment(Department department) {
         if (department != null) {
+            University university = (University) AbstractHttpServlet.getContext().getBean("university");
+            DepartmentDao departmentDao = (DepartmentDao) AbstractHttpServlet.getContext().getBean("departmentDaoImpl");
             departments.remove(department);
-            University.getInstance().getDepartments().remove(department);
-            University.getInstance().getTeachers().removeAll(department.getTeachers());
-            University.getInstance().setLessons(null);
-            University.getInstance().setTimetables(null);
+            university.getDepartments().remove(department);
+            university.getTeachers().removeAll(department.getTeachers());
+            university.setLessons(null);
+            university.setTimetables(null);
             departmentDao.delete(department.getId());
         }
     }
 
     public void updateDepartment(Department department) {
+        University university = (University) AbstractHttpServlet.getContext().getBean("university");
+        DepartmentDao departmentDao = (DepartmentDao) AbstractHttpServlet.getContext().getBean("departmentDaoImpl");
         Department oldDepartment = departmentDao.find(department.getId());
         if (oldDepartment != null) {
             int index = departments.indexOf(oldDepartment);
-            int index2 = University.getInstance().getDepartments().indexOf(oldDepartment);
+            int index2 = university.getDepartments().indexOf(oldDepartment);
             if (index != -1) {
                 departments.set(index, department);
             }
             if (index2 != -1) {
-                University.getInstance().getDepartments().set(index2, department);
+                university.getDepartments().set(index2, department);
             }
             departmentDao.update(department, id);
         }
@@ -156,6 +161,7 @@ public class Faculty implements Comparable<Faculty> {
     public TimetableUnit findDayTimetable(Teacher teacher, DayOfWeek dayOfWeek) {
         TimetableUnit result = new TimetableUnit();
         if (teacher != null) {
+            LessonDao lessonDao = (LessonDao) AbstractHttpServlet.getContext().getBean("lessonDaoImpl");
             result.setLessons(lessonDao.findTeacherLessons(teacher.getId(), dayOfWeek));
         }
         return result;
@@ -165,6 +171,7 @@ public class Faculty implements Comparable<Faculty> {
         Timetable result = new Timetable();
         if (teacher != null) {
             result.setName(teacher.getName());
+            LessonDao lessonDao = (LessonDao) AbstractHttpServlet.getContext().getBean("lessonDaoImpl");
             List<Lesson> lessons = lessonDao.findTeacherLessons(teacher.getId());
             if (lessons != null) {
                 for (DayOfWeek day : DayOfWeek.values()) {
@@ -187,6 +194,7 @@ public class Faculty implements Comparable<Faculty> {
     public TimetableUnit findDayTimetable(Group group, DayOfWeek dayOfWeek) {
         TimetableUnit result = new TimetableUnit();
         if (group != null) {
+            LessonDao lessonDao = (LessonDao) AbstractHttpServlet.getContext().getBean("lessonDaoImpl");
             result.setLessons(lessonDao.findGroupLessons(group.getId(), dayOfWeek));
         }
         return result;
@@ -196,6 +204,7 @@ public class Faculty implements Comparable<Faculty> {
         Timetable result = new Timetable();
         if (group != null) {
             result.setName(group.getName());
+            LessonDao lessonDao = (LessonDao) AbstractHttpServlet.getContext().getBean("lessonDaoImpl");
             List<Lesson> lessons = lessonDao.findGroupLessons(group.getId());
             if (lessons != null) {
                 for (DayOfWeek day : DayOfWeek.values()) {
@@ -218,6 +227,7 @@ public class Faculty implements Comparable<Faculty> {
 
     public Group findGroupByStudent(Student student) {
         if (student != null) {
+            GroupDao groupDao = (GroupDao) AbstractHttpServlet.getContext().getBean("groupDaoImpl");
             return groupDao.findByStudent(student);
         }
         return null;
@@ -225,6 +235,7 @@ public class Faculty implements Comparable<Faculty> {
 
     public Group findGroupByName(String name) {
         if (name != null && !name.isEmpty()) {
+            GroupDao groupDao = (GroupDao) AbstractHttpServlet.getContext().getBean("groupDaoImpl");
             return groupDao.findByName(name);
         }
         return null;
@@ -233,6 +244,7 @@ public class Faculty implements Comparable<Faculty> {
     private Timetable findTimetable() {
         timetable = new Timetable();
         timetable.setName(name);
+        LessonDao lessonDao = (LessonDao) AbstractHttpServlet.getContext().getBean("lessonDaoImpl");
         List<Lesson> lessons = lessonDao.findFacultyLessons(id);
         if (lessons != null) {
             for (DayOfWeek day : DayOfWeek.values()) {
@@ -302,6 +314,7 @@ public class Faculty implements Comparable<Faculty> {
     }
 
     public List<Lesson> findLessons() {
+        LessonDao lessonDao = (LessonDao) AbstractHttpServlet.getContext().getBean("lessonDaoImpl");
         return lessonDao.findFacultyLessons(id);
     }
 

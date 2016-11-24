@@ -1,7 +1,7 @@
 package com.grubjack.university.domain;
 
-import com.grubjack.university.dao.DaoFactory;
 import com.grubjack.university.dao.PersonDao;
+import com.grubjack.university.servlet.AbstractHttpServlet;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -32,9 +32,6 @@ public class Department implements Comparable<Department> {
     @JoinColumn(name = "faculty_id", nullable = false)
     private Faculty faculty;
 
-    @Transient
-    private PersonDao<Teacher> teacherDao = DaoFactory.getInstance().getTeacherDao();
-
     public Department() {
     }
 
@@ -61,49 +58,58 @@ public class Department implements Comparable<Department> {
 
     public void createTeacher(Teacher teacher) {
         if (teacher != null && !teachers.contains(teacher)) {
+            University university = (University) AbstractHttpServlet.getContext().getBean("university");
+            PersonDao<Teacher> teacherDao = (PersonDao<Teacher>) AbstractHttpServlet.getContext().getBean("teacherDao");
             teacher.setDepartment(this);
             teachers.add(teacher);
-            University.getInstance().getTeachers().add(teacher);
-            University.getInstance().setLessons(null);
-            University.getInstance().setTimetables(null);
+            university.getTeachers().add(teacher);
+            university.setLessons(null);
+            university.setTimetables(null);
             teacherDao.create(teacher, id);
         }
     }
 
     public void deleteTeacher(Teacher teacher) {
         if (teacher != null) {
+            University university = (University) AbstractHttpServlet.getContext().getBean("university");
+            PersonDao<Teacher> teacherDao = (PersonDao<Teacher>) AbstractHttpServlet.getContext().getBean("teacherDao");
             teachers.remove(teacher);
-            University.getInstance().getTeachers().remove(teacher);
-            University.getInstance().setLessons(null);
-            University.getInstance().setTimetables(null);
+            university.getTeachers().remove(teacher);
+            university.setLessons(null);
+            university.setTimetables(null);
             teacherDao.delete(teacher.getId());
         }
     }
 
     public void updateTeacher(Teacher teacher) {
+        University university = (University) AbstractHttpServlet.getContext().getBean("university");
+        PersonDao<Teacher> teacherDao = (PersonDao<Teacher>) AbstractHttpServlet.getContext().getBean("teacherDao");
         Teacher oldTeacher = teacherDao.find(teacher.getId());
         if (oldTeacher != null) {
             int index = teachers.indexOf(oldTeacher);
-            int index2 = University.getInstance().getTeachers().indexOf(oldTeacher);
+            int index2 = university.getTeachers().indexOf(oldTeacher);
             if (index != -1) {
                 teachers.set(index, teacher);
             }
             if (index2 != -1) {
-                University.getInstance().getTeachers().set(index2, teacher);
+                university.getTeachers().set(index2, teacher);
             }
             teacherDao.update(teacher, id);
         }
     }
 
     public List<Teacher> findTeachersByFirstName(String firstName) {
+        PersonDao<Teacher> teacherDao = (PersonDao<Teacher>) AbstractHttpServlet.getContext().getBean("teacherDao");
         return teacherDao.findByFirstName(id, firstName);
     }
 
     public List<Teacher> findTeachersByLastName(String lastName) {
+        PersonDao<Teacher> teacherDao = (PersonDao<Teacher>) AbstractHttpServlet.getContext().getBean("teacherDao");
         return teacherDao.findByLastName(id, lastName);
     }
 
     public List<Teacher> findTeachersByName(String firstName, String lastName) {
+        PersonDao<Teacher> teacherDao = (PersonDao<Teacher>) AbstractHttpServlet.getContext().getBean("teacherDao");
         return teacherDao.findByName(id, firstName, lastName);
     }
 

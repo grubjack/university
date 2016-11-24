@@ -1,9 +1,10 @@
 package com.grubjack.university.domain;
 
-import com.grubjack.university.dao.DaoFactory;
 import com.grubjack.university.dao.PersonDao;
+import com.grubjack.university.servlet.AbstractHttpServlet;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
 import java.util.List;
@@ -30,9 +31,6 @@ public class Group implements Comparable<Group> {
     @JoinColumn(name = "faculty_id", nullable = false)
     private Faculty faculty;
 
-    @Transient
-    private PersonDao<Student> studentDao = DaoFactory.getInstance().getStudentDao();
-
     public Group() {
     }
 
@@ -58,31 +56,37 @@ public class Group implements Comparable<Group> {
 
     public void createStudent(Student student) {
         if (student != null && !students.contains(student)) {
+            University university = (University) AbstractHttpServlet.getContext().getBean("university");
+            PersonDao<Student> studentDao = (PersonDao<Student>) AbstractHttpServlet.getContext().getBean("studentDao");
             student.setGroup(this);
             students.add(student);
-            University.getInstance().getStudents().add(student);
+            university.getStudents().add(student);
             studentDao.create(student, id);
         }
     }
 
     public void deleteStudent(Student student) {
         if (student != null) {
+            University university = (University) AbstractHttpServlet.getContext().getBean("university");
+            PersonDao<Student> studentDao = (PersonDao<Student>) AbstractHttpServlet.getContext().getBean("studentDao");
             students.remove(student);
-            University.getInstance().getStudents().remove(student);
+            university.getStudents().remove(student);
             studentDao.delete(student.getId());
         }
     }
 
     public void updateStudent(Student student) {
+        University university = (University) AbstractHttpServlet.getContext().getBean("university");
+        PersonDao<Student> studentDao = (PersonDao<Student>) AbstractHttpServlet.getContext().getBean("studentDao");
         Student oldStudent = studentDao.find(student.getId());
         if (oldStudent != null) {
             int index = students.indexOf(oldStudent);
-            int index2 = University.getInstance().getStudents().indexOf(oldStudent);
+            int index2 = university.getStudents().indexOf(oldStudent);
             if (index != -1) {
                 students.set(index, student);
             }
             if (index2 != -1) {
-                University.getInstance().getStudents().set(index2, student);
+                university.getStudents().set(index2, student);
             }
             studentDao.update(student, id);
         }
@@ -90,14 +94,17 @@ public class Group implements Comparable<Group> {
 
 
     public List<Student> findStudentsByFirstName(String firstName) {
+        PersonDao<Student> studentDao = (PersonDao<Student>) AbstractHttpServlet.getContext().getBean("studentDao");
         return studentDao.findByFirstName(firstName);
     }
 
     public List<Student> findStudentsByLastName(String lastName) {
+        PersonDao<Student> studentDao = (PersonDao<Student>) AbstractHttpServlet.getContext().getBean("studentDao");
         return studentDao.findByLastName(lastName);
     }
 
     public List<Student> findStudentsByName(String firstName, String lastName) {
+        PersonDao<Student> studentDao = (PersonDao<Student>) AbstractHttpServlet.getContext().getBean("studentDao");
         return studentDao.findByName(firstName, lastName);
     }
 
