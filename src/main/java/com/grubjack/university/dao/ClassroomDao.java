@@ -15,7 +15,5 @@ public interface ClassroomDao extends BaseDao<Classroom> {
 
     void update(Classroom classroom);
 
-    Classroom findByNumber(String number);
-
     List<Classroom> findAvailable(DayOfWeek dayOfWeek, TimeOfDay timeOfDay);
 }

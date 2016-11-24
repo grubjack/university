@@ -76,18 +76,6 @@ public class ClassroomDaoImpl implements ClassroomDao {
 
     @Override
     @Transactional(readOnly = true)
-    public Classroom findByNumber(String number) {
-        if (number != null) {
-            log.info("Finding classroom with number " + number);
-            return (Classroom) getSession().createQuery("from Classroom where lower(number)=:number")
-                    .setParameter("number", number.toLowerCase())
-                    .uniqueResult();
-        }
-        return null;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
     public List<Classroom> findAvailable(DayOfWeek dayOfWeek, TimeOfDay timeOfDay) {
         if (dayOfWeek != null && timeOfDay != null) {
             log.info("Finding available classrooms on " + dayOfWeek.toString() + " at " + timeOfDay.toString());

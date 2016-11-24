@@ -14,18 +14,6 @@ public interface PersonDao<T> extends BaseDao<T> {
 
     void update(T t, int unitId);
 
-    List<T> findByFirstName(String firstName);
-
-    List<T> findByFirstName(int unitId, String firstName);
-
-    List<T> findByLastName(String lastName);
-
-    List<T> findByLastName(int unitId, String lastName);
-
-    List<T> findByName(String firstName, String lastName);
-
-    List<T> findByName(int unitId, String firstName, String lastName);
-
     List<T> findAll(int unitId);
 
     List<T> findAvailable(DayOfWeek dayOfWeek, TimeOfDay timeOfDay);

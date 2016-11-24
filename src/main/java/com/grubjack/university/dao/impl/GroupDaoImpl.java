@@ -3,7 +3,6 @@ package com.grubjack.university.dao.impl;
 import com.grubjack.university.dao.GroupDao;
 import com.grubjack.university.domain.DayOfWeek;
 import com.grubjack.university.domain.Group;
-import com.grubjack.university.domain.Student;
 import com.grubjack.university.domain.TimeOfDay;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -67,19 +66,6 @@ public class GroupDaoImpl implements GroupDao {
     public Group find(int id) {
         log.info("Finding group with id " + id);
         return getSession().get(Group.class, id);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Group findByStudent(Student student) {
-        if (student != null) {
-            log.info("Finding group by student with id " + student.getId());
-            Student findStudent = getSession().get(Student.class, student.getId());
-            if (findStudent != null) {
-                return findStudent.getGroup();
-            }
-        }
-        return null;
     }
 
     @Override

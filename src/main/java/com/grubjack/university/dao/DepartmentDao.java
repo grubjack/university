@@ -13,8 +13,6 @@ public interface DepartmentDao extends BaseDao<Department> {
 
     void update(Department department, int facultyId);
 
-    Department findByName(String name);
-
     List<Department> findAll(int facultyId);
 
 }

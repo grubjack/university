@@ -74,14 +74,6 @@ public class DepartmentDaoImpl implements DepartmentDao {
 
     @Override
     @Transactional(readOnly = true)
-    public Department findByName(String name) {
-        log.info("Finding department with name " + name);
-        return (Department) getSession().createQuery("from Department where lower(name)=:name")
-                .setParameter("name", name.toLowerCase()).uniqueResult();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
     public List<Department> findAll(int facultyId) {
         log.info("Finding all departments with facultyId " + facultyId);
         return getSession().createQuery("from Department d where d.faculty.id=:facultyId")

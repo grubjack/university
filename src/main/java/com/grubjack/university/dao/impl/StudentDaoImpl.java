@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -74,79 +73,6 @@ public class StudentDaoImpl implements PersonDao<Student> {
     public List<Student> findAll() {
         log.info("Finding all students");
         return getSession().createQuery("from Student").list();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Student> findByFirstName(String firstName) {
-        if (firstName != null) {
-            log.info("Finding student with firstname " + firstName);
-            return getSession().createQuery("from Student where lower(firstName) like :firstName")
-                    .setParameter("firstName", "%" + firstName.toLowerCase() + "%").list();
-        }
-        return Collections.emptyList();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Student> findByFirstName(int groupId, String firstName) {
-        if (firstName != null) {
-            log.info("Finding students with firstname " + firstName + " from group with id " + groupId);
-            return getSession().createQuery("from Student s where s.group.id=:groupId and lower(firstName) like :firstName")
-                    .setParameter("groupId", groupId)
-                    .setParameter("firstName", "%" + firstName.toLowerCase() + "%").list();
-        }
-        return Collections.emptyList();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Student> findByLastName(String lastName) {
-        if (lastName != null) {
-            log.info("Finding students with lastname " + lastName);
-            return getSession().createQuery("from Student where lower(lastName) like :lastName")
-                    .setParameter("lastName", "%" + lastName.toLowerCase() + "%").list();
-        }
-        return Collections.emptyList();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Student> findByLastName(int groupId, String lastName) {
-        if (lastName != null) {
-            log.info("Finding students with lastname " + lastName + " from group with id " + groupId);
-            return getSession().createQuery("from Student s where s.group.id=:groupId and lower(lastName) like :lastName")
-                    .setParameter("groupId", groupId)
-                    .setParameter("lastName", "%" + lastName.toLowerCase() + "%").list();
-        }
-        return Collections.emptyList();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Student> findByName(String firstName, String lastName) {
-        if (firstName != null && lastName != null) {
-            log.info("Finding students with firstname " + lastName + " and lastname " + lastName);
-            return getSession().createQuery("from Student where lower(firstName) like :firstName and lower(lastName) like :lastName")
-                    .setParameter("firstName", "%" + firstName.toLowerCase() + "%")
-                    .setParameter("lastName", "%" + lastName.toLowerCase() + "%")
-                    .list();
-        }
-        return Collections.emptyList();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Student> findByName(int groupId, String firstName, String lastName) {
-        if (firstName != null && lastName != null) {
-            log.info("Finding students with firstname " + lastName + " and lastname " + lastName + " from group with id " + groupId);
-            return getSession().createQuery("from Student s where s.group.id=:groupId and lower(firstName) like :firstName and lower(lastName) like :lastName")
-                    .setParameter("groupId", groupId)
-                    .setParameter("firstName", "%" + firstName.toLowerCase() + "%")
-                    .setParameter("lastName", "%" + lastName.toLowerCase() + "%")
-                    .list();
-        }
-        return Collections.emptyList();
     }
 
     @Override

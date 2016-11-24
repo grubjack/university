@@ -11,8 +11,6 @@ public interface FacultyDao extends BaseDao<Faculty> {
 
     void update(Faculty faculty);
 
-    Faculty findByName(String name);
-
     Faculty findByGroup(int groupId);
 
     Faculty findByStudent(int studentId);

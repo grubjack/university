@@ -18,11 +18,4 @@ public interface LessonDao extends BaseDao<Lesson> {
 
     List<Lesson> findGroupLessons(int groupId);
 
-    List<Lesson> findTeacherLessons(int teacherId);
-
-    List<Lesson> findGroupLessons(int groupId, DayOfWeek dayOfWeek);
-
-    List<Lesson> findTeacherLessons(int teacherId, DayOfWeek dayOfWeek);
-
-
 }

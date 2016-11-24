@@ -76,19 +76,6 @@ public class FacultyDaoImpl implements FacultyDao {
         return getSession().createQuery("from Faculty").list();
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public Faculty findByName(String name) {
-        if (name != null) {
-            log.info("Finding faculty with name " + name);
-            return (Faculty) getSession().createQuery("from Faculty where lower(name)=:name")
-                    .setParameter("name", name.toLowerCase())
-                    .uniqueResult();
-        }
-        return null;
-    }
-
-    @Override
     @Transactional(readOnly = true)
     public Faculty findByGroup(int groupId) {
         log.info("Finding faculty by group id " + groupId);

@@ -18,8 +18,6 @@ public interface GroupDao extends BaseDao<Group> {
 
     Group findByName(String name);
 
-    Group findByStudent(Student student);
-
     List<Group> findAll(int facultyId);
 
     List<Group> findAvailable(DayOfWeek dayOfWeek, TimeOfDay timeOfDay);
