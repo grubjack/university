@@ -16,7 +16,7 @@ public enum TimeOfDay {
 
     private final String text;
 
-    private TimeOfDay(String text) {
+    TimeOfDay(String text) {
         this.text = text;
     }
 
