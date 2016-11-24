@@ -4,7 +4,6 @@ import com.grubjack.university.domain.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -16,7 +15,6 @@ import java.util.List;
  */
 @WebServlet("/search")
 public class SearchServlet extends AbstractHttpServlet {
-
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -42,24 +40,13 @@ public class SearchServlet extends AbstractHttpServlet {
                         Group group = university.findGroup(Integer.parseInt(gid));
                         if (group != null) {
                             title = String.format("Students of %s group", group.getName());
-                            for (Student student : group.getStudents()) {
-                                if (student.getName().toLowerCase().contains(name.toLowerCase())) {
-                                    students.add(student);
-                                }
-                            }
+                            students = group.findStudents(name);
                         }
 
                     } else {
                         title = "Students";
                         page = "students.jsp";
-
-                        for (Student student : university.getStudents()) {
-
-                            if (student.getName().toLowerCase().contains(name.toLowerCase())) {
-                                students.add(student);
-                            }
-                        }
-
+                        students = university.findStudents(name);
                     }
 
                     req.setAttribute("students", students);
@@ -75,23 +62,12 @@ public class SearchServlet extends AbstractHttpServlet {
                         Department department = university.findDepartment(Integer.parseInt(did));
                         if (department != null) {
                             title = String.format("Teachers of %s department", department.getName());
-                            for (Teacher teacher : department.getTeachers()) {
-                                if (teacher.getName().toLowerCase().contains(name.toLowerCase())) {
-                                    teachers.add(teacher);
-                                }
-                            }
+                            teachers = department.findTeachers(name);
                         }
-
-
                     } else {
                         title = "Teachers";
                         page = "teachers.jsp";
-
-                        for (Teacher teacher : university.getTeachers()) {
-                            if (teacher.getName().toLowerCase().contains(name.toLowerCase())) {
-                                teachers.add(teacher);
-                            }
-                        }
+                        teachers = university.findTeachers(name);
 
                     }
                     req.setAttribute("teachers", teachers);
@@ -120,22 +96,13 @@ public class SearchServlet extends AbstractHttpServlet {
                         Faculty faculty = university.findFaculty(Integer.parseInt(fid));
                         if (faculty != null) {
                             title = String.format("Departments of %s faculty", faculty.getName());
-                            for (Department department : faculty.getDepartments()) {
-                                if (department.getName().toLowerCase().contains(name.toLowerCase())) {
-                                    departments.add(department);
-                                }
-                            }
+                            departments = faculty.findDepartments(name);
                         }
 
                     } else {
                         title = "Departments";
                         page = "departments.jsp";
-
-                        for (Department department : university.getDepartments()) {
-                            if (department.getName().toLowerCase().contains(name.toLowerCase())) {
-                                departments.add(department);
-                            }
-                        }
+                        departments = university.findDepartments(name);
                     }
 
                     req.setAttribute("departments", departments);
@@ -152,22 +119,13 @@ public class SearchServlet extends AbstractHttpServlet {
                         Faculty faculty = university.findFaculty(Integer.parseInt(fid));
                         if (faculty != null) {
                             title = String.format("Groups of %s faculty", faculty.getName());
-                            for (Group group : faculty.getGroups()) {
-                                if (group.getName().toLowerCase().contains(name.toLowerCase())) {
-                                    groups.add(group);
-                                }
-                            }
+                            groups = faculty.findGroups(name);
                         }
 
                     } else {
                         title = "Groups";
                         page = "groups.jsp";
-
-                        for (Group group : university.getGroups()) {
-                            if (group.getName().toLowerCase().contains(name.toLowerCase())) {
-                                groups.add(group);
-                            }
-                        }
+                        groups = university.findGroups(name);
                     }
 
                     req.setAttribute("groups", groups);

@@ -4,9 +4,9 @@ import com.grubjack.university.dao.PersonDao;
 import com.grubjack.university.servlet.AbstractHttpServlet;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -92,20 +92,14 @@ public class Group implements Comparable<Group> {
         }
     }
 
-
-    public List<Student> findStudentsByFirstName(String firstName) {
-        PersonDao<Student> studentDao = (PersonDao<Student>) AbstractHttpServlet.getContext().getBean("studentDao");
-        return studentDao.findByFirstName(firstName);
-    }
-
-    public List<Student> findStudentsByLastName(String lastName) {
-        PersonDao<Student> studentDao = (PersonDao<Student>) AbstractHttpServlet.getContext().getBean("studentDao");
-        return studentDao.findByLastName(lastName);
-    }
-
-    public List<Student> findStudentsByName(String firstName, String lastName) {
-        PersonDao<Student> studentDao = (PersonDao<Student>) AbstractHttpServlet.getContext().getBean("studentDao");
-        return studentDao.findByName(firstName, lastName);
+    public List<Student> findStudents(String name) {
+        List<Student> result = new ArrayList<>();
+        for (Student student : getStudents()) {
+            if (student.getName().toLowerCase().contains(name.toLowerCase())) {
+                result.add(student);
+            }
+        }
+        return result;
     }
 
     public int getId() {

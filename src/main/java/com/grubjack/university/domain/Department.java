@@ -6,6 +6,7 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,7 +23,6 @@ public class Department implements Comparable<Department> {
 
     @Column(name = "name", nullable = false, unique = true)
     private String name;
-
 
     @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "department", fetch = FetchType.EAGER)
     @Fetch(FetchMode.SELECT)
@@ -98,21 +98,6 @@ public class Department implements Comparable<Department> {
         }
     }
 
-    public List<Teacher> findTeachersByFirstName(String firstName) {
-        PersonDao<Teacher> teacherDao = (PersonDao<Teacher>) AbstractHttpServlet.getContext().getBean("teacherDao");
-        return teacherDao.findByFirstName(id, firstName);
-    }
-
-    public List<Teacher> findTeachersByLastName(String lastName) {
-        PersonDao<Teacher> teacherDao = (PersonDao<Teacher>) AbstractHttpServlet.getContext().getBean("teacherDao");
-        return teacherDao.findByLastName(id, lastName);
-    }
-
-    public List<Teacher> findTeachersByName(String firstName, String lastName) {
-        PersonDao<Teacher> teacherDao = (PersonDao<Teacher>) AbstractHttpServlet.getContext().getBean("teacherDao");
-        return teacherDao.findByName(id, firstName, lastName);
-    }
-
     public int getId() {
         return id;
     }
@@ -131,6 +116,16 @@ public class Department implements Comparable<Department> {
 
     public List<Teacher> getTeachers() {
         return teachers;
+    }
+
+    public List<Teacher> findTeachers(String name) {
+        List<Teacher> result = new ArrayList<>();
+        for (Teacher teacher : getTeachers()) {
+            if (teacher.getName().toLowerCase().contains(name.toLowerCase())) {
+                result.add(teacher);
+            }
+        }
+        return result;
     }
 
     public void setTeachers(List<Teacher> teachers) {

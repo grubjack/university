@@ -16,10 +16,8 @@ public class Student extends Person {
     @JoinColumn(name = "group_id", nullable = false)
     private Group group;
 
-
     public Student() {
     }
-
 
     public Student(String firstName, String lastName) {
         super(firstName, lastName);

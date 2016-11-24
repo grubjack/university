@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -74,13 +73,6 @@ public class University {
             timetables = null;
             classroomDao.update(classroom);
         }
-    }
-
-    public Classroom findByNumber(String number) {
-        if (number != null) {
-            return classroomDao.findByNumber(number);
-        }
-        return null;
     }
 
     public void createFaculty(Faculty faculty) {
@@ -184,6 +176,15 @@ public class University {
         this.faculties = faculties;
     }
 
+
+    public List<Group> getGroups() {
+        if (groups == null) {
+            groups = groupDao.findAll();
+        }
+        Collections.sort(groups);
+        return groups;
+    }
+
     public Faculty findFaculty(int id) {
         return facultyDao.find(id);
     }
@@ -208,6 +209,7 @@ public class University {
         return classroomDao.find(id);
     }
 
+
     public Faculty findGroupFaculty(int groupId) {
         return facultyDao.findByGroup(groupId);
     }
@@ -224,6 +226,46 @@ public class University {
         return departmentDao.find(id);
     }
 
+    public List<Student> findStudents(String name) {
+        List<Student> result = new ArrayList<>();
+        for (Student student : getStudents()) {
+            if (student.getName().toLowerCase().contains(name.toLowerCase())) {
+                result.add(student);
+            }
+        }
+        return result;
+    }
+
+    public List<Teacher> findTeachers(String name) {
+        List<Teacher> result = new ArrayList<>();
+        for (Teacher teacher : getTeachers()) {
+            if (teacher.getName().toLowerCase().contains(name.toLowerCase())) {
+                result.add(teacher);
+            }
+        }
+        return result;
+    }
+
+    public List<Department> findDepartments(String name) {
+        List<Department> result = new ArrayList<>();
+        for (Department department : getDepartments()) {
+            if (department.getName().toLowerCase().contains(name.toLowerCase())) {
+                result.add(department);
+            }
+        }
+        return result;
+    }
+
+    public List<Group> findGroups(String name) {
+        List<Group> result = new ArrayList<>();
+        for (Group group : getGroups()) {
+            if (group.getName().toLowerCase().contains(name.toLowerCase())) {
+                result.add(group);
+            }
+        }
+        return result;
+    }
+
     public List<Teacher> findAvailableTeachers(DayOfWeek day, TimeOfDay time) {
         return teacherDao.findAvailable(day, time);
     }
@@ -236,18 +278,6 @@ public class University {
         return groupDao.findAvailable(day, time);
     }
 
-    public List<Group> getGroups() {
-        if (groups == null) {
-            groups = groupDao.findAll();
-        }
-        Collections.sort(groups);
-        return groups;
-    }
-
-    public void setGroups(List<Group> groups) {
-        this.groups = groups;
-    }
-
     public List<Timetable> findGroupTimetables() {
         if (timetables == null) {
 
@@ -258,22 +288,7 @@ public class University {
 
             for (Group group : getGroups()) {
                 Timetable timetable = new Timetable(group.getName());
-                for (DayOfWeek day : DayOfWeek.values()) {
-                    TimetableUnit unit = new TimetableUnit(day);
-                    for (TimeOfDay time : TimeOfDay.values()) {
-                        Iterator<Lesson> iterator = lessons.iterator();
-                        while (iterator.hasNext()) {
-                            Lesson lesson = iterator.next();
-                            Group groupLesson = lesson.getGroup();
-                            if (groupLesson != null && groupLesson.getId() == group.getId() && lesson.getDayOfWeek().equals(day) && lesson.getTimeOfDay().equals(time)) {
-                                unit.getLessons().add(lesson);
-                                iterator.remove();
-                                break;
-                            }
-                        }
-                    }
-                    timetable.getUnits().add(unit);
-                }
+                timetable.setLessons(lessonDao.findGroupLessons(group.getId()));
                 timetables.add(timetable);
             }
         }
@@ -286,6 +301,14 @@ public class University {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setGroups(List<Group> groups) {
+        this.groups = groups;
+    }
+
+    public List<Timetable> getTimetables() {
+        return timetables;
     }
 
     public void setTimetables(List<Timetable> timetables) {
@@ -347,10 +370,4 @@ public class University {
     public void setLessonDao(LessonDao lessonDao) {
         this.lessonDao = lessonDao;
     }
-
-    public List<Timetable> getTimetables() {
-        return timetables;
-    }
-
-
 }
