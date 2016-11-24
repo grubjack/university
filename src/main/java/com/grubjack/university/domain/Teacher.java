@@ -58,4 +58,6 @@ public class Teacher extends Person {
     public void setDepartment(Department department) {
         this.department = department;
     }
+
+
 }

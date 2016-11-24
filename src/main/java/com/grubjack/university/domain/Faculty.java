@@ -3,11 +3,13 @@ package com.grubjack.university.domain;
 import com.grubjack.university.dao.DepartmentDao;
 import com.grubjack.university.dao.GroupDao;
 import com.grubjack.university.dao.LessonDao;
+import com.grubjack.university.service.University;
 import com.grubjack.university.servlet.AbstractHttpServlet;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -17,7 +19,7 @@ import java.util.List;
  */
 @Entity
 @Table(name = "faculties")
-public class Faculty implements Comparable<Faculty> {
+public class Faculty implements Comparable<Faculty>,Serializable {
 
     @Id
     @SequenceGenerator(name = "global_seq", sequenceName = "global_seq", allocationSize = 1)

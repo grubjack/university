@@ -1,6 +1,7 @@
-package com.grubjack.university.domain;
+package com.grubjack.university.service;
 
 import com.grubjack.university.dao.*;
+import com.grubjack.university.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;

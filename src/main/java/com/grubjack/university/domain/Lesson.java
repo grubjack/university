@@ -1,6 +1,7 @@
 package com.grubjack.university.domain;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * Created by grubjack on 28.10.2016.
@@ -8,7 +9,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "lessons")
-public class Lesson implements Comparable<Lesson> {
+public class Lesson implements Comparable<Lesson>,Serializable {
 
     @Id
     @SequenceGenerator(name = "global_seq", sequenceName = "global_seq", allocationSize = 1)

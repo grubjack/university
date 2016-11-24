@@ -1,13 +1,14 @@
 package com.grubjack.university.domain;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * Created by grubjack on 28.10.2016.
  */
 @Entity
 @Table(name = "classrooms")
-public class Classroom implements Comparable<Classroom> {
+public class Classroom implements Comparable<Classroom>,Serializable {
 
     @Id
     @SequenceGenerator(name = "global_seq", sequenceName = "global_seq", allocationSize = 1)

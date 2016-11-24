@@ -1,12 +1,13 @@
 package com.grubjack.university.domain;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * Created by grubjack on 28.10.2016.
  */
 @MappedSuperclass
-public class Person implements Comparable<Person> {
+public class Person implements Comparable<Person>,Serializable {
     @Id
     @SequenceGenerator(name = "global_seq", sequenceName = "global_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "global_seq")
@@ -77,4 +78,6 @@ public class Person implements Comparable<Person> {
     public int compareTo(Person o) {
         return getName().compareTo(o.getName());
     }
+
+
 }
