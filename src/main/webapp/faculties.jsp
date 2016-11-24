@@ -6,6 +6,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>List of Faculties</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="shortcut icon" href="images/icon.png">
 </head>
 <body>
 <p><a href="${pageContext.request.contextPath}/index.html" class="button">Home page</a></p>

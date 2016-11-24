@@ -12,6 +12,7 @@
 <head>
     <title>${title}</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="shortcut icon" href="images/icon.png">
 </head>
 <body>
 <form action="classrooms" method="post">

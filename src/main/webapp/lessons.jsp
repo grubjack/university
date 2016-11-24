@@ -6,6 +6,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>${title}</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="shortcut icon" href="images/icon.png">
 </head>
 <body>
 <p><a href="${pageContext.request.contextPath}/${home}" class="button">${homeTitle}</a></p>
