@@ -15,7 +15,7 @@ import java.util.List;
  * Created by grubjack on 09.11.2016.
  */
 @WebServlet("/lessons")
-public class LessonServlet extends HttpServlet {
+public class LessonServlet extends AbstractHttpServlet {
 
     public static final String LIST = "lessons.jsp";
     public static final String ADD_OR_EDIT = "lesson.jsp";
@@ -46,29 +46,29 @@ public class LessonServlet extends HttpServlet {
 
         // find group and teacher for default select
         if (lessonId != null && !lessonId.isEmpty()) {
-            lesson = University.getInstance().findLesson(Integer.parseInt(lessonId));
+            lesson = university.findLesson(Integer.parseInt(lessonId));
             if (lesson != null) {
                 group = lesson.getGroup();
             }
         }
 
         if (teacherId != null && !teacherId.isEmpty()) {
-            teacher = University.getInstance().findTeacher(Integer.parseInt(teacherId));
+            teacher = university.findTeacher(Integer.parseInt(teacherId));
             if (teacher != null) {
                 title = String.format("Timetable for teacher %s", teacher.getName());
             }
         }
 
         if (groupId != null && !groupId.isEmpty()) {
-            group = University.getInstance().findGroup(Integer.parseInt(groupId));
+            group = university.findGroup(Integer.parseInt(groupId));
             if (group != null) {
                 title = String.format("Timetable for group %s", group.getName());
             }
         }
 
         if (studentId != null && !studentId.isEmpty()) {
-            Student student = University.getInstance().findStudent(Integer.parseInt(studentId));
-            Faculty faculty = University.getInstance().findStudentFaculty(Integer.parseInt(studentId));
+            Student student = university.findStudent(Integer.parseInt(studentId));
+            Faculty faculty = university.findStudentFaculty(Integer.parseInt(studentId));
             group = faculty.findGroupByStudent(student);
             if (student != null) {
                 title = String.format("Timetable for student %s", student.getName());
@@ -76,7 +76,7 @@ public class LessonServlet extends HttpServlet {
         }
 
         if (facultyId != null && !facultyId.isEmpty()) {
-            Faculty faculty = University.getInstance().findFaculty(Integer.parseInt(facultyId));
+            Faculty faculty = university.findFaculty(Integer.parseInt(facultyId));
             if (faculty != null) {
                 title = String.format("Timetable for faculty %s", faculty.getName());
                 if (groupName != null && !groupName.isEmpty()) {
@@ -91,9 +91,9 @@ public class LessonServlet extends HttpServlet {
             title = "Create lesson";
             req.setAttribute("selectedGroup", group);
             req.setAttribute("selectedTeacher", teacher);
-            List<Group> groups = University.getInstance().findAvailableGroups(DayOfWeek.valueOf(day), TimeOfDay.convert(time));
-            List<Teacher> teachers = University.getInstance().findAvailableTeachers(DayOfWeek.valueOf(day), TimeOfDay.convert(time));
-            List<Classroom> rooms = University.getInstance().findAvailableRooms(DayOfWeek.valueOf(day), TimeOfDay.convert(time));
+            List<Group> groups = university.findAvailableGroups(DayOfWeek.valueOf(day), TimeOfDay.convert(time));
+            List<Teacher> teachers = university.findAvailableTeachers(DayOfWeek.valueOf(day), TimeOfDay.convert(time));
+            List<Classroom> rooms = university.findAvailableRooms(DayOfWeek.valueOf(day), TimeOfDay.convert(time));
             if (groups.size() == 0) {
                 req.setAttribute("groupNotification", "no free groups");
             }
@@ -110,7 +110,7 @@ public class LessonServlet extends HttpServlet {
             if (lesson != null) {
                 Group lessonGroup = lesson.getGroup();
                 if (lessonGroup != null) {
-                    Faculty faculty = University.getInstance().findGroupFaculty(lessonGroup.getId());
+                    Faculty faculty = university.findGroupFaculty(lessonGroup.getId());
                     faculty.getTimetable().findUnit(lesson.getDayOfWeek().toString()).deleteLesson(lesson);
                 }
             }
@@ -121,8 +121,8 @@ public class LessonServlet extends HttpServlet {
                 req.setAttribute("lesson", lesson);
                 req.setAttribute("selectedGroup", group);
                 req.setAttribute("selectedTeacher", teacher);
-                List<Group> groups = University.getInstance().findAvailableGroups(DayOfWeek.valueOf(day), TimeOfDay.convert(time));
-                List<Teacher> teachers = University.getInstance().findAvailableTeachers(DayOfWeek.valueOf(day), TimeOfDay.convert(time));
+                List<Group> groups = university.findAvailableGroups(DayOfWeek.valueOf(day), TimeOfDay.convert(time));
+                List<Teacher> teachers = university.findAvailableTeachers(DayOfWeek.valueOf(day), TimeOfDay.convert(time));
                 if (groups.size() == 0 && group == null) {
                     req.setAttribute("groupNotification", "no free groups");
                 }
@@ -134,13 +134,13 @@ public class LessonServlet extends HttpServlet {
                 req.setAttribute("teachers", teachers);
                 req.setAttribute("groups", groups);
                 req.setAttribute("teachers", teachers);
-                req.setAttribute("rooms", University.getInstance().findAvailableRooms(DayOfWeek.valueOf(day), TimeOfDay.convert(time)));
+                req.setAttribute("rooms", university.findAvailableRooms(DayOfWeek.valueOf(day), TimeOfDay.convert(time)));
             }
         }
 
         // find timetable(s)
         if (facultyId != null) {
-            Faculty faculty = University.getInstance().findFaculty(Integer.parseInt(facultyId));
+            Faculty faculty = university.findFaculty(Integer.parseInt(facultyId));
             if (faculty != null) {
                 timetables = faculty.findGroupTimetables();
                 home = "faculties";
@@ -148,8 +148,8 @@ public class LessonServlet extends HttpServlet {
                 req.setAttribute("fid", faculty.getId());
             }
         } else if (groupId != null) {
-            Faculty faculty = University.getInstance().findGroupFaculty(Integer.parseInt(groupId));
-            Group group2 = University.getInstance().findGroup(Integer.parseInt(groupId));
+            Faculty faculty = university.findGroupFaculty(Integer.parseInt(groupId));
+            Group group2 = university.findGroup(Integer.parseInt(groupId));
             if (faculty != null && group2 != null) {
                 timetables.add(faculty.findTimetable(group2));
                 home = "groups";
@@ -157,8 +157,8 @@ public class LessonServlet extends HttpServlet {
                 req.setAttribute("gid", group2.getId());
             }
         } else if (studentId != null) {
-            Faculty faculty = University.getInstance().findStudentFaculty(Integer.parseInt(studentId));
-            Student student = University.getInstance().findStudent(Integer.parseInt(studentId));
+            Faculty faculty = university.findStudentFaculty(Integer.parseInt(studentId));
+            Student student = university.findStudent(Integer.parseInt(studentId));
             if (faculty != null && student != null) {
                 timetables.add(faculty.findTimetable(student));
                 home = "students";
@@ -166,8 +166,8 @@ public class LessonServlet extends HttpServlet {
                 req.setAttribute("sid", student.getId());
             }
         } else if (teacherId != null) {
-            Faculty faculty = University.getInstance().findTeacherFaculty(Integer.parseInt(teacherId));
-            Teacher teacher2 = University.getInstance().findTeacher(Integer.parseInt(teacherId));
+            Faculty faculty = university.findTeacherFaculty(Integer.parseInt(teacherId));
+            Teacher teacher2 = university.findTeacher(Integer.parseInt(teacherId));
             if (faculty != null && teacher2 != null) {
                 timetables.add(faculty.findTimetable(teacher2));
                 home = "teachers";
@@ -175,7 +175,7 @@ public class LessonServlet extends HttpServlet {
                 req.setAttribute("tid", teacher2.getId());
             }
         } else {
-            timetables = University.getInstance().findGroupTimetables();
+            timetables = university.findGroupTimetables();
         }
 
         req.setAttribute("sid", studentId);
@@ -221,22 +221,22 @@ public class LessonServlet extends HttpServlet {
         List<Timetable> timetables = new ArrayList<>();
 
         if (fid != null && !fid.isEmpty()) {
-            faculty = University.getInstance().findFaculty(Integer.parseInt(fid));
+            faculty = university.findFaculty(Integer.parseInt(fid));
         } else if (sid != null && !sid.isEmpty()) {
-            faculty = University.getInstance().findStudentFaculty(Integer.parseInt(sid));
+            faculty = university.findStudentFaculty(Integer.parseInt(sid));
         } else if (tid != null && !tid.isEmpty()) {
-            faculty = University.getInstance().findTeacherFaculty(Integer.parseInt(tid));
+            faculty = university.findTeacherFaculty(Integer.parseInt(tid));
         } else if (gid != null && !gid.isEmpty()) {
-            faculty = University.getInstance().findGroupFaculty(Integer.parseInt(gid));
+            faculty = university.findGroupFaculty(Integer.parseInt(gid));
         }
 
 
         if (faculty != null && subject != null && !subject.isEmpty() && teacherId != null && !teacherId.isEmpty() &&
                 groupId != null && !groupId.isEmpty() && classroomId != null && !classroomId.isEmpty()) {
 
-            Teacher teacher = University.getInstance().findTeacher(Integer.parseInt(teacherId));
-            Group group = University.getInstance().findGroup(Integer.parseInt(groupId));
-            Classroom classroom = University.getInstance().findRoom(Integer.parseInt(classroomId));
+            Teacher teacher = university.findTeacher(Integer.parseInt(teacherId));
+            Group group = university.findGroup(Integer.parseInt(groupId));
+            Classroom classroom = university.findRoom(Integer.parseInt(classroomId));
 
             Lesson lesson = new Lesson(subject);
             lesson.setDayOfWeek(DayOfWeek.valueOf(day));
@@ -257,7 +257,7 @@ public class LessonServlet extends HttpServlet {
                 title = String.format("Timetable for faculty %s", faculty.getName());
                 req.setAttribute("fid", fid);
             } else if (sid != null && !sid.isEmpty()) {
-                Student student = University.getInstance().findStudent(Integer.parseInt(sid));
+                Student student = university.findStudent(Integer.parseInt(sid));
                 timetables.add(faculty.findTimetable(faculty.findGroupByStudent(student)));
                 title = String.format("Timetable for student %s", student.getName());
                 req.setAttribute("sid", sid);
@@ -270,7 +270,7 @@ public class LessonServlet extends HttpServlet {
                 title = String.format("Timetable for group %s", group.getName());
                 req.setAttribute("gid", gid);
             } else {
-                timetables = University.getInstance().findGroupTimetables();
+                timetables = university.findGroupTimetables();
             }
         }
 

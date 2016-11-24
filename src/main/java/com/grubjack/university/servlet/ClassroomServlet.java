@@ -14,7 +14,7 @@ import java.io.IOException;
  * Created by grubjack on 09.11.2016.
  */
 @WebServlet("/classrooms")
-public class ClassroomServlet extends HttpServlet {
+public class ClassroomServlet extends AbstractHttpServlet {
 
     public static final String LIST = "classrooms.jsp";
     public static final String ADD_OR_EDIT = "classroom.jsp";
@@ -27,14 +27,14 @@ public class ClassroomServlet extends HttpServlet {
 
         if ("delete".equalsIgnoreCase(action)) {
             if (roomId != null) {
-                Classroom room = University.getInstance().findRoom(Integer.parseInt(roomId));
-                University.getInstance().deleteRoom(room);
-                req.setAttribute("classrooms", University.getInstance().getRooms());
+                Classroom room = university.findRoom(Integer.parseInt(roomId));
+                university.deleteRoom(room);
+                req.setAttribute("classrooms", university.getRooms());
             }
         } else if ("edit".equalsIgnoreCase(action)) {
             forward = ADD_OR_EDIT;
             if (roomId != null) {
-                Classroom room = University.getInstance().findRoom(Integer.parseInt(roomId));
+                Classroom room = university.findRoom(Integer.parseInt(roomId));
                 req.setAttribute("classroom", room);
                 req.setAttribute("title", "Edit classroom");
             }
@@ -44,7 +44,7 @@ public class ClassroomServlet extends HttpServlet {
             req.setAttribute("title", "Create classroom");
         } else {
             forward = LIST;
-            req.setAttribute("classrooms", University.getInstance().getRooms());
+            req.setAttribute("classrooms", university.getRooms());
         }
 
         req.getRequestDispatcher(forward).forward(req, resp);
@@ -61,13 +61,13 @@ public class ClassroomServlet extends HttpServlet {
             Classroom classroom = new Classroom(number, location, Integer.parseInt(capacity));
 
             if (id == null || id.isEmpty()) {
-                University.getInstance().createRoom(classroom);
+                university.createRoom(classroom);
             } else {
                 classroom.setId(Integer.parseInt(id));
-                University.getInstance().updateRoom(classroom);
+                university.updateRoom(classroom);
             }
         }
-        req.setAttribute("classrooms", University.getInstance().getRooms());
+        req.setAttribute("classrooms", university.getRooms());
         req.getRequestDispatcher(LIST).forward(req, resp);
     }
 }

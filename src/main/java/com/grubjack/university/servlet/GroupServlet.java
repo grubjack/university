@@ -16,7 +16,7 @@ import java.util.List;
  * Created by grubjack on 09.11.2016.
  */
 @WebServlet("/groups")
-public class GroupServlet extends HttpServlet {
+public class GroupServlet extends AbstractHttpServlet {
 
     public static final String LIST = "groups.jsp";
     public static final String ADD_OR_EDIT = "group.jsp";
@@ -33,7 +33,7 @@ public class GroupServlet extends HttpServlet {
         List<Group> groups = null;
 
         if (facultyId != null) {
-            Faculty faculty = University.getInstance().findFaculty(Integer.parseInt(facultyId));
+            Faculty faculty = university.findFaculty(Integer.parseInt(facultyId));
             if (faculty != null) {
 
                 title = String.format("Groups of %s faculty", faculty.getName());
@@ -44,14 +44,14 @@ public class GroupServlet extends HttpServlet {
 
                 } else if ("delete".equalsIgnoreCase(action)) {
                     if (groupId != null) {
-                        Group group = University.getInstance().findGroup(Integer.parseInt(groupId));
+                        Group group = university.findGroup(Integer.parseInt(groupId));
                         faculty.deleteGroup(group);
                     }
 
                 } else if ("edit".equalsIgnoreCase(action)) {
                     forward = ADD_OR_EDIT;
                     if (groupId != null) {
-                        Group group = University.getInstance().findGroup(Integer.parseInt(groupId));
+                        Group group = university.findGroup(Integer.parseInt(groupId));
                         req.setAttribute("group", group);
                         title = "Edit group";
                     }
@@ -60,7 +60,7 @@ public class GroupServlet extends HttpServlet {
             }
 
         } else {
-            groups = University.getInstance().getGroups();
+            groups = university.getGroups();
         }
 
         req.setAttribute("facultyId", facultyId);
@@ -79,7 +79,7 @@ public class GroupServlet extends HttpServlet {
         String title = "Groups";
 
         if (facultyId != null) {
-            Faculty faculty = University.getInstance().findFaculty(Integer.parseInt(facultyId));
+            Faculty faculty = university.findFaculty(Integer.parseInt(facultyId));
             if (faculty != null && name != null && !name.isEmpty()) {
                 Group group = new Group(name);
 

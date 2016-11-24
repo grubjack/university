@@ -16,7 +16,7 @@ import java.util.List;
  * Created by grubjack on 09.11.2016.
  */
 @WebServlet("/students")
-public class StudentServlet extends HttpServlet {
+public class StudentServlet extends AbstractHttpServlet {
 
     public static final String LIST = "students.jsp";
     public static final String ADD_OR_EDIT = "student.jsp";
@@ -33,7 +33,7 @@ public class StudentServlet extends HttpServlet {
         List<Student> students = null;
 
         if (groupId != null) {
-            Group group = University.getInstance().findGroup(Integer.parseInt(groupId));
+            Group group = university.findGroup(Integer.parseInt(groupId));
             if (group != null) {
 
                 title = String.format("Students of %s group", group.getName());
@@ -44,14 +44,14 @@ public class StudentServlet extends HttpServlet {
 
                 } else if ("delete".equalsIgnoreCase(action)) {
                     if (studentId != null) {
-                        Student student = University.getInstance().findStudent(Integer.parseInt(studentId));
+                        Student student = university.findStudent(Integer.parseInt(studentId));
                         group.deleteStudent(student);
                     }
 
                 } else if ("edit".equalsIgnoreCase(action)) {
                     forward = ADD_OR_EDIT;
                     if (studentId != null) {
-                        Student student = University.getInstance().findStudent(Integer.parseInt(studentId));
+                        Student student = university.findStudent(Integer.parseInt(studentId));
                         req.setAttribute("student", student);
                         title = "Edit student";
                     }
@@ -59,7 +59,7 @@ public class StudentServlet extends HttpServlet {
                 students = group.getStudents();
             }
         } else {
-            students = University.getInstance().getStudents();
+            students = university.getStudents();
         }
 
         req.setAttribute("groupId", groupId);
@@ -78,7 +78,7 @@ public class StudentServlet extends HttpServlet {
         String title = "Students";
 
         if (groupId != null) {
-            Group group = University.getInstance().findGroup(Integer.parseInt(groupId));
+            Group group = university.findGroup(Integer.parseInt(groupId));
             if (group != null && firstname != null && !firstname.isEmpty() && lastname != null && !lastname.isEmpty()) {
 
                 Student student = new Student(firstname, lastname);

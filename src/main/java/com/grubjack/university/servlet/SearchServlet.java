@@ -15,7 +15,7 @@ import java.util.List;
  * Created by grubjack on 17.11.2016.
  */
 @WebServlet("/search")
-public class SearchServlet extends HttpServlet {
+public class SearchServlet extends AbstractHttpServlet {
 
 
     @Override
@@ -39,7 +39,7 @@ public class SearchServlet extends HttpServlet {
                     if (gid != null && !gid.isEmpty()) {
                         page = "students.jsp?gid=" + gid;
                         req.setAttribute("groupId", gid);
-                        Group group = University.getInstance().findGroup(Integer.parseInt(gid));
+                        Group group = university.findGroup(Integer.parseInt(gid));
                         if (group != null) {
                             title = String.format("Students of %s group", group.getName());
                             for (Student student : group.getStudents()) {
@@ -53,7 +53,7 @@ public class SearchServlet extends HttpServlet {
                         title = "Students";
                         page = "students.jsp";
 
-                        for (Student student : University.getInstance().getStudents()) {
+                        for (Student student : university.getStudents()) {
 
                             if (student.getName().toLowerCase().contains(name.toLowerCase())) {
                                 students.add(student);
@@ -72,7 +72,7 @@ public class SearchServlet extends HttpServlet {
                     if (did != null && !did.isEmpty()) {
                         page = "teachers.jsp?did=" + did;
                         req.setAttribute("departmentId", did);
-                        Department department = University.getInstance().findDepartment(Integer.parseInt(did));
+                        Department department = university.findDepartment(Integer.parseInt(did));
                         if (department != null) {
                             title = String.format("Teachers of %s department", department.getName());
                             for (Teacher teacher : department.getTeachers()) {
@@ -87,7 +87,7 @@ public class SearchServlet extends HttpServlet {
                         title = "Teachers";
                         page = "teachers.jsp";
 
-                        for (Teacher teacher : University.getInstance().getTeachers()) {
+                        for (Teacher teacher : university.getTeachers()) {
                             if (teacher.getName().toLowerCase().contains(name.toLowerCase())) {
                                 teachers.add(teacher);
                             }
@@ -99,7 +99,7 @@ public class SearchServlet extends HttpServlet {
                 } else if (entity.equalsIgnoreCase("faculty")) {
 
                     List<Faculty> faculties = new ArrayList<>();
-                    for (Faculty faculty : University.getInstance().getFaculties()) {
+                    for (Faculty faculty : university.getFaculties()) {
                         if (faculty.getName().toLowerCase().contains(name.toLowerCase())) {
                             faculties.add(faculty);
                         }
@@ -117,7 +117,7 @@ public class SearchServlet extends HttpServlet {
                         page = "departments.jsp?fid=" + fid;
                         req.setAttribute("facultyId", fid);
 
-                        Faculty faculty = University.getInstance().findFaculty(Integer.parseInt(fid));
+                        Faculty faculty = university.findFaculty(Integer.parseInt(fid));
                         if (faculty != null) {
                             title = String.format("Departments of %s faculty", faculty.getName());
                             for (Department department : faculty.getDepartments()) {
@@ -131,7 +131,7 @@ public class SearchServlet extends HttpServlet {
                         title = "Departments";
                         page = "departments.jsp";
 
-                        for (Department department : University.getInstance().getDepartments()) {
+                        for (Department department : university.getDepartments()) {
                             if (department.getName().toLowerCase().contains(name.toLowerCase())) {
                                 departments.add(department);
                             }
@@ -149,7 +149,7 @@ public class SearchServlet extends HttpServlet {
                         page = "groups.jsp?fid=" + fid;
                         req.setAttribute("facultyId", fid);
 
-                        Faculty faculty = University.getInstance().findFaculty(Integer.parseInt(fid));
+                        Faculty faculty = university.findFaculty(Integer.parseInt(fid));
                         if (faculty != null) {
                             title = String.format("Groups of %s faculty", faculty.getName());
                             for (Group group : faculty.getGroups()) {
@@ -163,7 +163,7 @@ public class SearchServlet extends HttpServlet {
                         title = "Groups";
                         page = "groups.jsp";
 
-                        for (Group group : University.getInstance().getGroups()) {
+                        for (Group group : university.getGroups()) {
                             if (group.getName().toLowerCase().contains(name.toLowerCase())) {
                                 groups.add(group);
                             }
