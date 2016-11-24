@@ -280,12 +280,7 @@ public class University {
 
     public List<Timetable> findGroupTimetables() {
         if (timetables == null) {
-
-            List<Lesson> lessons = new ArrayList<>();
-            lessons.addAll(getLessons());
-
             timetables = new ArrayList<>();
-
             for (Group group : getGroups()) {
                 Timetable timetable = new Timetable(group.getName());
                 timetable.setLessons(lessonDao.findGroupLessons(group.getId()));

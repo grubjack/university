@@ -170,13 +170,8 @@ public class Faculty implements Comparable<Faculty> {
     }
 
     private Timetable findTimetable() {
-        timetable = new Timetable();
-        timetable.setName(name);
-        LessonDao lessonDao = (LessonDao) AbstractHttpServlet.getContext().getBean("lessonDaoImpl");
-        List<Lesson> lessons = lessonDao.findFacultyLessons(id);
-        if (lessons != null) {
-            timetable.setLessons(lessons);
-        }
+        Timetable timetable = new Timetable(name);
+        timetable.setLessons(findLessons());
         return timetable;
     }
 
@@ -184,16 +179,14 @@ public class Faculty implements Comparable<Faculty> {
         Timetable result = new Timetable();
         if (group != null) {
             result.setName(group.getName());
-            List<Lesson> lessons = getTimetable().getLessons();
-            if (lessons != null) {
-
-                Iterator<Lesson> iterator = lessons.iterator();
-                while (iterator.hasNext()) {
-                    Lesson lesson = iterator.next();
-                    if (lesson.getGroup().getId() == group.getId()) {
-                        result.getLessons().add(lesson);
-                        iterator.remove();
-                    }
+            List<Lesson> lessons = new ArrayList<>();
+            lessons.addAll(getTimetable().getLessons());
+            Iterator<Lesson> iterator = lessons.iterator();
+            while (iterator.hasNext()) {
+                Lesson lesson = iterator.next();
+                if (lesson.getGroup().getId() == group.getId()) {
+                    result.getLessons().add(lesson);
+                    iterator.remove();
                 }
             }
         }
@@ -204,15 +197,13 @@ public class Faculty implements Comparable<Faculty> {
         Timetable result = new Timetable();
         if (teacher != null) {
             result.setName(teacher.getName());
-            List<Lesson> lessons = getTimetable().getLessons();
-            if (lessons != null) {
-                Iterator<Lesson> iterator = lessons.iterator();
-                while (iterator.hasNext()) {
-                    Lesson lesson = iterator.next();
-                    if (lesson.getTeacher().getId() == teacher.getId()) {
-                        result.getLessons().add(lesson);
-                        iterator.remove();
-                    }
+            List<Lesson> lessons = findAllLessons();
+            Iterator<Lesson> iterator = lessons.iterator();
+            while (iterator.hasNext()) {
+                Lesson lesson = iterator.next();
+                if (lesson.getTeacher().getId() == teacher.getId()) {
+                    result.getLessons().add(lesson);
+                    iterator.remove();
                 }
             }
         }
@@ -276,15 +267,20 @@ public class Faculty implements Comparable<Faculty> {
     }
 
     public Timetable getTimetable() {
-        if (timetable != null) {
-            return timetable;
+        if (timetable == null) {
+            timetable = findTimetable();
         }
-        return findTimetable();
+        return timetable;
     }
 
     public List<Lesson> findLessons() {
         LessonDao lessonDao = (LessonDao) AbstractHttpServlet.getContext().getBean("lessonDaoImpl");
         return lessonDao.findFacultyLessons(id);
+    }
+
+    public List<Lesson> findAllLessons() {
+        LessonDao lessonDao = (LessonDao) AbstractHttpServlet.getContext().getBean("lessonDaoImpl");
+        return lessonDao.findAll();
     }
 
     public void setTimetable(Timetable timetable) {
