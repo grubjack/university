@@ -149,96 +149,24 @@ public class Faculty implements Comparable<Faculty> {
         }
     }
 
-
-    public TimetableUnit findDayTimetable(Student student, DayOfWeek dayOfWeek) {
-        return findDayTimetable(findGroupByStudent(student), dayOfWeek);
-    }
-
-    public Timetable findTimetable(Student student) {
-        return findTimetable(findGroupByStudent(student));
-    }
-
-    public TimetableUnit findDayTimetable(Teacher teacher, DayOfWeek dayOfWeek) {
-        TimetableUnit result = new TimetableUnit();
-        if (teacher != null) {
-            LessonDao lessonDao = (LessonDao) AbstractHttpServlet.getContext().getBean("lessonDaoImpl");
-            result.setLessons(lessonDao.findTeacherLessons(teacher.getId(), dayOfWeek));
-        }
-        return result;
-    }
-
-    public Timetable findTimetable(Teacher teacher) {
-        Timetable result = new Timetable();
-        if (teacher != null) {
-            result.setName(teacher.getName());
-            LessonDao lessonDao = (LessonDao) AbstractHttpServlet.getContext().getBean("lessonDaoImpl");
-            List<Lesson> lessons = lessonDao.findTeacherLessons(teacher.getId());
-            if (lessons != null) {
-                for (DayOfWeek day : DayOfWeek.values()) {
-                    TimetableUnit unit = new TimetableUnit(day);
-                    Iterator<Lesson> iterator = lessons.iterator();
-                    while (iterator.hasNext()) {
-                        Lesson lesson = iterator.next();
-                        if (lesson.getDayOfWeek().equals(day)) {
-                            unit.getLessons().add(lesson);
-                            iterator.remove();
-                        }
-                    }
-                    result.getUnits().add(unit);
-                }
+    public List<Department> findDepartments(String name) {
+        List<Department> result = new ArrayList<>();
+        for (Department department : getDepartments()) {
+            if (department.getName().toLowerCase().contains(name.toLowerCase())) {
+                result.add(department);
             }
         }
         return result;
     }
 
-    public TimetableUnit findDayTimetable(Group group, DayOfWeek dayOfWeek) {
-        TimetableUnit result = new TimetableUnit();
-        if (group != null) {
-            LessonDao lessonDao = (LessonDao) AbstractHttpServlet.getContext().getBean("lessonDaoImpl");
-            result.setLessons(lessonDao.findGroupLessons(group.getId(), dayOfWeek));
-        }
-        return result;
-    }
-
-    public Timetable findTimetable(Group group) {
-        Timetable result = new Timetable();
-        if (group != null) {
-            result.setName(group.getName());
-            LessonDao lessonDao = (LessonDao) AbstractHttpServlet.getContext().getBean("lessonDaoImpl");
-            List<Lesson> lessons = lessonDao.findGroupLessons(group.getId());
-            if (lessons != null) {
-                for (DayOfWeek day : DayOfWeek.values()) {
-                    TimetableUnit unit = new TimetableUnit(day);
-                    Iterator<Lesson> iterator = lessons.iterator();
-                    while (iterator.hasNext()) {
-                        Lesson lesson = iterator.next();
-                        if (lesson.getDayOfWeek().equals(day)) {
-                            unit.getLessons().add(lesson);
-                            iterator.remove();
-                        }
-                    }
-                    result.getUnits().add(unit);
-                }
+    public List<Group> findGroups(String name) {
+        List<Group> result = new ArrayList<>();
+        for (Group group : getGroups()) {
+            if (group.getName().toLowerCase().contains(name.toLowerCase())) {
+                result.add(group);
             }
         }
         return result;
-    }
-
-
-    public Group findGroupByStudent(Student student) {
-        if (student != null) {
-            GroupDao groupDao = (GroupDao) AbstractHttpServlet.getContext().getBean("groupDaoImpl");
-            return groupDao.findByStudent(student);
-        }
-        return null;
-    }
-
-    public Group findGroupByName(String name) {
-        if (name != null && !name.isEmpty()) {
-            GroupDao groupDao = (GroupDao) AbstractHttpServlet.getContext().getBean("groupDaoImpl");
-            return groupDao.findByName(name);
-        }
-        return null;
     }
 
     private Timetable findTimetable() {
@@ -247,30 +175,71 @@ public class Faculty implements Comparable<Faculty> {
         LessonDao lessonDao = (LessonDao) AbstractHttpServlet.getContext().getBean("lessonDaoImpl");
         List<Lesson> lessons = lessonDao.findFacultyLessons(id);
         if (lessons != null) {
-            for (DayOfWeek day : DayOfWeek.values()) {
-                TimetableUnit unit = new TimetableUnit(day);
-                Iterator<Lesson> iterator = lessons.iterator();
-                while (iterator.hasNext()) {
-                    Lesson lesson = iterator.next();
-                    if (lesson.getDayOfWeek().equals(day)) {
-                        unit.getLessons().add(lesson);
-                        iterator.remove();
-                    }
-                }
-                timetable.getUnits().add(unit);
-            }
+            timetable.setLessons(lessons);
         }
         return timetable;
     }
 
-    public List<Timetable> findGroupTimetables() {
-        List<Timetable> timetables = new ArrayList<>();
+    public Timetable findTimetable(Group group) {
+        Timetable result = new Timetable();
+        if (group != null) {
+            result.setName(group.getName());
+            List<Lesson> lessons = getTimetable().getLessons();
+            if (lessons != null) {
 
-        for (Group group : getGroups()) {
-            timetables.add(findTimetable(group));
+                Iterator<Lesson> iterator = lessons.iterator();
+                while (iterator.hasNext()) {
+                    Lesson lesson = iterator.next();
+                    if (lesson.getGroup().getId() == group.getId()) {
+                        result.getLessons().add(lesson);
+                        iterator.remove();
+                    }
+                }
+            }
         }
+        return result;
+    }
 
-        return timetables;
+    public Timetable findTimetable(Teacher teacher) {
+        Timetable result = new Timetable();
+        if (teacher != null) {
+            result.setName(teacher.getName());
+            List<Lesson> lessons = getTimetable().getLessons();
+            if (lessons != null) {
+                Iterator<Lesson> iterator = lessons.iterator();
+                while (iterator.hasNext()) {
+                    Lesson lesson = iterator.next();
+                    if (lesson.getTeacher().getId() == teacher.getId()) {
+                        result.getLessons().add(lesson);
+                        iterator.remove();
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    public Timetable findTimetable(Student student) {
+        return findTimetable(findGroupByStudent(student));
+    }
+
+    public List<Timetable> findGroupTimetables() {
+        List<Timetable> result = new ArrayList<>();
+        for (Group group : getGroups()) {
+            result.add(findTimetable(group));
+        }
+        return result;
+    }
+
+    public Group findGroupByStudent(Student student) {
+        if (student != null) {
+            for (Group group : getGroups()) {
+                if (group.getStudents().contains(student)) {
+                    return group;
+                }
+            }
+        }
+        return null;
     }
 
 

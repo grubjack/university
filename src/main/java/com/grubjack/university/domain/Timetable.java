@@ -1,5 +1,8 @@
 package com.grubjack.university.domain;
 
+import com.grubjack.university.dao.LessonDao;
+import com.grubjack.university.servlet.AbstractHttpServlet;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +11,11 @@ import java.util.List;
  */
 public class Timetable {
     private String name;
-    private List<TimetableUnit> units = new ArrayList<>();
+
+    private List<Lesson> lessons = new ArrayList<>();
+
+    private LessonDao lessonDao = (LessonDao) AbstractHttpServlet.getContext().getBean("lessonDaoImpl");
+    private University university = (University) AbstractHttpServlet.getContext().getBean("university");
 
     public Timetable() {
     }
@@ -18,34 +25,57 @@ public class Timetable {
 
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Timetable timetable = (Timetable) o;
-
-        if (name != null ? !name.equals(timetable.name) : timetable.name != null) return false;
-        return units != null ? units.equals(timetable.units) : timetable.units == null;
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + (units != null ? units.hashCode() : 0);
-        return result;
-    }
-
-    public TimetableUnit findUnit(String day) {
-        for (TimetableUnit unit : units) {
-            if (unit.getDayOfWeek().toString().equals(day)) {
-                return unit;
+    public Lesson findLesson(String day, String time) {
+        for (Lesson lesson : lessons) {
+            if (lesson.getDayOfWeek().toString().equalsIgnoreCase(day) && lesson.getTimeOfDay().toString().equalsIgnoreCase(time)) {
+                return lesson;
             }
         }
         return null;
     }
 
+
+    public void createLesson(Lesson lesson) {
+        if (lesson != null && !getLessons().contains(lesson)) {
+            getLessons().add(lesson);
+            university.getLessons().add(lesson);
+            university.setTimetables(null);
+            lessonDao.create(lesson);
+        }
+    }
+
+    public void deleteLesson(Lesson lesson) {
+        if (lesson != null) {
+            getLessons().remove(lesson);
+            university.getLessons().remove(lesson);
+            university.setTimetables(null);
+            lessonDao.delete(lesson.getId());
+        }
+    }
+
+    public void updateLesson(Lesson lesson) {
+        Lesson oldLesson = lessonDao.find(lesson.getId());
+        if (oldLesson != null) {
+            int index = getLessons().indexOf(oldLesson);
+            int index2 = university.getLessons().indexOf(oldLesson);
+            if (index != -1) {
+                getLessons().set(index, lesson);
+            }
+            if (index2 != -1) {
+                university.getLessons().set(index2, lesson);
+            }
+            university.setTimetables(null);
+            lessonDao.update(lesson);
+        }
+    }
+
+    public List<Lesson> getLessons() {
+        return lessons;
+    }
+
+    public void setLessons(List<Lesson> lessons) {
+        this.lessons = lessons;
+    }
 
     public String getName() {
         return name;
@@ -53,13 +83,5 @@ public class Timetable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public List<TimetableUnit> getUnits() {
-        return units;
-    }
-
-    public void setUnits(List<TimetableUnit> units) {
-        this.units = units;
     }
 }

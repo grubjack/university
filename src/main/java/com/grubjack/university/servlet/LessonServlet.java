@@ -111,7 +111,7 @@ public class LessonServlet extends AbstractHttpServlet {
                 Group lessonGroup = lesson.getGroup();
                 if (lessonGroup != null) {
                     Faculty faculty = university.findGroupFaculty(lessonGroup.getId());
-                    faculty.getTimetable().findUnit(lesson.getDayOfWeek().toString()).deleteLesson(lesson);
+                    faculty.getTimetable().deleteLesson(lesson);
                 }
             }
         } else if ("edit".equalsIgnoreCase(action)) {
@@ -246,10 +246,10 @@ public class LessonServlet extends AbstractHttpServlet {
             lesson.setClassroom(classroom);
 
             if (id == null || id.isEmpty()) {
-                faculty.getTimetable().findUnit(day).createLesson(lesson);
+                faculty.getTimetable().createLesson(lesson);
             } else {
                 lesson.setId(Integer.parseInt(id));
-                faculty.getTimetable().findUnit(day).updateLesson(lesson);
+                faculty.getTimetable().updateLesson(lesson);
             }
 
             if (fid != null && !fid.isEmpty()) {
@@ -258,7 +258,7 @@ public class LessonServlet extends AbstractHttpServlet {
                 req.setAttribute("fid", fid);
             } else if (sid != null && !sid.isEmpty()) {
                 Student student = university.findStudent(Integer.parseInt(sid));
-                timetables.add(faculty.findTimetable(faculty.findGroupByStudent(student)));
+                timetables.add(faculty.findTimetable(student));
                 title = String.format("Timetable for student %s", student.getName());
                 req.setAttribute("sid", sid);
             } else if (tid != null && !tid.isEmpty()) {
