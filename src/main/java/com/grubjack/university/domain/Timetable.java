@@ -1,7 +1,6 @@
 package com.grubjack.university.domain;
 
 import com.grubjack.university.dao.LessonDao;
-import com.grubjack.university.service.University;
 import com.grubjack.university.servlet.AbstractHttpServlet;
 
 import java.util.ArrayList;

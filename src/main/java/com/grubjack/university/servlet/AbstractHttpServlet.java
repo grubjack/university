@@ -1,6 +1,6 @@
 package com.grubjack.university.servlet;
 
-import com.grubjack.university.service.University;
+import com.grubjack.university.domain.University;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 

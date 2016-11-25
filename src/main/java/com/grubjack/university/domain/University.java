@@ -1,4 +1,4 @@
-package com.grubjack.university.service;
+package com.grubjack.university.domain;
 
 import com.grubjack.university.dao.*;
 import com.grubjack.university.domain.*;

@@ -2,10 +2,7 @@ package com.grubjack.university.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.grubjack.university.dao.PersonDao;
-import com.grubjack.university.service.University;
 import com.grubjack.university.servlet.AbstractHttpServlet;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.util.ArrayList;

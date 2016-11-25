@@ -2,7 +2,7 @@ package com.grubjack.university.controller;
 
 import com.grubjack.university.domain.Faculty;
 import com.grubjack.university.domain.Lesson;
-import com.grubjack.university.service.University;
+import com.grubjack.university.domain.University;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
