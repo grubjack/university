@@ -17,12 +17,16 @@ CREATE TABLE classrooms
   location VARCHAR NOT NULL,
   capacity INTEGER NOT NULL
 );
+CREATE UNIQUE INDEX classrooms_unique_number_idx
+  ON classrooms (number);
 
 CREATE TABLE faculties
 (
   id   INTEGER PRIMARY KEY DEFAULT nextval('global_seq'),
   name VARCHAR NOT NULL UNIQUE
 );
+CREATE UNIQUE INDEX faculties_unique_name_idx
+  ON faculties (name);
 
 CREATE TABLE groups
 (
@@ -31,6 +35,8 @@ CREATE TABLE groups
   faculty_id INTEGER NOT NULL,
   FOREIGN KEY (faculty_id) REFERENCES faculties (id) ON DELETE CASCADE
 );
+CREATE UNIQUE INDEX groups_unique_name_idx
+  ON groups (name);
 
 CREATE TABLE departments
 (
@@ -39,6 +45,8 @@ CREATE TABLE departments
   faculty_id INTEGER NOT NULL,
   FOREIGN KEY (faculty_id) REFERENCES faculties (id) ON DELETE CASCADE
 );
+CREATE UNIQUE INDEX departments_unique_name_idx
+  ON departments (name);
 
 CREATE TABLE teachers
 (
@@ -72,11 +80,11 @@ CREATE TABLE lessons
   FOREIGN KEY (teacher_id) REFERENCES teachers (id) ON DELETE CASCADE,
   FOREIGN KEY (group_id) REFERENCES groups (id) ON DELETE CASCADE
 );
-CREATE UNIQUE INDEX lessons_unique_day_time_room
+CREATE UNIQUE INDEX lessons_unique_day_time_room_idx
   ON lessons (week_day, day_time, room_id);
-CREATE UNIQUE INDEX lessons_unique_day_time_teacher
+CREATE UNIQUE INDEX lessons_unique_day_time_teacher_idx
   ON lessons (week_day, day_time, teacher_id);
-CREATE UNIQUE INDEX lessons_unique_day_time_group
+CREATE UNIQUE INDEX lessons_unique_day_time_group_idx
   ON lessons (week_day, day_time, group_id);
 
 
