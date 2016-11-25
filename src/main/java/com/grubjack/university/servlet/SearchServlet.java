@@ -46,7 +46,7 @@ public class SearchServlet extends AbstractHttpServlet {
                     } else {
                         title = "Students";
                         page = "students.jsp";
-                        students = university.findStudents(name);
+                        students = studentService.findByName(name);
                     }
 
                     req.setAttribute("students", students);

@@ -4,7 +4,6 @@ import com.grubjack.university.domain.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -67,7 +66,7 @@ public class LessonServlet extends AbstractHttpServlet {
         }
 
         if (studentId != null && !studentId.isEmpty()) {
-            Student student = university.findStudent(Integer.parseInt(studentId));
+            Student student = studentService.findById(Integer.parseInt(studentId));
             Faculty faculty = university.findStudentFaculty(Integer.parseInt(studentId));
             group = faculty.findGroupByStudent(student);
             if (student != null) {
@@ -158,7 +157,7 @@ public class LessonServlet extends AbstractHttpServlet {
             }
         } else if (studentId != null) {
             Faculty faculty = university.findStudentFaculty(Integer.parseInt(studentId));
-            Student student = university.findStudent(Integer.parseInt(studentId));
+            Student student = studentService.findById(Integer.parseInt(studentId));
             if (faculty != null && student != null) {
                 timetables.add(faculty.findTimetable(student));
                 home = "students";
@@ -257,7 +256,7 @@ public class LessonServlet extends AbstractHttpServlet {
                 title = String.format("Timetable for faculty %s", faculty.getName());
                 req.setAttribute("fid", fid);
             } else if (sid != null && !sid.isEmpty()) {
-                Student student = university.findStudent(Integer.parseInt(sid));
+                Student student = studentService.findById(Integer.parseInt(sid));
                 timetables.add(faculty.findTimetable(student));
                 title = String.format("Timetable for student %s", student.getName());
                 req.setAttribute("sid", sid);
