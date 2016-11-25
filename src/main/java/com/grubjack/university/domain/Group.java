@@ -4,11 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.grubjack.university.dao.PersonDao;
 import com.grubjack.university.service.University;
 import com.grubjack.university.servlet.AbstractHttpServlet;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +13,7 @@ import java.util.List;
  * Created by grubjack on 28.10.2016.
  */
 @Entity
-@Table(name = "groups",uniqueConstraints = {@UniqueConstraint(columnNames = "name", name = "groups_unique_name_idx")})
+@Table(name = "groups", uniqueConstraints = {@UniqueConstraint(columnNames = "name", name = "groups_unique_name_idx")})
 public class Group implements Comparable<Group> {
     @Id
     @SequenceGenerator(name = "global_seq", sequenceName = "global_seq", allocationSize = 1)
@@ -27,7 +24,6 @@ public class Group implements Comparable<Group> {
     private String name;
 
     @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "group", fetch = FetchType.EAGER)
-    @Fetch(FetchMode.SELECT)
     private List<Student> students;
 
     @ManyToOne

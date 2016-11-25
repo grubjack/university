@@ -3,7 +3,6 @@ package com.grubjack.university.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import java.io.Serializable;
 
 /**
  * Created by grubjack on 28.10.2016.

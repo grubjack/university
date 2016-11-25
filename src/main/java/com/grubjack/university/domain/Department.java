@@ -8,7 +8,6 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +15,7 @@ import java.util.List;
  * Created by grubjack on 28.10.2016.
  */
 @Entity
-@Table(name = "departments",uniqueConstraints = {@UniqueConstraint(columnNames = "name", name = "faculties_unique_name_idx")})
+@Table(name = "departments", uniqueConstraints = {@UniqueConstraint(columnNames = "name", name = "faculties_unique_name_idx")})
 public class Department implements Comparable<Department> {
 
     @Id
@@ -28,7 +27,6 @@ public class Department implements Comparable<Department> {
     private String name;
 
     @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "department", fetch = FetchType.EAGER)
-    @Fetch(FetchMode.SELECT)
     private List<Teacher> teachers;
 
     @ManyToOne

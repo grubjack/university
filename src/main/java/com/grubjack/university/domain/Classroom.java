@@ -1,13 +1,12 @@
 package com.grubjack.university.domain;
 
 import javax.persistence.*;
-import java.io.Serializable;
 
 /**
  * Created by grubjack on 28.10.2016.
  */
 @Entity
-@Table(name = "classrooms",uniqueConstraints = {@UniqueConstraint(columnNames = "number", name = "classrooms_unique_number_idx")})
+@Table(name = "classrooms", uniqueConstraints = {@UniqueConstraint(columnNames = "number", name = "classrooms_unique_number_idx")})
 public class Classroom implements Comparable<Classroom> {
 
     @Id
