@@ -1,5 +1,6 @@
 package com.grubjack.university.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.grubjack.university.dao.DepartmentDao;
 import com.grubjack.university.dao.GroupDao;
 import com.grubjack.university.dao.LessonDao;
@@ -9,7 +10,6 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -18,8 +18,8 @@ import java.util.List;
  * Created by grubjack on 28.10.2016.
  */
 @Entity
-@Table(name = "faculties")
-public class Faculty implements Comparable<Faculty>,Serializable {
+@Table(name = "faculties", uniqueConstraints = {@UniqueConstraint(columnNames = "name", name = "departments_unique_name_idx")})
+public class Faculty implements Comparable<Faculty> {
 
     @Id
     @SequenceGenerator(name = "global_seq", sequenceName = "global_seq", allocationSize = 1)
@@ -38,6 +38,7 @@ public class Faculty implements Comparable<Faculty>,Serializable {
     private List<Group> groups;
 
     @Transient
+    @JsonIgnore
     private Timetable timetable;
 
     public Faculty() {
@@ -275,7 +276,7 @@ public class Faculty implements Comparable<Faculty>,Serializable {
         return timetable;
     }
 
-    public List<Lesson> findLessons() {
+    private List<Lesson> findLessons() {
         LessonDao lessonDao = (LessonDao) AbstractHttpServlet.getContext().getBean("lessonDaoImpl");
         return lessonDao.findFacultyLessons(id);
     }

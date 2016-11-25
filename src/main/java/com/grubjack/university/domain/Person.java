@@ -1,5 +1,7 @@
 package com.grubjack.university.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -7,7 +9,7 @@ import java.io.Serializable;
  * Created by grubjack on 28.10.2016.
  */
 @MappedSuperclass
-public class Person implements Comparable<Person>,Serializable {
+public class Person implements Comparable<Person> {
     @Id
     @SequenceGenerator(name = "global_seq", sequenceName = "global_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "global_seq")
@@ -70,6 +72,7 @@ public class Person implements Comparable<Person>,Serializable {
         this.lastName = lastName;
     }
 
+    @JsonIgnore
     public String getName() {
         return String.format("%s %s", lastName, firstName);
     }

@@ -1,15 +1,17 @@
 package com.grubjack.university.domain;
 
 import javax.persistence.*;
-import java.io.Serializable;
 
 /**
  * Created by grubjack on 28.10.2016.
  */
 
 @Entity
-@Table(name = "lessons")
-public class Lesson implements Comparable<Lesson>,Serializable {
+@Table(name = "lessons", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"week_day", "day_time", "room_id"}, name = "lessons_unique_day_time_room_idx"),
+        @UniqueConstraint(columnNames = {"week_day", "day_time", "teacher_id"}, name = "lessons_unique_day_time_teacher_idx"),
+        @UniqueConstraint(columnNames = {"week_day", "day_time", "group_id"}, name = "lessons_unique_day_time_group_idx")})
+public class Lesson implements Comparable<Lesson> {
 
     @Id
     @SequenceGenerator(name = "global_seq", sequenceName = "global_seq", allocationSize = 1)

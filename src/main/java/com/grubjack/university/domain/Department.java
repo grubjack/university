@@ -1,5 +1,6 @@
 package com.grubjack.university.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.grubjack.university.dao.PersonDao;
 import com.grubjack.university.service.University;
 import com.grubjack.university.servlet.AbstractHttpServlet;
@@ -15,8 +16,8 @@ import java.util.List;
  * Created by grubjack on 28.10.2016.
  */
 @Entity
-@Table(name = "departments")
-public class Department implements Comparable<Department>,Serializable {
+@Table(name = "departments",uniqueConstraints = {@UniqueConstraint(columnNames = "name", name = "faculties_unique_name_idx")})
+public class Department implements Comparable<Department> {
 
     @Id
     @SequenceGenerator(name = "global_seq", sequenceName = "global_seq", allocationSize = 1)
@@ -32,6 +33,7 @@ public class Department implements Comparable<Department>,Serializable {
 
     @ManyToOne
     @JoinColumn(name = "faculty_id", nullable = false)
+    @JsonIgnore
     private Faculty faculty;
 
     public Department() {
