@@ -30,11 +30,25 @@ public class Group implements Comparable<Group> {
     @JsonIgnore
     private Faculty faculty;
 
+    @Transient
+    private University university;
+
+    @Transient
+    PersonDao<Student> studentDao;
+
     public Group() {
+        if (AbstractHttpServlet.getContext() != null) {
+            this.university = (University) AbstractHttpServlet.getContext().getBean("university");
+            this.studentDao = (PersonDao<Student>) AbstractHttpServlet.getContext().getBean("studentDao");
+        }
     }
 
     public Group(String name) {
         this.name = name;
+        if (AbstractHttpServlet.getContext() != null) {
+            this.university = (University) AbstractHttpServlet.getContext().getBean("university");
+            this.studentDao = (PersonDao<Student>) AbstractHttpServlet.getContext().getBean("studentDao");
+        }
     }
 
     @Override
@@ -55,8 +69,6 @@ public class Group implements Comparable<Group> {
 
     public void createStudent(Student student) {
         if (student != null && !students.contains(student)) {
-            University university = (University) AbstractHttpServlet.getContext().getBean("university");
-            PersonDao<Student> studentDao = (PersonDao<Student>) AbstractHttpServlet.getContext().getBean("studentDao");
             student.setGroup(this);
             students.add(student);
             university.getStudents().add(student);
@@ -66,8 +78,6 @@ public class Group implements Comparable<Group> {
 
     public void deleteStudent(Student student) {
         if (student != null) {
-            University university = (University) AbstractHttpServlet.getContext().getBean("university");
-            PersonDao<Student> studentDao = (PersonDao<Student>) AbstractHttpServlet.getContext().getBean("studentDao");
             students.remove(student);
             university.getStudents().remove(student);
             studentDao.delete(student.getId());
@@ -75,8 +85,6 @@ public class Group implements Comparable<Group> {
     }
 
     public void updateStudent(Student student) {
-        University university = (University) AbstractHttpServlet.getContext().getBean("university");
-        PersonDao<Student> studentDao = (PersonDao<Student>) AbstractHttpServlet.getContext().getBean("studentDao");
         Student oldStudent = studentDao.find(student.getId());
         if (oldStudent != null) {
             int index = students.indexOf(oldStudent);

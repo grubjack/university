@@ -4,10 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.grubjack.university.dao.DepartmentDao;
 import com.grubjack.university.dao.GroupDao;
 import com.grubjack.university.dao.LessonDao;
+import com.grubjack.university.servlet.AbstractHttpServlet;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import javax.persistence.*;
 import java.util.ArrayList;
