@@ -31,7 +31,7 @@ public class StudentServlet extends AbstractHttpServlet {
         List<Student> students = null;
 
         if (groupId != null) {
-            Group group = university.findGroup(Integer.parseInt(groupId));
+            Group group = Group.findById(Integer.parseInt(groupId));
             if (group != null) {
 
                 title = String.format("Students of %s group", group.getName());
@@ -42,14 +42,14 @@ public class StudentServlet extends AbstractHttpServlet {
 
                 } else if ("delete".equalsIgnoreCase(action)) {
                     if (studentId != null) {
-                        Student student = university.findStudent(Integer.parseInt(studentId));
+                        Student student = Student.findById(Integer.parseInt(studentId));
                         group.deleteStudent(student);
                     }
 
                 } else if ("edit".equalsIgnoreCase(action)) {
                     forward = ADD_OR_EDIT;
                     if (studentId != null) {
-                        Student student = university.findStudent(Integer.parseInt(studentId));
+                        Student student = Student.findById(Integer.parseInt(studentId));
                         req.setAttribute("student", student);
                         title = "Edit student";
                     }
@@ -57,7 +57,7 @@ public class StudentServlet extends AbstractHttpServlet {
                 students = group.getStudents();
             }
         } else {
-            students = university.getStudents();
+            students = Student.findAll();
         }
 
         req.setAttribute("groupId", groupId);
@@ -76,7 +76,7 @@ public class StudentServlet extends AbstractHttpServlet {
         String title = "Students";
 
         if (groupId != null) {
-            Group group = university.findGroup(Integer.parseInt(groupId));
+            Group group = Group.findById(Integer.parseInt(groupId));
             if (group != null && firstname != null && !firstname.isEmpty() && lastname != null && !lastname.isEmpty()) {
 
                 Student student = new Student(firstname, lastname);

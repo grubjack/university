@@ -37,7 +37,7 @@ public class SearchServlet extends AbstractHttpServlet {
                     if (gid != null && !gid.isEmpty()) {
                         page = "students.jsp?gid=" + gid;
                         req.setAttribute("groupId", gid);
-                        Group group = university.findGroup(Integer.parseInt(gid));
+                        Group group = Group.findById(Integer.parseInt(gid));
                         if (group != null) {
                             title = String.format("Students of %s group", group.getName());
                             students = group.findStudents(name);
@@ -46,7 +46,7 @@ public class SearchServlet extends AbstractHttpServlet {
                     } else {
                         title = "Students";
                         page = "students.jsp";
-                        students = university.findStudents(name);
+                        students = Student.findByName(name);
                     }
 
                     req.setAttribute("students", students);
@@ -59,7 +59,7 @@ public class SearchServlet extends AbstractHttpServlet {
                     if (did != null && !did.isEmpty()) {
                         page = "teachers.jsp?did=" + did;
                         req.setAttribute("departmentId", did);
-                        Department department = university.findDepartment(Integer.parseInt(did));
+                        Department department = Department.findById(Integer.parseInt(did));
                         if (department != null) {
                             title = String.format("Teachers of %s department", department.getName());
                             teachers = department.findTeachers(name);
@@ -67,19 +67,14 @@ public class SearchServlet extends AbstractHttpServlet {
                     } else {
                         title = "Teachers";
                         page = "teachers.jsp";
-                        teachers = university.findTeachers(name);
+                        teachers = Teacher.findByName(name);
 
                     }
                     req.setAttribute("teachers", teachers);
 
                 } else if (entity.equalsIgnoreCase("faculty")) {
 
-                    List<Faculty> faculties = new ArrayList<>();
-                    for (Faculty faculty : university.getFaculties()) {
-                        if (faculty.getName().toLowerCase().contains(name.toLowerCase())) {
-                            faculties.add(faculty);
-                        }
-                    }
+                    List<Faculty> faculties = Faculty.findByName(name);
                     title = "Faculties";
                     page = "faculties.jsp";
                     req.setAttribute("faculties", faculties);
@@ -93,7 +88,7 @@ public class SearchServlet extends AbstractHttpServlet {
                         page = "departments.jsp?fid=" + fid;
                         req.setAttribute("facultyId", fid);
 
-                        Faculty faculty = university.findFaculty(Integer.parseInt(fid));
+                        Faculty faculty = Faculty.findById(Integer.parseInt(fid));
                         if (faculty != null) {
                             title = String.format("Departments of %s faculty", faculty.getName());
                             departments = faculty.findDepartments(name);
@@ -102,7 +97,7 @@ public class SearchServlet extends AbstractHttpServlet {
                     } else {
                         title = "Departments";
                         page = "departments.jsp";
-                        departments = university.findDepartments(name);
+                        departments = Department.findByName(name);
                     }
 
                     req.setAttribute("departments", departments);
@@ -116,7 +111,7 @@ public class SearchServlet extends AbstractHttpServlet {
                         page = "groups.jsp?fid=" + fid;
                         req.setAttribute("facultyId", fid);
 
-                        Faculty faculty = university.findFaculty(Integer.parseInt(fid));
+                        Faculty faculty = Faculty.findById(Integer.parseInt(fid));
                         if (faculty != null) {
                             title = String.format("Groups of %s faculty", faculty.getName());
                             groups = faculty.findGroups(name);
@@ -125,7 +120,7 @@ public class SearchServlet extends AbstractHttpServlet {
                     } else {
                         title = "Groups";
                         page = "groups.jsp";
-                        groups = university.findGroups(name);
+                        groups = Group.findByName(name);
                     }
 
                     req.setAttribute("groups", groups);

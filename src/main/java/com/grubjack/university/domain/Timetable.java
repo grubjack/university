@@ -12,8 +12,12 @@ import java.util.List;
 public class Timetable {
     private String name;
     private List<Lesson> lessons = new ArrayList<>();
-    private LessonDao lessonDao;
+
     private University university;
+
+    private static LessonDao lessonDao;
+
+    private static List<Timetable> timetables;
 
     public Timetable() {
         if (AbstractHttpServlet.getContext() != null) {
@@ -23,11 +27,8 @@ public class Timetable {
     }
 
     public Timetable(String name) {
+        this();
         this.name = name;
-        if (AbstractHttpServlet.getContext() != null) {
-            this.university = (University) AbstractHttpServlet.getContext().getBean("university");
-            this.lessonDao = (LessonDao) AbstractHttpServlet.getContext().getBean("lessonDaoImpl");
-        }
     }
 
     public Lesson findLesson(String day, String time) {
@@ -43,8 +44,8 @@ public class Timetable {
     public void createLesson(Lesson lesson) {
         if (lesson != null && !getLessons().contains(lesson)) {
             getLessons().add(lesson);
-            university.getLessons().add(lesson);
-            university.setTimetables(null);
+            Lesson.findAll().add(lesson);
+            Timetable.setAll(null);
             lessonDao.create(lesson);
         }
     }
@@ -52,8 +53,8 @@ public class Timetable {
     public void deleteLesson(Lesson lesson) {
         if (lesson != null) {
             getLessons().remove(lesson);
-            university.getLessons().remove(lesson);
-            university.setTimetables(null);
+            Lesson.findAll().remove(lesson);
+            Timetable.setAll(null);
             lessonDao.delete(lesson.getId());
         }
     }
@@ -62,14 +63,14 @@ public class Timetable {
         Lesson oldLesson = lessonDao.find(lesson.getId());
         if (oldLesson != null) {
             int index = getLessons().indexOf(oldLesson);
-            int index2 = university.getLessons().indexOf(oldLesson);
+            int index2 = Lesson.findAll().indexOf(oldLesson);
             if (index != -1) {
                 getLessons().set(index, lesson);
             }
             if (index2 != -1) {
-                university.getLessons().set(index2, lesson);
+                Lesson.findAll().set(index2, lesson);
             }
-            university.setTimetables(null);
+            Timetable.setAll(null);
             lessonDao.update(lesson);
         }
     }
@@ -89,4 +90,22 @@ public class Timetable {
     public void setName(String name) {
         this.name = name;
     }
+
+
+    public static List<Timetable> findAll() {
+        if (timetables == null) {
+            timetables = new ArrayList<>();
+            for (Group group : Group.findAll()) {
+                Timetable timetable = new Timetable(group.getName());
+                timetable.setLessons(lessonDao.findGroupLessons(group.getId()));
+                timetables.add(timetable);
+            }
+        }
+        return timetables;
+    }
+
+    public static void setAll(List<Timetable> timetables) {
+        Timetable.timetables = timetables;
+    }
+
 }

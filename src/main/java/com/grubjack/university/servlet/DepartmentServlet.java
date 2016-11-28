@@ -31,7 +31,7 @@ public class DepartmentServlet extends AbstractHttpServlet {
         List<Department> departments = null;
 
         if (facultyId != null) {
-            Faculty faculty = university.findFaculty(Integer.parseInt(facultyId));
+            Faculty faculty = Faculty.findById(Integer.parseInt(facultyId));
             if (faculty != null) {
 
                 title = String.format("Departments of %s faculty", faculty.getName());
@@ -42,14 +42,14 @@ public class DepartmentServlet extends AbstractHttpServlet {
 
                 } else if ("delete".equalsIgnoreCase(action)) {
                     if (departmentId != null) {
-                        Department department = university.findDepartment(Integer.parseInt(departmentId));
+                        Department department = Department.findById(Integer.parseInt(departmentId));
                         faculty.deleteDepartment(department);
                     }
 
                 } else if ("edit".equalsIgnoreCase(action)) {
                     forward = ADD_OR_EDIT;
                     if (departmentId != null) {
-                        Department department = university.findDepartment(Integer.parseInt(departmentId));
+                        Department department = Department.findById(Integer.parseInt(departmentId));
                         title = "Edit department";
                         req.setAttribute("department", department);
                     }
@@ -58,7 +58,7 @@ public class DepartmentServlet extends AbstractHttpServlet {
             }
 
         } else {
-            departments = university.getDepartments();
+            departments = Department.findAll();
         }
 
         req.setAttribute("facultyId", facultyId);
@@ -76,7 +76,7 @@ public class DepartmentServlet extends AbstractHttpServlet {
         String title = "Departments";
 
         if (facultyId != null) {
-            Faculty faculty = university.findFaculty(Integer.parseInt(facultyId));
+            Faculty faculty = Faculty.findById(Integer.parseInt(facultyId));
             if (faculty != null && name != null && !name.isEmpty()) {
                 Department department = new Department(name);
 

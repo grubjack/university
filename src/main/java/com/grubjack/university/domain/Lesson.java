@@ -1,6 +1,12 @@
 package com.grubjack.university.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.grubjack.university.dao.LessonDao;
+import com.grubjack.university.servlet.AbstractHttpServlet;
+
 import javax.persistence.*;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by grubjack on 28.10.2016.
@@ -40,10 +46,21 @@ public class Lesson implements Comparable<Lesson> {
     @Column(name = "day_time")
     private TimeOfDay timeOfDay;
 
+    @Transient
+    private static LessonDao lessonDao;
+
+    @Transient
+    @JsonIgnore
+    private static List<Lesson> lessons;
+
     public Lesson() {
+        if (AbstractHttpServlet.getContext() != null) {
+            lessonDao = (LessonDao) AbstractHttpServlet.getContext().getBean("lessonDaoImpl");
+        }
     }
 
     public Lesson(String subject) {
+        this();
         this.subject = subject;
     }
 
@@ -136,5 +153,21 @@ public class Lesson implements Comparable<Lesson> {
         if (day != 0)
             return day;
         return timeOfDay.compareTo(o.getTimeOfDay());
+    }
+
+    public static List<Lesson> findAll() {
+        if (lessons == null) {
+            lessons = lessonDao.findAll();
+        }
+        Collections.sort(lessons);
+        return lessons;
+    }
+
+    public static void setAll(List<Lesson> lessons) {
+        Lesson.lessons = lessons;
+    }
+
+    public static Lesson findById(int id) {
+        return lessonDao.find(id);
     }
 }

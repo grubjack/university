@@ -37,14 +37,14 @@ public class FacultyRestController {
     @ResponseBody
     public Faculty get(@PathVariable("id") int id) {
         log.info("Getting faculty with id: " + id);
-        return university.findFaculty(id);
+        return Faculty.findById(id);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @ResponseBody
     public void delete(@PathVariable("id") int id) {
         log.info("Deleting faculty with id " + id);
-        university.deleteFaculty(university.findFaculty(id));
+        university.deleteFaculty(Faculty.findById(id));
         log.info("Faculty deleted with id " + id);
     }
 
@@ -67,7 +67,7 @@ public class FacultyRestController {
     @RequestMapping(value = "/{id}/groups", method = RequestMethod.GET)
     @ResponseBody
     public List<Group> getGroups(@PathVariable("id") int id) {
-        Faculty faculty = university.findFaculty(id);
+        Faculty faculty = Faculty.findById(id);
         if (faculty != null) {
             log.info("Getting groups from faculty with id: " + id);
             return faculty.getGroups();
@@ -80,7 +80,7 @@ public class FacultyRestController {
     @RequestMapping(value = "/{id}/departments", method = RequestMethod.GET)
     @ResponseBody
     public List<Department> getDepartments(@PathVariable("id") int id) {
-        Faculty faculty = university.findFaculty(id);
+        Faculty faculty = Faculty.findById(id);
         if (faculty != null) {
             log.info("Getting departments from faculty with id: " + id);
             return faculty.getDepartments();

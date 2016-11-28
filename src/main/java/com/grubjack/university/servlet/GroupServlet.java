@@ -31,7 +31,7 @@ public class GroupServlet extends AbstractHttpServlet {
         List<Group> groups = null;
 
         if (facultyId != null) {
-            Faculty faculty = university.findFaculty(Integer.parseInt(facultyId));
+            Faculty faculty = Faculty.findById(Integer.parseInt(facultyId));
             if (faculty != null) {
 
                 title = String.format("Groups of %s faculty", faculty.getName());
@@ -42,14 +42,14 @@ public class GroupServlet extends AbstractHttpServlet {
 
                 } else if ("delete".equalsIgnoreCase(action)) {
                     if (groupId != null) {
-                        Group group = university.findGroup(Integer.parseInt(groupId));
+                        Group group = Group.findById(Integer.parseInt(groupId));
                         faculty.deleteGroup(group);
                     }
 
                 } else if ("edit".equalsIgnoreCase(action)) {
                     forward = ADD_OR_EDIT;
                     if (groupId != null) {
-                        Group group = university.findGroup(Integer.parseInt(groupId));
+                        Group group = Group.findById(Integer.parseInt(groupId));
                         req.setAttribute("group", group);
                         title = "Edit group";
                     }
@@ -58,7 +58,7 @@ public class GroupServlet extends AbstractHttpServlet {
             }
 
         } else {
-            groups = university.getGroups();
+            groups = Group.findAll();
         }
 
         req.setAttribute("facultyId", facultyId);
@@ -77,7 +77,7 @@ public class GroupServlet extends AbstractHttpServlet {
         String title = "Groups";
 
         if (facultyId != null) {
-            Faculty faculty = university.findFaculty(Integer.parseInt(facultyId));
+            Faculty faculty = Faculty.findById(Integer.parseInt(facultyId));
             if (faculty != null && name != null && !name.isEmpty()) {
                 Group group = new Group(name);
 

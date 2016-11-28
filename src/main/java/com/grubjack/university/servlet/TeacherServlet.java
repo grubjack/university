@@ -32,7 +32,7 @@ public class TeacherServlet extends AbstractHttpServlet {
         List<Teacher> teachers = null;
 
         if (departmentId != null) {
-            Department department = university.findDepartment(Integer.parseInt(departmentId));
+            Department department = Department.findById(Integer.parseInt(departmentId));
             if (department != null) {
 
                 title = String.format("Teachers of %s department", department.getName());
@@ -42,14 +42,14 @@ public class TeacherServlet extends AbstractHttpServlet {
                     title = "Create teacher";
                 } else if ("delete".equalsIgnoreCase(action)) {
                     if (teacherId != null) {
-                        Teacher teacher = university.findTeacher(Integer.parseInt(teacherId));
+                        Teacher teacher = Teacher.findById(Integer.parseInt(teacherId));
                         department.deleteTeacher(teacher);
                     }
 
                 } else if ("edit".equalsIgnoreCase(action)) {
                     forward = ADD_OR_EDIT;
                     if (teacherId != null) {
-                        Teacher teacher = university.findTeacher(Integer.parseInt(teacherId));
+                        Teacher teacher = Teacher.findById(Integer.parseInt(teacherId));
                         req.setAttribute("teacher", teacher);
                         title = "Edit teacher";
                     }
@@ -58,7 +58,7 @@ public class TeacherServlet extends AbstractHttpServlet {
                 teachers = department.getTeachers();
             }
         } else {
-            teachers = university.getTeachers();
+            teachers = Teacher.findAll();
         }
 
         req.setAttribute("departmentId", departmentId);
@@ -78,7 +78,7 @@ public class TeacherServlet extends AbstractHttpServlet {
         String title = "Teachers";
 
         if (departmentId != null) {
-            Department department = university.findDepartment(Integer.parseInt(departmentId));
+            Department department = Department.findById(Integer.parseInt(departmentId));
             if (department != null && firstname != null && !firstname.isEmpty() && lastname != null && !lastname.isEmpty() && salary != null && !salary.isEmpty()) {
 
                 Teacher teacher = new Teacher(firstname, lastname, Integer.parseInt(salary));

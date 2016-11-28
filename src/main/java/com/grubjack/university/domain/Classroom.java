@@ -1,6 +1,12 @@
 package com.grubjack.university.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.grubjack.university.dao.ClassroomDao;
+import com.grubjack.university.servlet.AbstractHttpServlet;
+
 import javax.persistence.*;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by grubjack on 28.10.2016.
@@ -23,10 +29,21 @@ public class Classroom implements Comparable<Classroom> {
     @Column(name = "capacity", nullable = false)
     private int capacity;
 
+    @Transient
+    private static ClassroomDao classroomDao;
+
+    @Transient
+    @JsonIgnore
+    private static List<Classroom> classrooms;
+
     public Classroom() {
+        if (AbstractHttpServlet.getContext() != null) {
+            classroomDao = (ClassroomDao) AbstractHttpServlet.getContext().getBean("classroomDaoImpl");
+        }
     }
 
     public Classroom(String number, String location, int capacity) {
+        this();
         this.number = number;
         this.location = location;
         this.capacity = capacity;
@@ -88,5 +105,25 @@ public class Classroom implements Comparable<Classroom> {
     @Override
     public int compareTo(Classroom o) {
         return number.compareTo(o.getNumber());
+    }
+
+    public static List<Classroom> findAll() {
+        if (classrooms == null) {
+            classrooms = classroomDao.findAll();
+        }
+        Collections.sort(classrooms);
+        return classrooms;
+    }
+
+    public static void setAll(List<Classroom> classrooms) {
+        Classroom.classrooms = classrooms;
+    }
+
+    public static Classroom findById(int id) {
+        return classroomDao.find(id);
+    }
+
+    public static List<Classroom> findAvailable(DayOfWeek day, TimeOfDay time) {
+        return classroomDao.findAvailable(day, time);
     }
 }

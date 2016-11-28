@@ -25,14 +25,14 @@ public class ClassroomServlet extends AbstractHttpServlet {
 
         if ("delete".equalsIgnoreCase(action)) {
             if (roomId != null) {
-                Classroom room = university.findRoom(Integer.parseInt(roomId));
+                Classroom room = Classroom.findById(Integer.parseInt(roomId));
                 university.deleteRoom(room);
                 req.setAttribute("classrooms", university.getRooms());
             }
         } else if ("edit".equalsIgnoreCase(action)) {
             forward = ADD_OR_EDIT;
             if (roomId != null) {
-                Classroom room = university.findRoom(Integer.parseInt(roomId));
+                Classroom room = Classroom.findById(Integer.parseInt(roomId));
                 req.setAttribute("classroom", room);
                 req.setAttribute("title", "Edit classroom");
             }

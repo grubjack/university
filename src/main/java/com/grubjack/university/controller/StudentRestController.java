@@ -28,20 +28,20 @@ public class StudentRestController {
     @ResponseBody
     public List<Student> getAll() {
         log.info("Getting all students");
-        return university.getStudents();
+        return Student.findAll();
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @ResponseBody
     public Student get(@PathVariable("id") int id) {
         log.info("Getting student with id: " + id);
-        return university.findStudent(id);
+        return Student.findById(id);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @ResponseBody
     public void delete(@PathVariable("id") int id) {
-        Student student = university.findStudent(id);
+        Student student = Student.findById(id);
         if (student != null && student.getGroup() != null) {
             log.info("Deleting student with id " + id);
             student.getGroup().deleteStudent(student);
@@ -55,7 +55,7 @@ public class StudentRestController {
     @ResponseBody
     public void update(@RequestBody Student student, @PathVariable("id") int id) {
         log.info("Updating student with id: " + id);
-        Student oldStudent = university.findStudent(id);
+        Student oldStudent = Student.findById(id);
         if (oldStudent != null && oldStudent.getGroup() != null) {
             student.setId(id);
             oldStudent.getGroup().updateStudent(student);
@@ -69,7 +69,7 @@ public class StudentRestController {
     @ResponseBody
     public void create(@RequestBody Student student, @PathVariable("groupId") int groupId) {
         log.info("Creating student: " + student.getName());
-        Group group = university.findGroup(groupId);
+        Group group = Group.findById(groupId);
         if (group != null) {
             group.createStudent(student);
             log.info("Student created with id: " + student.getId());

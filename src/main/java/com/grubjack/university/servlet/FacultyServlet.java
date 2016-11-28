@@ -25,14 +25,14 @@ public class FacultyServlet extends AbstractHttpServlet {
 
         if ("delete".equalsIgnoreCase(action)) {
             if (facultyId != null) {
-                Faculty faculty = university.findFaculty(Integer.parseInt(facultyId));
+                Faculty faculty = Faculty.findById(Integer.parseInt(facultyId));
                 university.deleteFaculty(faculty);
                 req.setAttribute("faculties", university.getFaculties());
             }
         } else if ("edit".equalsIgnoreCase(action)) {
             forward = ADD_OR_EDIT;
             if (facultyId != null) {
-                Faculty faculty = university.findFaculty(Integer.parseInt(facultyId));
+                Faculty faculty = Faculty.findById(Integer.parseInt(facultyId));
                 req.setAttribute("faculty", faculty);
                 req.setAttribute("title", "Edit faculty");
             }

@@ -2,15 +2,12 @@ package com.grubjack.university.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.grubjack.university.dao.DepartmentDao;
-import com.grubjack.university.dao.GroupDao;
-import com.grubjack.university.dao.LessonDao;
 import com.grubjack.university.dao.PersonDao;
 import com.grubjack.university.servlet.AbstractHttpServlet;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -42,20 +39,25 @@ public class Department implements Comparable<Department> {
     @Transient
     private PersonDao<Teacher> teacherDao;
 
+    @Transient
+    private static DepartmentDao departmentDao;
+
+    @Transient
+    @JsonIgnore
+    private static List<Department> departments;
+
+
     public Department() {
         if (AbstractHttpServlet.getContext() != null) {
             this.university = (University) AbstractHttpServlet.getContext().getBean("university");
             this.teacherDao = (PersonDao<Teacher>) AbstractHttpServlet.getContext().getBean("teacherDao");
+            departmentDao = (DepartmentDao) AbstractHttpServlet.getContext().getBean("departmentDaoImpl");
         }
     }
 
     public Department(String name) {
+        this();
         this.name = name;
-        if (AbstractHttpServlet.getContext() != null) {
-            this.university = (University) AbstractHttpServlet.getContext().getBean("university");
-            this.teacherDao = (PersonDao<Teacher>) AbstractHttpServlet.getContext().getBean("teacherDao");
-        }
-
     }
 
     @Override
@@ -78,9 +80,9 @@ public class Department implements Comparable<Department> {
         if (teacher != null && !teachers.contains(teacher)) {
             teacher.setDepartment(this);
             teachers.add(teacher);
-            university.getTeachers().add(teacher);
-            university.setLessons(null);
-            university.setTimetables(null);
+            Teacher.findAll().add(teacher);
+            Lesson.setAll(null);
+            Timetable.setAll(null);
             teacherDao.create(teacher, id);
         }
     }
@@ -88,9 +90,9 @@ public class Department implements Comparable<Department> {
     public void deleteTeacher(Teacher teacher) {
         if (teacher != null) {
             teachers.remove(teacher);
-            university.getTeachers().remove(teacher);
-            university.setLessons(null);
-            university.setTimetables(null);
+            Teacher.findAll().remove(teacher);
+            Lesson.setAll(null);
+            Timetable.setAll(null);
             teacherDao.delete(teacher.getId());
         }
     }
@@ -99,12 +101,12 @@ public class Department implements Comparable<Department> {
         Teacher oldTeacher = teacherDao.find(teacher.getId());
         if (oldTeacher != null) {
             int index = teachers.indexOf(oldTeacher);
-            int index2 = university.getTeachers().indexOf(oldTeacher);
+            int index2 = Teacher.findAll().indexOf(oldTeacher);
             if (index != -1) {
                 teachers.set(index, teacher);
             }
             if (index2 != -1) {
-                university.getTeachers().set(index2, teacher);
+                Teacher.findAll().set(index2, teacher);
             }
             teacherDao.update(teacher, id);
         }
@@ -155,5 +157,32 @@ public class Department implements Comparable<Department> {
     @Override
     public int compareTo(Department o) {
         return name.compareTo(o.getName());
+    }
+
+
+    public static List<Department> findAll() {
+        if (departments == null) {
+            departments = departmentDao.findAll();
+        }
+        Collections.sort(departments);
+        return departments;
+    }
+
+    public static void setAll(List<Department> departments) {
+        Department.departments = departments;
+    }
+
+    public static List<Department> findByName(String name) {
+        List<Department> result = new ArrayList<>();
+        for (Department department : findAll()) {
+            if (department.getName().toLowerCase().contains(name.toLowerCase())) {
+                result.add(department);
+            }
+        }
+        return result;
+    }
+
+    public static Department findById(int id) {
+        return departmentDao.find(id);
     }
 }

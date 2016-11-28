@@ -1,11 +1,13 @@
 package com.grubjack.university.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.grubjack.university.dao.GroupDao;
 import com.grubjack.university.dao.PersonDao;
 import com.grubjack.university.servlet.AbstractHttpServlet;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -36,19 +38,24 @@ public class Group implements Comparable<Group> {
     @Transient
     PersonDao<Student> studentDao;
 
+    @Transient
+    private static GroupDao groupDao;
+
+    @Transient
+    @JsonIgnore
+    private static List<Group> groups;
+
     public Group() {
         if (AbstractHttpServlet.getContext() != null) {
             this.university = (University) AbstractHttpServlet.getContext().getBean("university");
             this.studentDao = (PersonDao<Student>) AbstractHttpServlet.getContext().getBean("studentDao");
+            groupDao = (GroupDao) AbstractHttpServlet.getContext().getBean("groupDaoImpl");
         }
     }
 
     public Group(String name) {
+        this();
         this.name = name;
-        if (AbstractHttpServlet.getContext() != null) {
-            this.university = (University) AbstractHttpServlet.getContext().getBean("university");
-            this.studentDao = (PersonDao<Student>) AbstractHttpServlet.getContext().getBean("studentDao");
-        }
     }
 
     @Override
@@ -71,7 +78,7 @@ public class Group implements Comparable<Group> {
         if (student != null && !students.contains(student)) {
             student.setGroup(this);
             students.add(student);
-            university.getStudents().add(student);
+            Student.findAll().add(student);
             studentDao.create(student, id);
         }
     }
@@ -79,7 +86,7 @@ public class Group implements Comparable<Group> {
     public void deleteStudent(Student student) {
         if (student != null) {
             students.remove(student);
-            university.getStudents().remove(student);
+            Student.findAll().remove(student);
             studentDao.delete(student.getId());
         }
     }
@@ -88,12 +95,12 @@ public class Group implements Comparable<Group> {
         Student oldStudent = studentDao.find(student.getId());
         if (oldStudent != null) {
             int index = students.indexOf(oldStudent);
-            int index2 = university.getStudents().indexOf(oldStudent);
+            int index2 = Student.findAll().indexOf(oldStudent);
             if (index != -1) {
                 students.set(index, student);
             }
             if (index2 != -1) {
-                university.getStudents().set(index2, student);
+                Student.findAll().set(index2, student);
             }
             studentDao.update(student, id);
         }
@@ -146,5 +153,34 @@ public class Group implements Comparable<Group> {
         return name.compareTo(o.getName());
     }
 
+    public static List<Group> findAll() {
+        if (groups == null) {
+            groups = groupDao.findAll();
+        }
+        Collections.sort(groups);
+        return groups;
+    }
+
+    public static void setAll(List<Group> groups) {
+        Group.groups = groups;
+    }
+
+    public static List<Group> findByName(String name) {
+        List<Group> result = new ArrayList<>();
+        for (Group group : findAll()) {
+            if (group.getName().toLowerCase().contains(name.toLowerCase())) {
+                result.add(group);
+            }
+        }
+        return result;
+    }
+
+    public static Group findById(int id) {
+        return groupDao.find(id);
+    }
+
+    public static List<Group> findAvailable(DayOfWeek day, TimeOfDay time) {
+        return groupDao.findAvailable(day, time);
+    }
 
 }

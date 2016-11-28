@@ -30,20 +30,20 @@ public class DepartmentRestController {
     @ResponseBody
     public List<Department> getAll() {
         log.info("Getting all departments");
-        return university.getDepartments();
+        return Department.findAll();
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @ResponseBody
     public Department get(@PathVariable("id") int id) {
         log.info("Getting department with id: " + id);
-        return university.findDepartment(id);
+        return Department.findById(id);
     }
 
     @RequestMapping(value = "/{id}/teachers", method = RequestMethod.GET)
     @ResponseBody
     public List<Teacher> getTeachers(@PathVariable("id") int id) {
-        Department department = university.findDepartment(id);
+        Department department = Department.findById(id);
         if (department != null) {
             log.info("Getting teachers from department with id " + id);
             return department.getTeachers();
@@ -57,7 +57,7 @@ public class DepartmentRestController {
     @ResponseBody
     public void delete(@PathVariable("id") int id) {
         log.info("Deleting department with id " + id);
-        Department department = university.findDepartment(id);
+        Department department = Department.findById(id);
         if (department != null && department.getFaculty() != null) {
             department.getFaculty().deleteDepartment(department);
             log.info("Department deleted with id " + id);
@@ -70,7 +70,7 @@ public class DepartmentRestController {
     @ResponseBody
     public void update(@RequestBody Department department, @PathVariable("id") int id) {
         log.info("Updating department with id: " + id);
-        Department oldDepartment = university.findDepartment(id);
+        Department oldDepartment = Department.findById(id);
         if (oldDepartment != null && oldDepartment.getFaculty() != null) {
             department.setId(id);
             oldDepartment.getFaculty().updateDepartment(department);
@@ -84,7 +84,7 @@ public class DepartmentRestController {
     @ResponseBody
     public void create(@RequestBody Department department, @PathVariable("facultyId") int facultyId) {
         log.info("Creating department: " + department.getName());
-        Faculty faculty = university.findFaculty(facultyId);
+        Faculty faculty = Faculty.findById(facultyId);
         if (faculty != null) {
             faculty.createDepartment(department);
             log.info("Department created with id: " + department.getId());

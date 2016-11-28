@@ -28,23 +28,23 @@ public class LessonRestController {
     @ResponseBody
     public List<Lesson> getAll() {
         log.info("Getting all lessons");
-        return university.getLessons();
+        return Lesson.findAll();
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @ResponseBody
     public Lesson get(@PathVariable("id") int id) {
         log.info("Getting lesson with id: " + id);
-        return university.findLesson(id);
+        return Lesson.findById(id);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @ResponseBody
     public void delete(@PathVariable("id") int id) {
         log.info("Deleting lesson with id " + id);
-        Lesson lesson = university.findLesson(id);
+        Lesson lesson = Lesson.findById(id);
         if (lesson != null && lesson.getGroup() != null) {
-            Faculty faculty = university.findGroupFaculty(lesson.getGroup().getId());
+            Faculty faculty = Faculty.findGroupFaculty(lesson.getGroup().getId());
             if (faculty != null) {
                 faculty.getTimetable().deleteLesson(lesson);
                 log.info("Lesson deleted with id " + id);
@@ -58,10 +58,10 @@ public class LessonRestController {
     @ResponseBody
     public void update(@RequestBody Lesson lesson, @PathVariable("id") int id) {
         log.info("Updating lesson with id: " + id);
-        Lesson oldLesson = university.findLesson(id);
+        Lesson oldLesson = Lesson.findById(id);
         if (oldLesson != null) {
             lesson.setId(id);
-            Faculty faculty = university.findGroupFaculty(lesson.getGroup().getId());
+            Faculty faculty = Faculty.findGroupFaculty(lesson.getGroup().getId());
             if (faculty != null) {
                 faculty.getTimetable().updateLesson(lesson);
                 log.info("Lesson updated with id " + id);
@@ -75,7 +75,7 @@ public class LessonRestController {
     @ResponseBody
     public void create(@RequestBody Lesson lesson, @PathVariable("facultyId") int facultyId) {
         log.info("Creating lesson: " + lesson.getSubject());
-        Faculty faculty = university.findFaculty(facultyId);
+        Faculty faculty = Faculty.findById(facultyId);
         if (faculty != null) {
             faculty.getTimetable().createLesson(lesson);
             log.info("Lesson created with id: " + lesson.getId());

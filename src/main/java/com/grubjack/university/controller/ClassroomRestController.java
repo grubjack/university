@@ -34,14 +34,14 @@ public class ClassroomRestController {
     @ResponseBody
     public Classroom get(@PathVariable("id") int id) {
         log.info("Getting classroom with id: " + id);
-        return university.findRoom(id);
+        return Classroom.findById(id);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @ResponseBody
     public void delete(@PathVariable("id") int id) {
         log.info("Deleting classroom with id " + id);
-        university.deleteRoom(university.findRoom(id));
+        university.deleteRoom(Classroom.findById(id));
         log.info("Classroom deleted with id " + id);
     }
 
@@ -49,7 +49,7 @@ public class ClassroomRestController {
     @ResponseBody
     public void update(@RequestBody Classroom room, @PathVariable("id") int id) {
         log.info("Updating classroom with id: " + id);
-        Classroom oldRoom = university.findRoom(id);
+        Classroom oldRoom = Classroom.findById(id);
         if (oldRoom != null) {
             room.setId(id);
             university.updateRoom(room);

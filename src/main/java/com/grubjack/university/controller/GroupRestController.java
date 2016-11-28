@@ -30,20 +30,20 @@ public class GroupRestController {
     @ResponseBody
     public List<Group> getAll() {
         log.info("Getting all groups");
-        return university.getGroups();
+        return Group.findAll();
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @ResponseBody
     public Group get(@PathVariable("id") int id) {
         log.info("Getting group with id: " + id);
-        return university.findGroup(id);
+        return Group.findById(id);
     }
 
     @RequestMapping(value = "/{id}/students", method = RequestMethod.GET)
     @ResponseBody
     public List<Student> getStudents(@PathVariable("id") int id) {
-        Group group = university.findGroup(id);
+        Group group = Group.findById(id);
         if (group != null) {
             log.info("Getting students from group with id: " + id);
             return group.getStudents();
@@ -56,7 +56,7 @@ public class GroupRestController {
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @ResponseBody
     public void delete(@PathVariable("id") int id) {
-        Group group = university.findGroup(id);
+        Group group = Group.findById(id);
         if (group != null && group.getFaculty() != null) {
             log.info("Deleting group with id " + id);
             group.getFaculty().deleteGroup(group);
@@ -70,7 +70,7 @@ public class GroupRestController {
     @ResponseBody
     public void update(@RequestBody Group group, @PathVariable("id") int id) {
         log.info("Updating group with id: " + id);
-        Group oldGroup = university.findGroup(id);
+        Group oldGroup = Group.findById(id);
         if (oldGroup != null && oldGroup.getFaculty() != null) {
             group.setId(id);
             oldGroup.getFaculty().updateGroup(group);
@@ -84,7 +84,7 @@ public class GroupRestController {
     @ResponseBody
     public void create(@RequestBody Group group, @PathVariable("facultyId") int facultyId) {
         log.info("Creating group: " + group.getName());
-        Faculty faculty = university.findFaculty(facultyId);
+        Faculty faculty = Faculty.findById(facultyId);
         if (faculty != null) {
             faculty.createGroup(group);
             log.info("Group created with id: " + group.getId());
