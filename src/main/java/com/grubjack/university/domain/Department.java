@@ -3,8 +3,6 @@ package com.grubjack.university.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.grubjack.university.dao.PersonDao;
 import com.grubjack.university.servlet.AbstractHttpServlet;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -13,7 +11,6 @@ import java.util.List;
 /**
  * Created by grubjack on 28.10.2016.
  */
-@Service
 @Entity
 @Table(name = "departments", uniqueConstraints = {@UniqueConstraint(columnNames = "name", name = "faculties_unique_name_idx")})
 public class Department implements Comparable<Department> {
@@ -33,14 +30,6 @@ public class Department implements Comparable<Department> {
     @JoinColumn(name = "faculty_id", nullable = false)
     @JsonIgnore
     private Faculty faculty;
-
-    @Autowired
-    @Transient
-    private University university;
-
-    @Autowired
-    @Transient
-    private PersonDao<Teacher> teacherDao;
 
     public Department() {
     }
@@ -68,6 +57,8 @@ public class Department implements Comparable<Department> {
 
     public void createTeacher(Teacher teacher) {
         if (teacher != null && !teachers.contains(teacher)) {
+            University university = (University) AbstractHttpServlet.getContext().getBean("university");
+            PersonDao<Teacher> teacherDao = (PersonDao<Teacher>) AbstractHttpServlet.getContext().getBean("teacherDao");
             teacher.setDepartment(this);
             teachers.add(teacher);
             university.getTeachers().add(teacher);
@@ -79,6 +70,8 @@ public class Department implements Comparable<Department> {
 
     public void deleteTeacher(Teacher teacher) {
         if (teacher != null) {
+            University university = (University) AbstractHttpServlet.getContext().getBean("university");
+            PersonDao<Teacher> teacherDao = (PersonDao<Teacher>) AbstractHttpServlet.getContext().getBean("teacherDao");
             teachers.remove(teacher);
             university.getTeachers().remove(teacher);
             university.setLessons(null);
@@ -88,6 +81,8 @@ public class Department implements Comparable<Department> {
     }
 
     public void updateTeacher(Teacher teacher) {
+        University university = (University) AbstractHttpServlet.getContext().getBean("university");
+        PersonDao<Teacher> teacherDao = (PersonDao<Teacher>) AbstractHttpServlet.getContext().getBean("teacherDao");
         Teacher oldTeacher = teacherDao.find(teacher.getId());
         if (oldTeacher != null) {
             int index = teachers.indexOf(oldTeacher);

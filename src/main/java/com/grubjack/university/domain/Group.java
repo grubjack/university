@@ -2,9 +2,7 @@ package com.grubjack.university.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.grubjack.university.dao.PersonDao;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
+import com.grubjack.university.servlet.AbstractHttpServlet;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -13,7 +11,6 @@ import java.util.List;
 /**
  * Created by grubjack on 28.10.2016.
  */
-@Service
 @Entity
 @Table(name = "groups", uniqueConstraints = {@UniqueConstraint(columnNames = "name", name = "groups_unique_name_idx")})
 public class Group implements Comparable<Group> {
@@ -32,14 +29,6 @@ public class Group implements Comparable<Group> {
     @JoinColumn(name = "faculty_id", nullable = false)
     @JsonIgnore
     private Faculty faculty;
-
-    @Autowired
-    @Transient
-    private University university;
-
-    @Autowired
-    @Transient
-    PersonDao<Student> studentDao;
 
     public Group() {
     }
@@ -66,6 +55,8 @@ public class Group implements Comparable<Group> {
 
     public void createStudent(Student student) {
         if (student != null && !students.contains(student)) {
+            University university = (University) AbstractHttpServlet.getContext().getBean("university");
+            PersonDao<Student> studentDao = (PersonDao<Student>) AbstractHttpServlet.getContext().getBean("studentDao");
             student.setGroup(this);
             students.add(student);
             university.getStudents().add(student);
@@ -75,6 +66,8 @@ public class Group implements Comparable<Group> {
 
     public void deleteStudent(Student student) {
         if (student != null) {
+            University university = (University) AbstractHttpServlet.getContext().getBean("university");
+            PersonDao<Student> studentDao = (PersonDao<Student>) AbstractHttpServlet.getContext().getBean("studentDao");
             students.remove(student);
             university.getStudents().remove(student);
             studentDao.delete(student.getId());
@@ -82,6 +75,8 @@ public class Group implements Comparable<Group> {
     }
 
     public void updateStudent(Student student) {
+        University university = (University) AbstractHttpServlet.getContext().getBean("university");
+        PersonDao<Student> studentDao = (PersonDao<Student>) AbstractHttpServlet.getContext().getBean("studentDao");
         Student oldStudent = studentDao.find(student.getId());
         if (oldStudent != null) {
             int index = students.indexOf(oldStudent);
