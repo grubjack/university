@@ -42,14 +42,14 @@ public class StudentServlet extends AbstractHttpServlet {
 
                 } else if ("delete".equalsIgnoreCase(action)) {
                     if (studentId != null) {
-                        Student student = studentService.findById(Integer.parseInt(studentId));
+                        Student student = university.findStudent(Integer.parseInt(studentId));
                         group.deleteStudent(student);
                     }
 
                 } else if ("edit".equalsIgnoreCase(action)) {
                     forward = ADD_OR_EDIT;
                     if (studentId != null) {
-                        Student student = studentService.findById(Integer.parseInt(studentId));
+                        Student student = university.findStudent(Integer.parseInt(studentId));
                         req.setAttribute("student", student);
                         title = "Edit student";
                     }
@@ -57,7 +57,7 @@ public class StudentServlet extends AbstractHttpServlet {
                 students = group.getStudents();
             }
         } else {
-            students = studentService.findAll();
+            students = university.getStudents();
         }
 
         req.setAttribute("groupId", groupId);

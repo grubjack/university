@@ -48,10 +48,6 @@ public class Faculty implements Comparable<Faculty> {
 
     @Autowired
     @Transient
-    private Student studentService;
-
-    @Autowired
-    @Transient
     private GroupDao groupDao;
 
     @Autowired
@@ -99,7 +95,7 @@ public class Faculty implements Comparable<Faculty> {
         if (group != null) {
             groups.remove(group);
             university.getGroups().remove(group);
-            studentService.findAll().removeAll(group.getStudents());
+            university.getStudents().removeAll(group.getStudents());
             university.setTimetables(null);
             groupDao.delete(group.getId());
         }

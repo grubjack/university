@@ -3,6 +3,7 @@ package com.grubjack.university.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.grubjack.university.dao.PersonDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.*;
@@ -34,11 +35,11 @@ public class Group implements Comparable<Group> {
 
     @Autowired
     @Transient
-    private PersonDao<Student> studentDao;
+    private University university;
 
     @Autowired
     @Transient
-    private Student studentService;
+    PersonDao<Student> studentDao;
 
     public Group() {
     }
@@ -67,7 +68,7 @@ public class Group implements Comparable<Group> {
         if (student != null && !students.contains(student)) {
             student.setGroup(this);
             students.add(student);
-            studentService.findAll().add(student);
+            university.getStudents().add(student);
             studentDao.create(student, id);
         }
     }
@@ -75,7 +76,7 @@ public class Group implements Comparable<Group> {
     public void deleteStudent(Student student) {
         if (student != null) {
             students.remove(student);
-            studentService.findAll().remove(student);
+            university.getStudents().remove(student);
             studentDao.delete(student.getId());
         }
     }
@@ -84,12 +85,12 @@ public class Group implements Comparable<Group> {
         Student oldStudent = studentDao.find(student.getId());
         if (oldStudent != null) {
             int index = students.indexOf(oldStudent);
-            int index2 = studentService.findAll().indexOf(oldStudent);
+            int index2 = university.getStudents().indexOf(oldStudent);
             if (index != -1) {
                 students.set(index, student);
             }
             if (index2 != -1) {
-                studentService.findAll().set(index2, student);
+                university.getStudents().set(index2, student);
             }
             studentDao.update(student, id);
         }

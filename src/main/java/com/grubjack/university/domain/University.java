@@ -1,6 +1,7 @@
 package com.grubjack.university.domain;
 
 import com.grubjack.university.dao.*;
+import com.grubjack.university.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ public class University {
     private List<Faculty> faculties;
     private List<Department> departments;
     private List<Group> groups;
+    private List<Student> students;
     private List<Teacher> teachers;
     private List<Lesson> lessons;
     private List<Timetable> timetables;
@@ -33,16 +35,14 @@ public class University {
     private ClassroomDao classroomDao;
     @Autowired
     private GroupDao groupDao;
-
     @Autowired
     @Qualifier(value = "teacherDao")
     private PersonDao<Teacher> teacherDao;
-
+    @Autowired
+    @Qualifier(value = "studentDao")
+    private PersonDao<Student> studentDao;
     @Autowired
     private LessonDao lessonDao;
-
-    @Autowired
-    private Student studentService;
 
     public University() {
     }
@@ -88,7 +88,7 @@ public class University {
             getFaculties().remove(faculty);
             getGroups().removeAll(faculty.getGroups());
             getDepartments().removeAll(faculty.getDepartments());
-            studentService.setAll(null);
+            students = null;
             teachers = null;
             lessons = null;
             timetables = null;
@@ -103,6 +103,18 @@ public class University {
             getFaculties().add(faculty);
             facultyDao.update(faculty);
         }
+    }
+
+    public List<Student> getStudents() {
+        if (students == null) {
+            students = studentDao.findAll();
+        }
+        Collections.sort(students);
+        return students;
+    }
+
+    public void setStudents(List<Student> students) {
+        this.students = students;
     }
 
     public List<Teacher> getTeachers() {
@@ -165,6 +177,7 @@ public class University {
         this.faculties = faculties;
     }
 
+
     public List<Group> getGroups() {
         if (groups == null) {
             groups = groupDao.findAll();
@@ -185,6 +198,10 @@ public class University {
         return teacherDao.find(id);
     }
 
+    public Student findStudent(int id) {
+        return studentDao.find(id);
+    }
+
     public Lesson findLesson(int id) {
         return lessonDao.find(id);
     }
@@ -192,6 +209,7 @@ public class University {
     public Classroom findRoom(int id) {
         return classroomDao.find(id);
     }
+
 
     public Faculty findGroupFaculty(int groupId) {
         return facultyDao.findByGroup(groupId);
@@ -209,6 +227,15 @@ public class University {
         return departmentDao.find(id);
     }
 
+    public List<Student> findStudents(String name) {
+        List<Student> result = new ArrayList<>();
+        for (Student student : getStudents()) {
+            if (student.getName().toLowerCase().contains(name.toLowerCase())) {
+                result.add(student);
+            }
+        }
+        return result;
+    }
 
     public List<Teacher> findTeachers(String name) {
         List<Teacher> result = new ArrayList<>();
@@ -322,6 +349,14 @@ public class University {
 
     public void setTeacherDao(PersonDao<Teacher> teacherDao) {
         this.teacherDao = teacherDao;
+    }
+
+    public PersonDao<Student> getStudentDao() {
+        return studentDao;
+    }
+
+    public void setStudentDao(PersonDao<Student> studentDao) {
+        this.studentDao = studentDao;
     }
 
     public LessonDao getLessonDao() {

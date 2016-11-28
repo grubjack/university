@@ -22,30 +22,26 @@ public class StudentRestController {
     @Autowired
     private University university;
 
-
-    @Autowired
-    private Student studentService;
-
     private static Logger log = LoggerFactory.getLogger(StudentRestController.class);
 
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
     public List<Student> getAll() {
         log.info("Getting all students");
-        return studentService.findAll();
+        return university.getStudents();
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @ResponseBody
     public Student get(@PathVariable("id") int id) {
         log.info("Getting student with id: " + id);
-        return studentService.findById(id);
+        return university.findStudent(id);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @ResponseBody
     public void delete(@PathVariable("id") int id) {
-        Student student = studentService.findById(id);
+        Student student = university.findStudent(id);
         if (student != null && student.getGroup() != null) {
             log.info("Deleting student with id " + id);
             student.getGroup().deleteStudent(student);
@@ -59,7 +55,7 @@ public class StudentRestController {
     @ResponseBody
     public void update(@RequestBody Student student, @PathVariable("id") int id) {
         log.info("Updating student with id: " + id);
-        Student oldStudent = studentService.findById(id);
+        Student oldStudent = university.findStudent(id);
         if (oldStudent != null && oldStudent.getGroup() != null) {
             student.setId(id);
             oldStudent.getGroup().updateStudent(student);
