@@ -34,9 +34,6 @@ public class Department implements Comparable<Department> {
     private Faculty faculty;
 
     @Transient
-    private University university;
-
-    @Transient
     private PersonDao<Teacher> teacherDao;
 
     @Transient
@@ -49,7 +46,6 @@ public class Department implements Comparable<Department> {
 
     public Department() {
         if (AbstractHttpServlet.getContext() != null) {
-            this.university = (University) AbstractHttpServlet.getContext().getBean("university");
             this.teacherDao = (PersonDao<Teacher>) AbstractHttpServlet.getContext().getBean("teacherDao");
             departmentDao = (DepartmentDao) AbstractHttpServlet.getContext().getBean("departmentDaoImpl");
         }

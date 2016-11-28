@@ -33,9 +33,6 @@ public class Group implements Comparable<Group> {
     private Faculty faculty;
 
     @Transient
-    private University university;
-
-    @Transient
     PersonDao<Student> studentDao;
 
     @Transient
@@ -47,7 +44,6 @@ public class Group implements Comparable<Group> {
 
     public Group() {
         if (AbstractHttpServlet.getContext() != null) {
-            this.university = (University) AbstractHttpServlet.getContext().getBean("university");
             this.studentDao = (PersonDao<Student>) AbstractHttpServlet.getContext().getBean("studentDao");
             groupDao = (GroupDao) AbstractHttpServlet.getContext().getBean("groupDaoImpl");
         }
