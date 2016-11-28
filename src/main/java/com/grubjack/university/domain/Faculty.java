@@ -4,10 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.grubjack.university.dao.DepartmentDao;
 import com.grubjack.university.dao.GroupDao;
 import com.grubjack.university.dao.LessonDao;
+import com.grubjack.university.servlet.AbstractHttpServlet;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -17,7 +16,6 @@ import java.util.List;
 /**
  * Created by grubjack on 28.10.2016.
  */
-@Service
 @Entity
 @Table(name = "faculties", uniqueConstraints = {@UniqueConstraint(columnNames = "name", name = "departments_unique_name_idx")})
 public class Faculty implements Comparable<Faculty> {
@@ -42,27 +40,35 @@ public class Faculty implements Comparable<Faculty> {
     @JsonIgnore
     private Timetable timetable;
 
-    @Autowired
     @Transient
     private University university;
 
-    @Autowired
     @Transient
     private GroupDao groupDao;
 
-    @Autowired
     @Transient
     private DepartmentDao departmentDao;
 
-    @Autowired
     @Transient
     private LessonDao lessonDao;
 
     public Faculty() {
+        if (AbstractHttpServlet.getContext() != null) {
+            this.university = (University) AbstractHttpServlet.getContext().getBean("university");
+            this.groupDao = (GroupDao) AbstractHttpServlet.getContext().getBean("groupDaoImpl");
+            this.departmentDao = (DepartmentDao) AbstractHttpServlet.getContext().getBean("departmentDaoImpl");
+            this.lessonDao = (LessonDao) AbstractHttpServlet.getContext().getBean("lessonDaoImpl");
+        }
     }
 
     public Faculty(String name) {
         this.name = name;
+        if (AbstractHttpServlet.getContext() != null) {
+            this.university = (University) AbstractHttpServlet.getContext().getBean("university");
+            this.groupDao = (GroupDao) AbstractHttpServlet.getContext().getBean("groupDaoImpl");
+            this.departmentDao = (DepartmentDao) AbstractHttpServlet.getContext().getBean("departmentDaoImpl");
+            this.lessonDao = (LessonDao) AbstractHttpServlet.getContext().getBean("lessonDaoImpl");
+        }
     }
 
     @Override

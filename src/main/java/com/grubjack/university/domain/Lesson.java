@@ -5,7 +5,6 @@ import javax.persistence.*;
 /**
  * Created by grubjack on 28.10.2016.
  */
-
 @Entity
 @Table(name = "lessons", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"week_day", "day_time", "room_id"}, name = "lessons_unique_day_time_room_idx"),

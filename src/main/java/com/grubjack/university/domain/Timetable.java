@@ -1,8 +1,7 @@
 package com.grubjack.university.domain;
 
 import com.grubjack.university.dao.LessonDao;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.grubjack.university.servlet.AbstractHttpServlet;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,24 +9,25 @@ import java.util.List;
 /**
  * Created by grubjack on 28.10.2016.
  */
-@Service
 public class Timetable {
     private String name;
-
     private List<Lesson> lessons = new ArrayList<>();
-
-    @Autowired
     private LessonDao lessonDao;
-
-    @Autowired
     private University university;
 
     public Timetable() {
+        if (AbstractHttpServlet.getContext() != null) {
+            this.university = (University) AbstractHttpServlet.getContext().getBean("university");
+            this.lessonDao = (LessonDao) AbstractHttpServlet.getContext().getBean("lessonDaoImpl");
+        }
     }
 
     public Timetable(String name) {
         this.name = name;
-
+        if (AbstractHttpServlet.getContext() != null) {
+            this.university = (University) AbstractHttpServlet.getContext().getBean("university");
+            this.lessonDao = (LessonDao) AbstractHttpServlet.getContext().getBean("lessonDaoImpl");
+        }
     }
 
     public Lesson findLesson(String day, String time) {

@@ -13,7 +13,6 @@ import java.util.List;
 /**
  * Created by grubjack on 28.10.2016.
  */
-@Service
 @Entity
 @Table(name = "groups", uniqueConstraints = {@UniqueConstraint(columnNames = "name", name = "groups_unique_name_idx")})
 public class Group implements Comparable<Group> {

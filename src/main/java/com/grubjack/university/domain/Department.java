@@ -1,6 +1,9 @@
 package com.grubjack.university.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.grubjack.university.dao.DepartmentDao;
+import com.grubjack.university.dao.GroupDao;
+import com.grubjack.university.dao.LessonDao;
 import com.grubjack.university.dao.PersonDao;
 import com.grubjack.university.servlet.AbstractHttpServlet;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +16,6 @@ import java.util.List;
 /**
  * Created by grubjack on 28.10.2016.
  */
-@Service
 @Entity
 @Table(name = "departments", uniqueConstraints = {@UniqueConstraint(columnNames = "name", name = "faculties_unique_name_idx")})
 public class Department implements Comparable<Department> {
@@ -34,19 +36,25 @@ public class Department implements Comparable<Department> {
     @JsonIgnore
     private Faculty faculty;
 
-    @Autowired
     @Transient
     private University university;
 
-    @Autowired
     @Transient
     private PersonDao<Teacher> teacherDao;
 
     public Department() {
+        if (AbstractHttpServlet.getContext() != null) {
+            this.university = (University) AbstractHttpServlet.getContext().getBean("university");
+            this.teacherDao = (PersonDao<Teacher>) AbstractHttpServlet.getContext().getBean("teacherDao");
+        }
     }
 
     public Department(String name) {
         this.name = name;
+        if (AbstractHttpServlet.getContext() != null) {
+            this.university = (University) AbstractHttpServlet.getContext().getBean("university");
+            this.teacherDao = (PersonDao<Teacher>) AbstractHttpServlet.getContext().getBean("teacherDao");
+        }
 
     }
 
