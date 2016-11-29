@@ -1,4 +1,4 @@
-package com.grubjack.university.domain;
+package com.grubjack.university.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -8,7 +8,7 @@ import javax.persistence.*;
  * Created by grubjack on 28.10.2016.
  */
 @MappedSuperclass
-public class Person implements Comparable<Person> {
+public class Person {
     @Id
     @SequenceGenerator(name = "global_seq", sequenceName = "global_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "global_seq")
@@ -37,8 +37,8 @@ public class Person implements Comparable<Person> {
 
         if (firstName != null ? !firstName.equals(person.firstName) : person.firstName != null) return false;
         return lastName != null ? lastName.equals(person.lastName) : person.lastName == null;
-
     }
+
 
     @Override
     public int hashCode() {
@@ -71,15 +71,10 @@ public class Person implements Comparable<Person> {
         this.lastName = lastName;
     }
 
+    @Transient
     @JsonIgnore
     public String getName() {
         return String.format("%s %s", lastName, firstName);
     }
-
-    @Override
-    public int compareTo(Person o) {
-        return getName().compareTo(o.getName());
-    }
-
 
 }

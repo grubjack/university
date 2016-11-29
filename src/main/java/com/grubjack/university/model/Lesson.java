@@ -1,11 +1,10 @@
-package com.grubjack.university.domain;
+package com.grubjack.university.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.grubjack.university.dao.LessonDao;
 import com.grubjack.university.servlet.AbstractHttpServlet;
 
 import javax.persistence.*;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -16,7 +15,7 @@ import java.util.List;
         @UniqueConstraint(columnNames = {"week_day", "day_time", "room_id"}, name = "lessons_unique_day_time_room_idx"),
         @UniqueConstraint(columnNames = {"week_day", "day_time", "teacher_id"}, name = "lessons_unique_day_time_teacher_idx"),
         @UniqueConstraint(columnNames = {"week_day", "day_time", "group_id"}, name = "lessons_unique_day_time_group_idx")})
-public class Lesson implements Comparable<Lesson> {
+public class Lesson {
 
     @Id
     @SequenceGenerator(name = "global_seq", sequenceName = "global_seq", allocationSize = 1)
@@ -62,33 +61,6 @@ public class Lesson implements Comparable<Lesson> {
     public Lesson(String subject) {
         this();
         this.subject = subject;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Lesson lesson = (Lesson) o;
-
-        if (subject != null ? !subject.equals(lesson.subject) : lesson.subject != null) return false;
-        if (teacher != null ? !teacher.equals(lesson.teacher) : lesson.teacher != null) return false;
-        if (group != null ? !group.equals(lesson.group) : lesson.group != null) return false;
-        if (classroom != null ? !classroom.equals(lesson.classroom) : lesson.classroom != null) return false;
-        if (dayOfWeek != lesson.dayOfWeek) return false;
-        return timeOfDay == lesson.timeOfDay;
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = subject != null ? subject.hashCode() : 0;
-        result = 31 * result + (teacher != null ? teacher.hashCode() : 0);
-        result = 31 * result + (group != null ? group.hashCode() : 0);
-        result = 31 * result + (classroom != null ? classroom.hashCode() : 0);
-        result = 31 * result + (dayOfWeek != null ? dayOfWeek.hashCode() : 0);
-        result = 31 * result + (timeOfDay != null ? timeOfDay.hashCode() : 0);
-        return result;
     }
 
     public int getId() {
@@ -147,27 +119,4 @@ public class Lesson implements Comparable<Lesson> {
         this.timeOfDay = timeOfDay;
     }
 
-    @Override
-    public int compareTo(Lesson o) {
-        int day = dayOfWeek.compareTo(o.getDayOfWeek());
-        if (day != 0)
-            return day;
-        return timeOfDay.compareTo(o.getTimeOfDay());
-    }
-
-    public static List<Lesson> findAll() {
-        if (lessons == null) {
-            lessons = lessonDao.findAll();
-        }
-        Collections.sort(lessons);
-        return lessons;
-    }
-
-    public static void setAll(List<Lesson> lessons) {
-        Lesson.lessons = lessons;
-    }
-
-    public static Lesson findById(int id) {
-        return lessonDao.find(id);
-    }
 }

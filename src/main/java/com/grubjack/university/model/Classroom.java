@@ -1,8 +1,4 @@
-package com.grubjack.university.domain;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.grubjack.university.dao.ClassroomDao;
-import com.grubjack.university.servlet.AbstractHttpServlet;
+package com.grubjack.university.model;
 
 import javax.persistence.*;
 import java.util.Collections;
@@ -13,7 +9,7 @@ import java.util.List;
  */
 @Entity
 @Table(name = "classrooms", uniqueConstraints = {@UniqueConstraint(columnNames = "number", name = "classrooms_unique_number_idx")})
-public class Classroom implements Comparable<Classroom> {
+public class Classroom {
 
     @Id
     @SequenceGenerator(name = "global_seq", sequenceName = "global_seq", allocationSize = 1)
@@ -29,21 +25,10 @@ public class Classroom implements Comparable<Classroom> {
     @Column(name = "capacity", nullable = false)
     private int capacity;
 
-    @Transient
-    private static ClassroomDao classroomDao;
-
-    @Transient
-    @JsonIgnore
-    private static List<Classroom> classrooms;
-
     public Classroom() {
-        if (AbstractHttpServlet.getContext() != null) {
-            classroomDao = (ClassroomDao) AbstractHttpServlet.getContext().getBean("classroomDaoImpl");
-        }
     }
 
     public Classroom(String number, String location, int capacity) {
-        this();
         this.number = number;
         this.location = location;
         this.capacity = capacity;
@@ -56,18 +41,12 @@ public class Classroom implements Comparable<Classroom> {
 
         Classroom classroom = (Classroom) o;
 
-        if (capacity != classroom.capacity) return false;
-        if (number != null ? !number.equals(classroom.number) : classroom.number != null) return false;
-        return location != null ? location.equals(classroom.location) : classroom.location == null;
-
+        return number != null ? number.equals(classroom.number) : classroom.number == null;
     }
 
     @Override
     public int hashCode() {
-        int result = number != null ? number.hashCode() : 0;
-        result = 31 * result + (location != null ? location.hashCode() : 0);
-        result = 31 * result + capacity;
-        return result;
+        return number != null ? number.hashCode() : 0;
     }
 
     public int getId() {
@@ -102,28 +81,4 @@ public class Classroom implements Comparable<Classroom> {
         this.capacity = capacity;
     }
 
-    @Override
-    public int compareTo(Classroom o) {
-        return number.compareTo(o.getNumber());
-    }
-
-    public static List<Classroom> findAll() {
-        if (classrooms == null) {
-            classrooms = classroomDao.findAll();
-        }
-        Collections.sort(classrooms);
-        return classrooms;
-    }
-
-    public static void setAll(List<Classroom> classrooms) {
-        Classroom.classrooms = classrooms;
-    }
-
-    public static Classroom findById(int id) {
-        return classroomDao.find(id);
-    }
-
-    public static List<Classroom> findAvailable(DayOfWeek day, TimeOfDay time) {
-        return classroomDao.findAvailable(day, time);
-    }
 }
