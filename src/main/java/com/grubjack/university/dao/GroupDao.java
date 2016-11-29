@@ -1,9 +1,8 @@
 package com.grubjack.university.dao;
 
-import com.grubjack.university.domain.DayOfWeek;
-import com.grubjack.university.domain.Group;
-import com.grubjack.university.domain.Student;
-import com.grubjack.university.domain.TimeOfDay;
+import com.grubjack.university.model.DayOfWeek;
+import com.grubjack.university.model.Group;
+import com.grubjack.university.model.TimeOfDay;
 
 import java.util.List;
 
@@ -16,10 +15,14 @@ public interface GroupDao extends BaseDao<Group> {
 
     void update(Group group, int facultyId);
 
-    Group findByName(String name);
-
     List<Group> findAll(int facultyId);
 
     List<Group> findAvailable(DayOfWeek dayOfWeek, TimeOfDay timeOfDay);
+
+    Group find(String name);
+
+    List<Group> findByName(String name);
+
+    List<Group> findByName(String name, int facultyId);
 
 }

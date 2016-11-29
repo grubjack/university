@@ -1,8 +1,8 @@
 package com.grubjack.university.dao;
 
-import com.grubjack.university.domain.Classroom;
-import com.grubjack.university.domain.DayOfWeek;
-import com.grubjack.university.domain.TimeOfDay;
+import com.grubjack.university.model.Classroom;
+import com.grubjack.university.model.DayOfWeek;
+import com.grubjack.university.model.TimeOfDay;
 
 import java.util.List;
 

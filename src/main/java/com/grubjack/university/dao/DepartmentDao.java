@@ -1,6 +1,6 @@
 package com.grubjack.university.dao;
 
-import com.grubjack.university.domain.Department;
+import com.grubjack.university.model.Department;
 
 import java.util.List;
 
@@ -15,4 +15,7 @@ public interface DepartmentDao extends BaseDao<Department> {
 
     List<Department> findAll(int facultyId);
 
+    List<Department> findByName(String name);
+
+    List<Department> findByName(String name, int facultyId);
 }

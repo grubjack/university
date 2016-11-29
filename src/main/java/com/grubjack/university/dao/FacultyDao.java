@@ -1,6 +1,8 @@
 package com.grubjack.university.dao;
 
-import com.grubjack.university.domain.Faculty;
+import com.grubjack.university.model.Faculty;
+
+import java.util.List;
 
 /**
  * Created by grubjack on 02.11.2016.
@@ -11,9 +13,6 @@ public interface FacultyDao extends BaseDao<Faculty> {
 
     void update(Faculty faculty);
 
-    Faculty findByGroup(int groupId);
+    List<Faculty> findByName(String name);
 
-    Faculty findByStudent(int studentId);
-
-    Faculty findByTeacher(int teacherId);
 }

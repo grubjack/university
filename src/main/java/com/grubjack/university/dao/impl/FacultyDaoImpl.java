@@ -1,10 +1,7 @@
 package com.grubjack.university.dao.impl;
 
 import com.grubjack.university.dao.FacultyDao;
-import com.grubjack.university.domain.Faculty;
-import com.grubjack.university.domain.Group;
-import com.grubjack.university.domain.Student;
-import com.grubjack.university.domain.Teacher;
+import com.grubjack.university.model.Faculty;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -26,7 +23,6 @@ public class FacultyDaoImpl implements FacultyDao {
 
     @Autowired
     private SessionFactory sessionFactory;
-
 
     private Session getSession() {
         return sessionFactory.getCurrentSession();
@@ -54,6 +50,14 @@ public class FacultyDaoImpl implements FacultyDao {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<Faculty> findByName(String name) {
+        log.info("Finding faculty with name " + name);
+        return getSession().createQuery("from Faculty where lower(name) like :name order by name")
+                .setParameter("name", "%" + name.toLowerCase() + "%").list();
+    }
+
+    @Override
     public void delete(int id) {
         Faculty faculty = find(id);
         if (faculty != null) {
@@ -73,39 +77,7 @@ public class FacultyDaoImpl implements FacultyDao {
     @Transactional(readOnly = true)
     public List<Faculty> findAll() {
         log.info("Finding all faculties");
-        return getSession().createQuery("from Faculty").list();
-    }
-
-    @Transactional(readOnly = true)
-    public Faculty findByGroup(int groupId) {
-        log.info("Finding faculty by group id " + groupId);
-        Group group = getSession().get(Group.class, groupId);
-        if (group != null) {
-            return group.getFaculty();
-        }
-        return null;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Faculty findByStudent(int studentId) {
-        log.info("Finding faculty by student id " + studentId);
-        Student student = getSession().get(Student.class, studentId);
-        if (student != null && student.getGroup() != null) {
-            return student.getGroup().getFaculty();
-        }
-        return null;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Faculty findByTeacher(int teacherId) {
-        log.info("Finding faculty by teacher id " + teacherId);
-        Teacher teacher = getSession().get(Teacher.class, teacherId);
-        if (teacher != null && teacher.getDepartment() != null) {
-            return teacher.getDepartment().getFaculty();
-        }
-        return null;
+        return getSession().createQuery("from Faculty order by name").list();
     }
 
     public SessionFactory getSessionFactory() {

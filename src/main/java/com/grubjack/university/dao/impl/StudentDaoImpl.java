@@ -1,9 +1,9 @@
 package com.grubjack.university.dao.impl;
 
 import com.grubjack.university.dao.PersonDao;
-import com.grubjack.university.domain.DayOfWeek;
-import com.grubjack.university.domain.Student;
-import com.grubjack.university.domain.TimeOfDay;
+import com.grubjack.university.model.DayOfWeek;
+import com.grubjack.university.model.Student;
+import com.grubjack.university.model.TimeOfDay;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -72,20 +72,37 @@ public class StudentDaoImpl implements PersonDao<Student> {
     @Transactional(readOnly = true)
     public List<Student> findAll() {
         log.info("Finding all students");
-        return getSession().createQuery("from Student").list();
+        return getSession().createQuery("from Student order by lastName,firstName").list();
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Student> findAll(int groupId) {
         log.info("Finding all students from group with id " + groupId);
-        return getSession().createQuery("from Student s where s.group.id=:groupId")
+        return getSession().createQuery("from Student s where s.group.id=:groupId order by s.lastName,s.firstName")
                 .setParameter("groupId", groupId).list();
     }
 
     @Override
     public List<Student> findAvailable(DayOfWeek dayOfWeek, TimeOfDay timeOfDay) {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Student> findByName(String name) {
+        log.info("Finding student with name " + name);
+        return getSession().createQuery("from Student where lower(firstName) like :name or lower(lastName) like :name order by lastName,firstName")
+                .setParameter("name", "%" + name.toLowerCase() + "%").list();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Student> findByName(String name, int groupId) {
+        log.info("Finding student with name " + name + " by group with id " + groupId);
+        return getSession().createQuery("from Student s where s.group.id=:groupId and (lower(s.firstName) like :name or lower(s.lastName) like :name) order by s.lastName,s.firstName")
+                .setParameter("groupId", groupId)
+                .setParameter("name", "%" + name.toLowerCase() + "%").list();
     }
 
     public SessionFactory getSessionFactory() {

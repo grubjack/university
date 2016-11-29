@@ -1,7 +1,7 @@
 package com.grubjack.university.dao;
 
-import com.grubjack.university.domain.DayOfWeek;
-import com.grubjack.university.domain.TimeOfDay;
+import com.grubjack.university.model.DayOfWeek;
+import com.grubjack.university.model.TimeOfDay;
 
 import java.util.List;
 
@@ -17,5 +17,9 @@ public interface PersonDao<T> extends BaseDao<T> {
     List<T> findAll(int unitId);
 
     List<T> findAvailable(DayOfWeek dayOfWeek, TimeOfDay timeOfDay);
+
+    List<T> findByName(String name);
+
+    List<T> findByName(String name, int unitId);
 
 }

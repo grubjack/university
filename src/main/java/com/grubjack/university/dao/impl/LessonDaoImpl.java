@@ -1,7 +1,7 @@
 package com.grubjack.university.dao.impl;
 
 import com.grubjack.university.dao.LessonDao;
-import com.grubjack.university.domain.Lesson;
+import com.grubjack.university.model.Lesson;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -69,15 +69,6 @@ public class LessonDaoImpl implements LessonDao {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Lesson> findFacultyLessons(int facultyId) {
-        log.info("Finding lessons for facultyId " + facultyId);
-        return getSession().createQuery("from Lesson l where l.group.faculty.id=:facultyId")
-                .setParameter("facultyId", facultyId)
-                .list();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
     public List<Lesson> findAll() {
         log.info("Finding all lessons");
         return getSession().createQuery("from Lesson").list();
@@ -89,6 +80,15 @@ public class LessonDaoImpl implements LessonDao {
         log.info("Finding lessons for groupId " + groupId);
         return getSession().createQuery("from Lesson l where l.group.id=:groupId")
                 .setParameter("groupId", groupId)
+                .list();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Lesson> findTeacherLessons(int teacherId) {
+        log.info("Finding lessons for teacherId " + teacherId);
+        return getSession().createQuery("from Lesson l where l.teacher.id=:teacherId")
+                .setParameter("teacherId", teacherId)
                 .list();
     }
 

@@ -1,9 +1,9 @@
 package com.grubjack.university.dao.impl;
 
 import com.grubjack.university.dao.ClassroomDao;
-import com.grubjack.university.domain.Classroom;
-import com.grubjack.university.domain.DayOfWeek;
-import com.grubjack.university.domain.TimeOfDay;
+import com.grubjack.university.model.Classroom;
+import com.grubjack.university.model.DayOfWeek;
+import com.grubjack.university.model.TimeOfDay;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -71,7 +71,7 @@ public class ClassroomDaoImpl implements ClassroomDao {
     @Transactional(readOnly = true)
     public List<Classroom> findAll() {
         log.info("Finding all classrooms");
-        return getSession().createQuery("from Classroom").list();
+        return getSession().createQuery("from Classroom order by number").list();
     }
 
     @Override
@@ -80,7 +80,7 @@ public class ClassroomDaoImpl implements ClassroomDao {
         if (dayOfWeek != null && timeOfDay != null) {
             log.info("Finding available classrooms on " + dayOfWeek.toString() + " at " + timeOfDay.toString());
             return getSession().createQuery("from Classroom where id not in " +
-                    "(SELECT r.id from Lesson l inner join l.classroom r WHERE l.dayOfWeek=:day AND l.timeOfDay=:time)")
+                    "(SELECT r.id from Lesson l inner join l.classroom r WHERE l.dayOfWeek=:day AND l.timeOfDay=:time) order by number")
                     .setParameter("day", dayOfWeek)
                     .setParameter("time", timeOfDay)
                     .list();

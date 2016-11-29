@@ -1,9 +1,9 @@
 package com.grubjack.university.dao.impl;
 
 import com.grubjack.university.dao.PersonDao;
-import com.grubjack.university.domain.DayOfWeek;
-import com.grubjack.university.domain.Teacher;
-import com.grubjack.university.domain.TimeOfDay;
+import com.grubjack.university.model.DayOfWeek;
+import com.grubjack.university.model.Teacher;
+import com.grubjack.university.model.TimeOfDay;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -74,14 +74,14 @@ public class TeacherDaoImpl implements PersonDao<Teacher> {
     @Transactional(readOnly = true)
     public List<Teacher> findAll() {
         log.info("Finding all teachers");
-        return getSession().createQuery("from Teacher").list();
+        return getSession().createQuery("from Teacher order by lastName,firstName").list();
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Teacher> findAll(int departmentId) {
         log.info("Finding all teachers from department with id " + departmentId);
-        return getSession().createQuery("from Teacher t where t.department.id=:departmentId")
+        return getSession().createQuery("from Teacher t where t.department.id=:departmentId order by t.lastName,t.firstName")
                 .setParameter("departmentId", departmentId).list();
     }
 
@@ -89,13 +89,31 @@ public class TeacherDaoImpl implements PersonDao<Teacher> {
     @Transactional(readOnly = true)
     public List<Teacher> findAvailable(DayOfWeek dayOfWeek, TimeOfDay timeOfDay) {
         if (dayOfWeek != null && timeOfDay != null) {
+            log.info("Finding available teachers on " + dayOfWeek.toString() + " at " + timeOfDay.toString());
             return getSession().createQuery("from Teacher where id not in " +
-                    "(SELECT t.id from Lesson l inner join l.teacher t WHERE l.dayOfWeek=:day AND l.timeOfDay=:time)")
+                    "(SELECT t.id from Lesson l inner join l.teacher t WHERE l.dayOfWeek=:day AND l.timeOfDay=:time) order by lastName,firstName")
                     .setParameter("day", dayOfWeek)
                     .setParameter("time", timeOfDay)
                     .list();
         }
         return Collections.emptyList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Teacher> findByName(String name) {
+        log.info("Finding teacher with name " + name);
+        return getSession().createQuery("from Teacher where lower(firstName) like :name or lower(lastName) like :name")
+                .setParameter("name", "%" + name.toLowerCase() + "%").list();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Teacher> findByName(String name, int departmentId) {
+        log.info("Finding teacher with name " + name + " by department with id " + departmentId);
+        return getSession().createQuery("from Teacher t where t.department.id=:departmentId and (lower(t.firstName) like :name or lower(t.lastName) like :name) order by t.lastName,t.firstName")
+                .setParameter("departmentId", departmentId)
+                .setParameter("name", "%" + name.toLowerCase() + "%").list();
     }
 
     public SessionFactory getSessionFactory() {

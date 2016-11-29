@@ -1,9 +1,9 @@
 package com.grubjack.university.dao.impl;
 
 import com.grubjack.university.dao.GroupDao;
-import com.grubjack.university.domain.DayOfWeek;
-import com.grubjack.university.domain.Group;
-import com.grubjack.university.domain.TimeOfDay;
+import com.grubjack.university.model.DayOfWeek;
+import com.grubjack.university.model.Group;
+import com.grubjack.university.model.TimeOfDay;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -32,8 +32,8 @@ public class GroupDaoImpl implements GroupDao {
 
     @Override
     public void create(Group group, int facultyId) {
-        if (group != null && group.getFaculty() != null && group.getFaculty().getId() == facultyId) {
-            log.info("Creating new group " + group.getName());
+        if (group != null) {
+            log.info("Creating new group " + group.getName() + " by faculty with id " + facultyId);
             getSession().save(group);
             log.info("Group is created with id = " + group.getId());
         }
@@ -41,12 +41,11 @@ public class GroupDaoImpl implements GroupDao {
 
     @Override
     public void update(Group group, int facultyId) {
-        log.info("Updating group with id " + group.getId());
         if (group != null) {
             Group groupToUpdate = find(group.getId());
-            if (groupToUpdate != null && groupToUpdate.getFaculty() != null && groupToUpdate.getFaculty().getId() == facultyId) {
+            if (groupToUpdate != null) {
                 groupToUpdate.setName(group.getName());
-                log.info("Updating group with id " + group.getId());
+                log.info("Updating group with id " + group.getId() + " by faculty with id " + facultyId);
                 getSession().update(groupToUpdate);
             }
         }
@@ -72,12 +71,33 @@ public class GroupDaoImpl implements GroupDao {
     @Transactional(readOnly = true)
     public List<Group> findAll() {
         log.info("Finding all groups");
-        return getSession().createQuery("from Group").list();
+        return getSession().createQuery("from Group order by name").list();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Group findByName(String name) {
+    public List<Group> findAll(int facultyId) {
+        log.info("Finding all groups with facultyId " + facultyId);
+        return getSession().createQuery("from Group g where g.faculty.id=:facultyId order by g.name").setParameter("facultyId", facultyId).list();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Group> findAvailable(DayOfWeek dayOfWeek, TimeOfDay timeOfDay) {
+        if (dayOfWeek != null && timeOfDay != null) {
+            log.info("Finding available groups on " + dayOfWeek.toString() + " at " + timeOfDay.toString());
+            return getSession().createQuery("from Group where id not in " +
+                    "(SELECT g.id from Lesson l inner join l.group g WHERE l.dayOfWeek=:day AND l.timeOfDay=:time) order by name")
+                    .setParameter("day", dayOfWeek)
+                    .setParameter("time", timeOfDay)
+                    .list();
+        }
+        return Collections.emptyList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Group find(String name) {
         if (name != null) {
             log.info("Finding group with name " + name);
             return (Group) getSession().createQuery("from Group where lower(name)=:name")
@@ -88,23 +108,19 @@ public class GroupDaoImpl implements GroupDao {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Group> findAll(int facultyId) {
-        log.info("Finding all groups with facultyId " + facultyId);
-        return getSession().createQuery("from Group g where g.faculty.id=:facultyId").setParameter("facultyId", facultyId).list();
+    public List<Group> findByName(String name) {
+        log.info("Finding group with name " + name);
+        return getSession().createQuery("from Group where lower(name) like :name order by name")
+                .setParameter("name", "%" + name.toLowerCase() + "%").list();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Group> findAvailable(DayOfWeek dayOfWeek, TimeOfDay timeOfDay) {
-        if (dayOfWeek != null && timeOfDay != null) {
-            log.info("Finding available groups on " + dayOfWeek.toString() + " at " + timeOfDay.toString());
-            return getSession().createQuery("from Group where id not in " +
-                    "(SELECT g.id from Lesson l inner join l.group g WHERE l.dayOfWeek=:day AND l.timeOfDay=:time)")
-                    .setParameter("day", dayOfWeek)
-                    .setParameter("time", timeOfDay)
-                    .list();
-        }
-        return Collections.emptyList();
+    public List<Group> findByName(String name, int facultyId) {
+        log.info("Finding group with name " + name + " by faculty with id " + facultyId);
+        return getSession().createQuery("from Group g where g.faculty.id=:facultyId and lower(g.name) like :name order by g.name")
+                .setParameter("facultyId", facultyId)
+                .setParameter("name", "%" + name.toLowerCase() + "%").list();
     }
 
     public SessionFactory getSessionFactory() {

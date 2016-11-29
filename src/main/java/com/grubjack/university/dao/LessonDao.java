@@ -1,7 +1,6 @@
 package com.grubjack.university.dao;
 
-import com.grubjack.university.domain.DayOfWeek;
-import com.grubjack.university.domain.Lesson;
+import com.grubjack.university.model.Lesson;
 
 import java.util.List;
 
@@ -14,8 +13,8 @@ public interface LessonDao extends BaseDao<Lesson> {
 
     void update(Lesson lesson);
 
-    List<Lesson> findFacultyLessons(int facultyId);
-
     List<Lesson> findGroupLessons(int groupId);
+
+    List<Lesson> findTeacherLessons(int teacherId);
 
 }
