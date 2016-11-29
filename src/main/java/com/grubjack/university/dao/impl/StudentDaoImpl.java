@@ -33,7 +33,7 @@ public class StudentDaoImpl implements PersonDao<Student> {
     @Override
     public void create(Student student, int groupId) {
         if (student != null) {
-            log.info("Creating new student " + student.getName());
+            log.info("Creating new student " + student.getName() + " by group with id " + groupId);
             getSession().save(student);
             log.info("Student is created with id = " + student.getId());
         }
@@ -46,7 +46,7 @@ public class StudentDaoImpl implements PersonDao<Student> {
             if (studentToUpdate != null) {
                 studentToUpdate.setFirstName(student.getFirstName());
                 studentToUpdate.setLastName(student.getLastName());
-                log.info("Updating student with id " + student.getId());
+                log.info("Updating student with id " + student.getId() + " by group with id " + groupId);
                 getSession().update(studentToUpdate);
             }
         }
