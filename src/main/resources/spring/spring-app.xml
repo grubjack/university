@@ -10,8 +10,8 @@
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd   http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd">
 
-    <context:component-scan base-package="com.grubjack.university.dao.impl"/>
-    <context:component-scan base-package="com.grubjack.university.domain"/>
+    <context:component-scan base-package="com.grubjack.university.dao"/>
+    <context:component-scan base-package="com.grubjack.university.service"/>
 
     <jee:jndi-lookup id="dataSource" jndi-name="java:comp/env/jdbc/UniversityDB" expected-type="javax.sql.DataSource"/>
 
@@ -23,14 +23,14 @@
     </jdbc:initialize-database>
 
     <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean"
-          p:dataSource-ref="dataSource" p:packagesToScan="com.grubjack.university.domain"
+          p:dataSource-ref="dataSource" p:packagesToScan="com.grubjack.university.model"
           p:hibernateProperties-ref="hibernateProperties"/>
 
     <util:properties id="hibernateProperties">
         <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQL9Dialect</prop>
         <prop key="hibernate.max_fetch_depth">3</prop>
         <prop key="hibernate.format_sql">false</prop>
-        <prop key="hibernate.show_sql">true</prop>
+        <prop key="hibernate.show_sql">false</prop>
     </util:properties>
 
     <bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager"
