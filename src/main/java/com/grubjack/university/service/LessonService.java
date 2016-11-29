@@ -58,14 +58,13 @@ public class LessonService implements BaseService<Lesson> {
             Classroom classroom = classroomDao.find(classroomId);
             Group group = groupDao.find(groupId);
 
+            lesson.setClassroom(classroom);
+            lesson.setTeacher(teacher);
+            lesson.setGroup(group);
+
             if (classroomDao.findAvailable(day, time).contains(classroom) &&
                     teacherDao.findAvailable(day, time).contains(teacher) &&
                     groupDao.findAvailable(day, time).contains(group)) {
-
-                lesson.setClassroom(classroom);
-                lesson.setTeacher(teacher);
-                lesson.setGroup(group);
-
                 lessonDao.create(lesson);
             }
         }
@@ -96,8 +95,6 @@ public class LessonService implements BaseService<Lesson> {
                 if (!oldLesson.getGroup().equals(group) && groupDao.findAvailable(day, time).contains(group)) {
                     lesson.setGroup(group);
                 }
-
-
                 lessonDao.update(lesson);
             }
         }

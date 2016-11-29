@@ -81,7 +81,6 @@ public class GroupServlet extends AbstractHttpServlet {
                 Group group = new Group(name);
 
                 if (id == null || id.isEmpty()) {
-                    group.setFaculty(faculty);
                     facultyService.create(group, Integer.parseInt(facultyId));
                 } else {
                     group.setId(Integer.parseInt(id));

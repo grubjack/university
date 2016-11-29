@@ -33,7 +33,7 @@ public class TeacherDaoImpl implements PersonDao<Teacher> {
 
     @Override
     public void create(Teacher teacher, int departmentId) {
-        if (teacher != null && teacher.getDepartment() != null && teacher.getDepartment().getId() == departmentId) {
+        if (teacher != null) {
             log.info("Creating new teacher " + teacher.getName());
             getSession().save(teacher);
             log.info("Teacher is created with id = " + teacher.getId());
@@ -44,7 +44,7 @@ public class TeacherDaoImpl implements PersonDao<Teacher> {
     public void update(Teacher teacher, int departmentId) {
         if (teacher != null) {
             Teacher teacherToUpdate = find(teacher.getId());
-            if (teacherToUpdate != null && teacherToUpdate.getDepartment() != null && teacherToUpdate.getDepartment().getId() == departmentId) {
+            if (teacherToUpdate != null) {
                 teacherToUpdate.setFirstName(teacher.getFirstName());
                 teacherToUpdate.setLastName(teacher.getLastName());
                 teacherToUpdate.setSalary(teacher.getSalary());

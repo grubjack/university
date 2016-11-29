@@ -201,16 +201,9 @@ public class LessonServlet extends AbstractHttpServlet {
         if (subject != null && !subject.isEmpty() && teacherId != null && !teacherId.isEmpty() &&
                 groupId != null && !groupId.isEmpty() && classroomId != null && !classroomId.isEmpty()) {
 
-            Teacher teacher = teacherService.findById(Integer.parseInt(teacherId));
-            Group group = groupService.findById(Integer.parseInt(groupId));
-            Classroom classroom = classroomService.findById(Integer.parseInt(classroomId));
-
             Lesson lesson = new Lesson(subject);
             lesson.setDayOfWeek(DayOfWeek.valueOf(day));
             lesson.setTimeOfDay(TimeOfDay.convert(time));
-            lesson.setTeacher(teacher);
-            lesson.setGroup(group);
-            lesson.setClassroom(classroom);
 
             if (id == null || id.isEmpty()) {
                 lessonService.create(lesson, Integer.parseInt(teacherId), Integer.parseInt(classroomId), Integer.parseInt(groupId));
@@ -230,10 +223,12 @@ public class LessonServlet extends AbstractHttpServlet {
                 title = String.format("Timetable for student %s", student.getName());
                 req.setAttribute("sid", sid);
             } else if (tid != null && !tid.isEmpty()) {
+                Teacher teacher = teacherService.findById(Integer.parseInt(tid));
                 timetables.add(lessonService.findTeacherTimetable(Integer.parseInt(tid)));
                 title = String.format("Timetable for teacher %s", teacher.getName());
                 req.setAttribute("tid", tid);
             } else if (gid != null && !gid.isEmpty()) {
+                Group group = groupService.findById(Integer.parseInt(gid));
                 timetables.add(lessonService.findGroupTimetable(Integer.parseInt(gid)));
                 title = String.format("Timetable for group %s", group.getName());
                 req.setAttribute("gid", gid);
@@ -241,7 +236,6 @@ public class LessonServlet extends AbstractHttpServlet {
                 timetables = lessonService.findGroupTimetables();
             }
         }
-
         req.setAttribute("title", title);
         req.setAttribute("home", home);
         req.setAttribute("homeTitle", homeTitle);

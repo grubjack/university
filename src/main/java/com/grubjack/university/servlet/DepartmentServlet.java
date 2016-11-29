@@ -80,7 +80,6 @@ public class DepartmentServlet extends AbstractHttpServlet {
                 Department department = new Department(name);
 
                 if (id == null || id.isEmpty()) {
-                    department.setFaculty(faculty);
                     facultyService.create(department, Integer.parseInt(facultyId));
                 } else {
                     department.setId(Integer.parseInt(id));

@@ -83,7 +83,6 @@ public class TeacherServlet extends AbstractHttpServlet {
                 Teacher teacher = new Teacher(firstname, lastname, Integer.parseInt(salary));
 
                 if (id == null || id.isEmpty()) {
-                    teacher.setDepartment(department);
                     departmentService.create(teacher, Integer.parseInt(departmentId));
                 } else {
                     teacher.setId(Integer.parseInt(id));

@@ -81,7 +81,6 @@ public class StudentServlet extends AbstractHttpServlet {
                 Student student = new Student(firstname, lastname);
 
                 if (id == null || id.isEmpty()) {
-                    student.setGroup(group);
                     groupService.create(student, Integer.parseInt(groupId));
                 } else {
                     student.setId(Integer.parseInt(id));

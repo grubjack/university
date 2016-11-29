@@ -44,12 +44,14 @@ public class FacultyService implements BaseService<Faculty> {
 
     public void create(Department department, int facultyId) {
         if (department != null && !departmentDao.findAll().contains(department)) {
+            department.setFaculty(facultyDao.find(facultyId));
             departmentDao.create(department, facultyId);
         }
     }
 
     public void update(Department department, int facultyId) {
         if (department != null) {
+            department.setFaculty(facultyDao.find(facultyId));
             departmentDao.update(department, facultyId);
         }
     }
@@ -57,12 +59,14 @@ public class FacultyService implements BaseService<Faculty> {
 
     public void create(Group group, int facultyId) {
         if (group != null && !groupDao.findAll().contains(group)) {
+            group.setFaculty(facultyDao.find(facultyId));
             groupDao.create(group, facultyId);
         }
     }
 
     public void update(Group group, int facultyId) {
         if (group != null) {
+            group.setFaculty(facultyDao.find(facultyId));
             groupDao.update(group, facultyId);
         }
     }
