@@ -1,8 +1,7 @@
 package com.grubjack.university.controller;
 
-import com.grubjack.university.domain.Faculty;
-import com.grubjack.university.domain.Lesson;
-import com.grubjack.university.domain.University;
+import com.grubjack.university.model.Lesson;
+import com.grubjack.university.service.LessonService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +19,7 @@ import java.util.List;
 public class LessonRestController {
 
     @Autowired
-    private University university;
+    private LessonService lessonService;
 
     private static Logger log = LoggerFactory.getLogger(LessonRestController.class);
 
@@ -28,59 +27,51 @@ public class LessonRestController {
     @ResponseBody
     public List<Lesson> getAll() {
         log.info("Getting all lessons");
-        return Lesson.findAll();
+        return lessonService.findAll();
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @ResponseBody
     public Lesson get(@PathVariable("id") int id) {
         log.info("Getting lesson with id: " + id);
-        return Lesson.findById(id);
+        return lessonService.findById(id);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @ResponseBody
     public void delete(@PathVariable("id") int id) {
         log.info("Deleting lesson with id " + id);
-        Lesson lesson = Lesson.findById(id);
-        if (lesson != null && lesson.getGroup() != null) {
-            Faculty faculty = Faculty.findGroupFaculty(lesson.getGroup().getId());
-            if (faculty != null) {
-                faculty.getTimetable().deleteLesson(lesson);
-                log.info("Lesson deleted with id " + id);
-            }
-        } else {
-            log.info("Lesson with id " + id + " not found");
-        }
+        lessonService.delete(id);
+        log.info("Lesson deleted with id " + id);
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/{id}/{teacherId}/{classroomId}/{groupId}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public void update(@RequestBody Lesson lesson, @PathVariable("id") int id) {
+    public void update(@RequestBody Lesson lesson,
+                       @PathVariable("id") int id,
+                       @PathVariable("teacherId") int teacherId,
+                       @PathVariable("classroomId") int classroomId,
+                       @PathVariable("groupId") int groupId) {
         log.info("Updating lesson with id: " + id);
-        Lesson oldLesson = Lesson.findById(id);
+        Lesson oldLesson = lessonService.findById(id);
         if (oldLesson != null) {
             lesson.setId(id);
-            Faculty faculty = Faculty.findGroupFaculty(lesson.getGroup().getId());
-            if (faculty != null) {
-                faculty.getTimetable().updateLesson(lesson);
-                log.info("Lesson updated with id " + id);
-            }
+            lessonService.update(lesson, teacherId, classroomId, groupId);
+            log.info("Lesson updated with id " + id);
         } else {
             log.info("Lesson with id " + id + " not found");
         }
+
     }
 
-    @RequestMapping(value = "/{facultyId}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/{teacherId}/{classroomId}/{groupId}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public void create(@RequestBody Lesson lesson, @PathVariable("facultyId") int facultyId) {
+    public void create(@RequestBody Lesson lesson,
+                       @PathVariable("teacherId") int teacherId,
+                       @PathVariable("classroomId") int classroomId,
+                       @PathVariable("groupId") int groupId) {
         log.info("Creating lesson: " + lesson.getSubject());
-        Faculty faculty = Faculty.findById(facultyId);
-        if (faculty != null) {
-            faculty.getTimetable().createLesson(lesson);
-            log.info("Lesson created with id: " + lesson.getId());
-        } else {
-            log.info("Faculty with id " + facultyId + " not found");
-        }
+        lessonService.create(lesson, teacherId, classroomId, groupId);
+        log.info("Lesson created with id: " + lesson.getId());
     }
 }

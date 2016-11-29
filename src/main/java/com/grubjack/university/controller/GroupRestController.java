@@ -1,9 +1,9 @@
 package com.grubjack.university.controller;
 
-import com.grubjack.university.domain.Faculty;
-import com.grubjack.university.domain.Group;
-import com.grubjack.university.domain.Student;
-import com.grubjack.university.domain.University;
+import com.grubjack.university.model.Group;
+import com.grubjack.university.model.Student;
+import com.grubjack.university.service.FacultyService;
+import com.grubjack.university.service.GroupService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,11 @@ import java.util.List;
 public class GroupRestController {
 
     @Autowired
-    private University university;
+    private FacultyService facultyService;
+
+    @Autowired
+    private GroupService groupService;
+
 
     private static Logger log = LoggerFactory.getLogger(GroupRestController.class);
 
@@ -30,20 +34,20 @@ public class GroupRestController {
     @ResponseBody
     public List<Group> getAll() {
         log.info("Getting all groups");
-        return Group.findAll();
+        return groupService.findAll();
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @ResponseBody
     public Group get(@PathVariable("id") int id) {
         log.info("Getting group with id: " + id);
-        return Group.findById(id);
+        return groupService.findById(id);
     }
 
     @RequestMapping(value = "/{id}/students", method = RequestMethod.GET)
     @ResponseBody
     public List<Student> getStudents(@PathVariable("id") int id) {
-        Group group = Group.findById(id);
+        Group group = groupService.findById(id);
         if (group != null) {
             log.info("Getting students from group with id: " + id);
             return group.getStudents();
@@ -56,24 +60,21 @@ public class GroupRestController {
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @ResponseBody
     public void delete(@PathVariable("id") int id) {
-        Group group = Group.findById(id);
-        if (group != null && group.getFaculty() != null) {
-            log.info("Deleting group with id " + id);
-            group.getFaculty().deleteGroup(group);
-            log.info("Group deleted with id " + id);
-        } else {
-            log.info("Group with id " + id + " not found");
-        }
+        log.info("Deleting group with id " + id);
+        groupService.delete(id);
+        log.info("Group deleted with id " + id);
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/{id}/{facultyId}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public void update(@RequestBody Group group, @PathVariable("id") int id) {
+    public void update(@RequestBody Group group,
+                       @PathVariable("id") int id,
+                       @PathVariable("facultyId") int facultyId) {
         log.info("Updating group with id: " + id);
-        Group oldGroup = Group.findById(id);
-        if (oldGroup != null && oldGroup.getFaculty() != null) {
+        Group oldGroup = groupService.findById(id);
+        if (oldGroup != null) {
             group.setId(id);
-            oldGroup.getFaculty().updateGroup(group);
+            facultyService.update(group, facultyId);
             log.info("Group updated successfully with id: " + id);
         } else {
             log.info("Group with id " + id + " not found");
@@ -84,13 +85,7 @@ public class GroupRestController {
     @ResponseBody
     public void create(@RequestBody Group group, @PathVariable("facultyId") int facultyId) {
         log.info("Creating group: " + group.getName());
-        Faculty faculty = Faculty.findById(facultyId);
-        if (faculty != null) {
-            faculty.createGroup(group);
-            log.info("Group created with id: " + group.getId());
-        } else {
-            log.info("Faculty with id " + facultyId + " not found");
-        }
+        facultyService.create(group, facultyId);
+        log.info("Group created with id: " + group.getId());
     }
-
 }

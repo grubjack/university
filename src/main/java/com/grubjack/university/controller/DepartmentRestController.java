@@ -1,9 +1,9 @@
 package com.grubjack.university.controller;
 
-import com.grubjack.university.domain.Department;
-import com.grubjack.university.domain.Faculty;
-import com.grubjack.university.domain.Teacher;
-import com.grubjack.university.domain.University;
+import com.grubjack.university.model.Department;
+import com.grubjack.university.model.Teacher;
+import com.grubjack.university.service.DepartmentService;
+import com.grubjack.university.service.FacultyService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,10 @@ import java.util.List;
 public class DepartmentRestController {
 
     @Autowired
-    private University university;
+    private FacultyService facultyService;
+
+    @Autowired
+    private DepartmentService departmentService;
 
     private static Logger log = LoggerFactory.getLogger(DepartmentRestController.class);
 
@@ -30,20 +33,20 @@ public class DepartmentRestController {
     @ResponseBody
     public List<Department> getAll() {
         log.info("Getting all departments");
-        return Department.findAll();
+        return departmentService.findAll();
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @ResponseBody
     public Department get(@PathVariable("id") int id) {
         log.info("Getting department with id: " + id);
-        return Department.findById(id);
+        return departmentService.findById(id);
     }
 
     @RequestMapping(value = "/{id}/teachers", method = RequestMethod.GET)
     @ResponseBody
     public List<Teacher> getTeachers(@PathVariable("id") int id) {
-        Department department = Department.findById(id);
+        Department department = departmentService.findById(id);
         if (department != null) {
             log.info("Getting teachers from department with id " + id);
             return department.getTeachers();
@@ -57,23 +60,20 @@ public class DepartmentRestController {
     @ResponseBody
     public void delete(@PathVariable("id") int id) {
         log.info("Deleting department with id " + id);
-        Department department = Department.findById(id);
-        if (department != null && department.getFaculty() != null) {
-            department.getFaculty().deleteDepartment(department);
-            log.info("Department deleted with id " + id);
-        } else {
-            log.info("Department with id " + id + " not found");
-        }
+        departmentService.delete(id);
+        log.info("Department deleted with id " + id);
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/{id}/{facultyId}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public void update(@RequestBody Department department, @PathVariable("id") int id) {
+    public void update(@RequestBody Department department,
+                       @PathVariable("id") int id,
+                       @PathVariable("facultyId") int facultyId) {
         log.info("Updating department with id: " + id);
-        Department oldDepartment = Department.findById(id);
-        if (oldDepartment != null && oldDepartment.getFaculty() != null) {
+        Department oldDepartment = departmentService.findById(id);
+        if (oldDepartment != null) {
             department.setId(id);
-            oldDepartment.getFaculty().updateDepartment(department);
+            facultyService.update(department, facultyId);
             log.info("Department updated successfully with id: " + id);
         } else {
             log.info("Department with id " + id + " not found");
@@ -84,13 +84,8 @@ public class DepartmentRestController {
     @ResponseBody
     public void create(@RequestBody Department department, @PathVariable("facultyId") int facultyId) {
         log.info("Creating department: " + department.getName());
-        Faculty faculty = Faculty.findById(facultyId);
-        if (faculty != null) {
-            faculty.createDepartment(department);
-            log.info("Department created with id: " + department.getId());
-        } else {
-            log.info("Faculty with id " + facultyId + " not found");
-        }
+        facultyService.create(department, facultyId);
+        log.info("Department created with id: " + department.getId());
     }
 
 }

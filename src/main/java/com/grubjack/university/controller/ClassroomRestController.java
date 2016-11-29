@@ -1,7 +1,8 @@
 package com.grubjack.university.controller;
 
-import com.grubjack.university.domain.Classroom;
-import com.grubjack.university.domain.University;
+import com.grubjack.university.model.Classroom;
+import com.grubjack.university.service.ClassroomService;
+import com.grubjack.university.service.UniversityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,11 @@ import java.util.List;
 public class ClassroomRestController {
 
     @Autowired
-    private University university;
+    private UniversityService universityService;
+
+    @Autowired
+    private ClassroomService classroomService;
+
 
     private static Logger log = LoggerFactory.getLogger(ClassroomRestController.class);
 
@@ -27,21 +32,21 @@ public class ClassroomRestController {
     @ResponseBody
     public List<Classroom> getAll() {
         log.info("Getting all classrooms");
-        return university.getRooms();
+        return classroomService.findAll();
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @ResponseBody
     public Classroom get(@PathVariable("id") int id) {
         log.info("Getting classroom with id: " + id);
-        return Classroom.findById(id);
+        return classroomService.findById(id);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @ResponseBody
     public void delete(@PathVariable("id") int id) {
         log.info("Deleting classroom with id " + id);
-        university.deleteRoom(Classroom.findById(id));
+        classroomService.delete(id);
         log.info("Classroom deleted with id " + id);
     }
 
@@ -49,10 +54,10 @@ public class ClassroomRestController {
     @ResponseBody
     public void update(@RequestBody Classroom room, @PathVariable("id") int id) {
         log.info("Updating classroom with id: " + id);
-        Classroom oldRoom = Classroom.findById(id);
+        Classroom oldRoom = classroomService.findById(id);
         if (oldRoom != null) {
             room.setId(id);
-            university.updateRoom(room);
+            universityService.update(room);
             log.info("Classroom updated successfully with id: " + id);
         } else {
             log.info("Classroom with id " + id + " not found");
@@ -63,7 +68,7 @@ public class ClassroomRestController {
     @ResponseBody
     public void create(@RequestBody Classroom room) {
         log.info("Creating classroom: " + room.getNumber());
-        university.createRoom(room);
+        universityService.create(room);
         log.info("Classroom created with id: " + room.getId());
     }
 }

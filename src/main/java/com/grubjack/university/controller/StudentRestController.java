@@ -1,8 +1,8 @@
 package com.grubjack.university.controller;
 
-import com.grubjack.university.domain.Group;
-import com.grubjack.university.domain.Student;
-import com.grubjack.university.domain.University;
+import com.grubjack.university.model.Student;
+import com.grubjack.university.service.GroupService;
+import com.grubjack.university.service.StudentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,11 @@ import java.util.List;
 public class StudentRestController {
 
     @Autowired
-    private University university;
+    private GroupService groupService;
+
+    @Autowired
+    private StudentService studentService;
+
 
     private static Logger log = LoggerFactory.getLogger(StudentRestController.class);
 
@@ -28,37 +32,34 @@ public class StudentRestController {
     @ResponseBody
     public List<Student> getAll() {
         log.info("Getting all students");
-        return Student.findAll();
+        return studentService.findAll();
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @ResponseBody
     public Student get(@PathVariable("id") int id) {
         log.info("Getting student with id: " + id);
-        return Student.findById(id);
+        return studentService.findById(id);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @ResponseBody
     public void delete(@PathVariable("id") int id) {
-        Student student = Student.findById(id);
-        if (student != null && student.getGroup() != null) {
-            log.info("Deleting student with id " + id);
-            student.getGroup().deleteStudent(student);
-            log.info("Student deleted with id " + id);
-        } else {
-            log.info("Student with id " + id + " not found");
-        }
+        log.info("Deleting student with id " + id);
+        studentService.delete(id);
+        log.info("Student deleted with id " + id);
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/{id}/{groupId}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public void update(@RequestBody Student student, @PathVariable("id") int id) {
+    public void update(@RequestBody Student student,
+                       @PathVariable("id") int id,
+                       @PathVariable("groupId") int groupId) {
         log.info("Updating student with id: " + id);
-        Student oldStudent = Student.findById(id);
-        if (oldStudent != null && oldStudent.getGroup() != null) {
+        Student oldStudent = studentService.findById(id);
+        if (oldStudent != null) {
             student.setId(id);
-            oldStudent.getGroup().updateStudent(student);
+            groupService.update(student, groupId);
             log.info("Student updated successfully with id: " + id);
         } else {
             log.info("Student with id " + id + " not found");
@@ -69,13 +70,8 @@ public class StudentRestController {
     @ResponseBody
     public void create(@RequestBody Student student, @PathVariable("groupId") int groupId) {
         log.info("Creating student: " + student.getName());
-        Group group = Group.findById(groupId);
-        if (group != null) {
-            group.createStudent(student);
-            log.info("Student created with id: " + student.getId());
-        } else {
-            log.info("Group with id " + groupId + " not found");
-        }
+        groupService.create(student, groupId);
+        log.info("Student created with id: " + student.getId());
     }
 
 }

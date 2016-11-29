@@ -1,8 +1,8 @@
 package com.grubjack.university.controller;
 
-import com.grubjack.university.domain.Department;
-import com.grubjack.university.domain.Teacher;
-import com.grubjack.university.domain.University;
+import com.grubjack.university.model.Teacher;
+import com.grubjack.university.service.DepartmentService;
+import com.grubjack.university.service.TeacherService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,10 @@ import java.util.List;
 public class TeacherRestController {
 
     @Autowired
-    private University university;
+    private DepartmentService departmentService;
+
+    @Autowired
+    private TeacherService teacherService;
 
     private static Logger log = LoggerFactory.getLogger(TeacherRestController.class);
 
@@ -28,37 +31,34 @@ public class TeacherRestController {
     @ResponseBody
     public List<Teacher> getAll() {
         log.info("Getting all teachers");
-        return Teacher.findAll();
+        return teacherService.findAll();
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @ResponseBody
     public Teacher get(@PathVariable("id") int id) {
         log.info("Getting teacher with id: " + id);
-        return Teacher.findById(id);
+        return teacherService.findById(id);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @ResponseBody
     public void delete(@PathVariable("id") int id) {
-        Teacher teacher = Teacher.findById(id);
-        if (teacher != null && teacher.getDepartment() != null) {
-            log.info("Deleting teacher with id " + id);
-            teacher.getDepartment().deleteTeacher(teacher);
-            log.info("Teacher deleted with id " + id);
-        } else {
-            log.info("Teacher with id " + id + " not found");
-        }
+        log.info("Deleting teacher with id " + id);
+        teacherService.delete(id);
+        log.info("Teacher deleted with id " + id);
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/{id}/{departmentId}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public void update(@RequestBody Teacher teacher, @PathVariable("id") int id) {
+    public void update(@RequestBody Teacher teacher,
+                       @PathVariable("id") int id,
+                       @PathVariable("departmentId") int departmentId) {
         log.info("Updating teacher with id: " + id);
-        Teacher oldTeacher = Teacher.findById(id);
-        if (oldTeacher != null && oldTeacher.getDepartment() != null) {
+        Teacher oldTeacher = teacherService.findById(id);
+        if (oldTeacher != null) {
             teacher.setId(id);
-            oldTeacher.getDepartment().updateTeacher(teacher);
+            departmentService.update(teacher, departmentId);
             log.info("Teacher updated successfully with id: " + id);
         } else {
             log.info("Teacher with id " + id + " not found");
@@ -69,13 +69,8 @@ public class TeacherRestController {
     @ResponseBody
     public void create(@RequestBody Teacher teacher, @PathVariable("departmentId") int departmentId) {
         log.info("Creating teacher: " + teacher.getName());
-        Department department = Department.findById(departmentId);
-        if (department != null) {
-            department.createTeacher(teacher);
-            log.info("Teacher created with id: " + teacher.getId());
-        } else {
-            log.info("Department with id " + department + " not found");
-        }
+        departmentService.create(teacher, departmentId);
+        log.info("Teacher created with id: " + teacher.getId());
     }
 
 }
