@@ -45,7 +45,7 @@ public class DepartmentService implements BaseService<Department> {
     }
 
     public void create(Teacher teacher, int departmentId) {
-        if (teacher != null && !teacherDao.findAll().contains(teacher)) {
+        if (teacher != null) {
             teacher.setDepartment(departmentDao.find(departmentId));
             teacherDao.create(teacher, departmentId);
         }

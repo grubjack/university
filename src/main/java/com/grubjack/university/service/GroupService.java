@@ -54,7 +54,7 @@ public class GroupService implements BaseService<Group> {
     }
 
     public void create(Student student, int groupId) {
-        if (student != null && !studentDao.findAll().contains(student)) {
+        if (student != null) {
             student.setGroup(groupDao.find(groupId));
             studentDao.create(student, groupId);
         }
