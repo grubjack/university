@@ -1,4 +1,4 @@
-package com.grubjack.university.domain;
+package com.grubjack.university.model;
 
 import javax.persistence.AttributeConverter;
 
