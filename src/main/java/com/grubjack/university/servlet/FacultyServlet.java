@@ -1,6 +1,6 @@
 package com.grubjack.university.servlet;
 
-import com.grubjack.university.domain.Faculty;
+import com.grubjack.university.model.Faculty;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -25,14 +25,13 @@ public class FacultyServlet extends AbstractHttpServlet {
 
         if ("delete".equalsIgnoreCase(action)) {
             if (facultyId != null) {
-                Faculty faculty = Faculty.findById(Integer.parseInt(facultyId));
-                university.deleteFaculty(faculty);
-                req.setAttribute("faculties", university.getFaculties());
+                facultyService.delete(Integer.parseInt(facultyId));
+                req.setAttribute("faculties", facultyService.findAll());
             }
         } else if ("edit".equalsIgnoreCase(action)) {
             forward = ADD_OR_EDIT;
             if (facultyId != null) {
-                Faculty faculty = Faculty.findById(Integer.parseInt(facultyId));
+                Faculty faculty = facultyService.findById(Integer.parseInt(facultyId));
                 req.setAttribute("faculty", faculty);
                 req.setAttribute("title", "Edit faculty");
             }
@@ -42,7 +41,7 @@ public class FacultyServlet extends AbstractHttpServlet {
             req.setAttribute("title", "Create faculty");
         } else {
             forward = LIST;
-            req.setAttribute("faculties", university.getFaculties());
+            req.setAttribute("faculties", facultyService.findAll());
         }
 
         req.getRequestDispatcher(forward).forward(req, resp);
@@ -57,13 +56,13 @@ public class FacultyServlet extends AbstractHttpServlet {
             Faculty faculty = new Faculty(name);
 
             if (id == null || id.isEmpty()) {
-                university.createFaculty(faculty);
+                universityService.create(faculty);
             } else {
                 faculty.setId(Integer.parseInt(id));
-                university.updateFaculty(faculty);
+                universityService.update(faculty);
             }
         }
-        req.setAttribute("faculties", university.getFaculties());
+        req.setAttribute("faculties", facultyService.findAll());
         req.getRequestDispatcher(LIST).forward(req, resp);
     }
 }

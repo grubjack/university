@@ -1,10 +1,9 @@
 package com.grubjack.university.servlet;
 
-import com.grubjack.university.domain.*;
+import com.grubjack.university.model.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -46,41 +45,39 @@ public class LessonServlet extends AbstractHttpServlet {
 
         // find group and teacher for default select
         if (lessonId != null && !lessonId.isEmpty()) {
-            lesson = Lesson.findById(Integer.parseInt(lessonId));
+            lesson = lessonService.findById(Integer.parseInt(lessonId));
             if (lesson != null) {
                 group = lesson.getGroup();
             }
         }
 
         if (teacherId != null && !teacherId.isEmpty()) {
-            teacher = Teacher.findById(Integer.parseInt(teacherId));
+            teacher = teacherService.findById(Integer.parseInt(teacherId));
             if (teacher != null) {
                 title = String.format("Timetable for teacher %s", teacher.getName());
             }
         }
 
         if (groupId != null && !groupId.isEmpty()) {
-            group = Group.findById(Integer.parseInt(groupId));
+            group = groupService.findById(Integer.parseInt(groupId));
             if (group != null) {
                 title = String.format("Timetable for group %s", group.getName());
             }
         }
 
         if (studentId != null && !studentId.isEmpty()) {
-            Student student = Student.findById(Integer.parseInt(studentId));
-            Faculty faculty = Faculty.findStudentFaculty(Integer.parseInt(studentId));
-            group = faculty.findGroupByStudent(student);
+            Student student = studentService.findById(Integer.parseInt(studentId));
             if (student != null) {
                 title = String.format("Timetable for student %s", student.getName());
             }
         }
 
         if (facultyId != null && !facultyId.isEmpty()) {
-            Faculty faculty = Faculty.findById(Integer.parseInt(facultyId));
+            Faculty faculty = facultyService.findById(Integer.parseInt(facultyId));
             if (faculty != null) {
                 title = String.format("Timetable for faculty %s", faculty.getName());
                 if (groupName != null && !groupName.isEmpty()) {
-                    group = faculty.findGroup(groupName);
+                    group = groupService.find(groupName);
                 }
             }
         }
@@ -91,9 +88,9 @@ public class LessonServlet extends AbstractHttpServlet {
             title = "Create lesson";
             req.setAttribute("selectedGroup", group);
             req.setAttribute("selectedTeacher", teacher);
-            List<Group> groups = Group.findAvailable(DayOfWeek.valueOf(day), TimeOfDay.convert(time));
-            List<Teacher> teachers = Teacher.findAvailable(DayOfWeek.valueOf(day), TimeOfDay.convert(time));
-            List<Classroom> rooms = Classroom.findAvailable(DayOfWeek.valueOf(day), TimeOfDay.convert(time));
+            List<Group> groups = groupService.findAvailable(DayOfWeek.valueOf(day), TimeOfDay.convert(time));
+            List<Teacher> teachers = teacherService.findAvailable(DayOfWeek.valueOf(day), TimeOfDay.convert(time));
+            List<Classroom> rooms = classroomService.findAvailable(DayOfWeek.valueOf(day), TimeOfDay.convert(time));
             if (groups.size() == 0) {
                 req.setAttribute("groupNotification", "no free groups");
             }
@@ -108,11 +105,7 @@ public class LessonServlet extends AbstractHttpServlet {
             req.setAttribute("rooms", rooms);
         } else if ("delete".equalsIgnoreCase(action)) {
             if (lesson != null) {
-                Group lessonGroup = lesson.getGroup();
-                if (lessonGroup != null) {
-                    Faculty faculty = Faculty.findGroupFaculty(lessonGroup.getId());
-                    faculty.getTimetable().deleteLesson(lesson);
-                }
+                lessonService.delete(Integer.parseInt(lessonId));
             }
         } else if ("edit".equalsIgnoreCase(action)) {
             forward = ADD_OR_EDIT;
@@ -121,8 +114,8 @@ public class LessonServlet extends AbstractHttpServlet {
                 req.setAttribute("lesson", lesson);
                 req.setAttribute("selectedGroup", group);
                 req.setAttribute("selectedTeacher", teacher);
-                List<Group> groups = Group.findAvailable(DayOfWeek.valueOf(day), TimeOfDay.convert(time));
-                List<Teacher> teachers = Teacher.findAvailable(DayOfWeek.valueOf(day), TimeOfDay.convert(time));
+                List<Group> groups = groupService.findAvailable(DayOfWeek.valueOf(day), TimeOfDay.convert(time));
+                List<Teacher> teachers = teacherService.findAvailable(DayOfWeek.valueOf(day), TimeOfDay.convert(time));
                 if (groups.size() == 0 && group == null) {
                     req.setAttribute("groupNotification", "no free groups");
                 }
@@ -134,48 +127,33 @@ public class LessonServlet extends AbstractHttpServlet {
                 req.setAttribute("teachers", teachers);
                 req.setAttribute("groups", groups);
                 req.setAttribute("teachers", teachers);
-                req.setAttribute("rooms", Classroom.findAvailable(DayOfWeek.valueOf(day), TimeOfDay.convert(time)));
+                req.setAttribute("rooms", classroomService.findAvailable(DayOfWeek.valueOf(day), TimeOfDay.convert(time)));
             }
         }
 
         // find timetable(s)
         if (facultyId != null) {
-            Faculty faculty = Faculty.findById(Integer.parseInt(facultyId));
-            if (faculty != null) {
-                timetables = faculty.findGroupTimetables();
-                home = "faculties";
-                homeTitle = "Faculties";
-                req.setAttribute("fid", faculty.getId());
-            }
+            timetables = lessonService.findGroupTimetables(Integer.parseInt(facultyId));
+            home = "faculties";
+            homeTitle = "Faculties";
+            req.setAttribute("fid", facultyId);
         } else if (groupId != null) {
-            Faculty faculty = Faculty.findGroupFaculty(Integer.parseInt(groupId));
-            Group group2 = Group.findById(Integer.parseInt(groupId));
-            if (faculty != null && group2 != null) {
-                timetables.add(faculty.findTimetable(group2));
-                home = "groups";
-                homeTitle = "Groups";
-                req.setAttribute("gid", group2.getId());
-            }
+            timetables.add(lessonService.findGroupTimetable(Integer.parseInt(groupId)));
+            home = "groups";
+            homeTitle = "Groups";
+            req.setAttribute("gid", groupId);
         } else if (studentId != null) {
-            Faculty faculty = Faculty.findStudentFaculty(Integer.parseInt(studentId));
-            Student student = Student.findById(Integer.parseInt(studentId));
-            if (faculty != null && student != null) {
-                timetables.add(faculty.findTimetable(student));
-                home = "students";
-                homeTitle = "Students";
-                req.setAttribute("sid", student.getId());
-            }
+            timetables.add(lessonService.findStudentTimetable(Integer.parseInt(studentId)));
+            home = "students";
+            homeTitle = "Students";
+            req.setAttribute("sid", studentId);
         } else if (teacherId != null) {
-            Faculty faculty = Faculty.findTeacherFaculty(Integer.parseInt(teacherId));
-            Teacher teacher2 = Teacher.findById(Integer.parseInt(teacherId));
-            if (faculty != null && teacher2 != null) {
-                timetables.add(faculty.findTimetable(teacher2));
-                home = "teachers";
-                homeTitle = "Teachers";
-                req.setAttribute("tid", teacher2.getId());
-            }
+            timetables.add(lessonService.findTeacherTimetable(Integer.parseInt(teacherId)));
+            home = "teachers";
+            homeTitle = "Teachers";
+            req.setAttribute("tid", teacherId);
         } else {
-            timetables = Timetable.findAll();
+            timetables = lessonService.findGroupTimetables();
         }
 
         req.setAttribute("sid", studentId);
@@ -220,23 +198,12 @@ public class LessonServlet extends AbstractHttpServlet {
         Faculty faculty = null;
         List<Timetable> timetables = new ArrayList<>();
 
-        if (fid != null && !fid.isEmpty()) {
-            faculty = Faculty.findById(Integer.parseInt(fid));
-        } else if (sid != null && !sid.isEmpty()) {
-            faculty = Faculty.findStudentFaculty(Integer.parseInt(sid));
-        } else if (tid != null && !tid.isEmpty()) {
-            faculty = Faculty.findTeacherFaculty(Integer.parseInt(tid));
-        } else if (gid != null && !gid.isEmpty()) {
-            faculty = Faculty.findGroupFaculty(Integer.parseInt(gid));
-        }
-
-
-        if (faculty != null && subject != null && !subject.isEmpty() && teacherId != null && !teacherId.isEmpty() &&
+        if (subject != null && !subject.isEmpty() && teacherId != null && !teacherId.isEmpty() &&
                 groupId != null && !groupId.isEmpty() && classroomId != null && !classroomId.isEmpty()) {
 
-            Teacher teacher = Teacher.findById(Integer.parseInt(teacherId));
-            Group group = Group.findById(Integer.parseInt(groupId));
-            Classroom classroom = Classroom.findById(Integer.parseInt(classroomId));
+            Teacher teacher = teacherService.findById(Integer.parseInt(teacherId));
+            Group group = groupService.findById(Integer.parseInt(groupId));
+            Classroom classroom = classroomService.findById(Integer.parseInt(classroomId));
 
             Lesson lesson = new Lesson(subject);
             lesson.setDayOfWeek(DayOfWeek.valueOf(day));
@@ -246,31 +213,32 @@ public class LessonServlet extends AbstractHttpServlet {
             lesson.setClassroom(classroom);
 
             if (id == null || id.isEmpty()) {
-                faculty.getTimetable().createLesson(lesson);
+                lessonService.create(lesson, Integer.parseInt(teacherId), Integer.parseInt(classroomId), Integer.parseInt(groupId));
             } else {
                 lesson.setId(Integer.parseInt(id));
-                faculty.getTimetable().updateLesson(lesson);
+                lessonService.update(lesson, Integer.parseInt(teacherId), Integer.parseInt(classroomId), Integer.parseInt(groupId));
             }
 
             if (fid != null && !fid.isEmpty()) {
-                timetables = faculty.findGroupTimetables();
+                faculty = facultyService.findById(Integer.parseInt(fid));
+                timetables = lessonService.findGroupTimetables(Integer.parseInt(fid));
                 title = String.format("Timetable for faculty %s", faculty.getName());
                 req.setAttribute("fid", fid);
             } else if (sid != null && !sid.isEmpty()) {
-                Student student = Student.findById(Integer.parseInt(sid));
-                timetables.add(faculty.findTimetable(student));
+                Student student = studentService.findById(Integer.parseInt(sid));
+                timetables.add(lessonService.findStudentTimetable(Integer.parseInt(sid)));
                 title = String.format("Timetable for student %s", student.getName());
                 req.setAttribute("sid", sid);
             } else if (tid != null && !tid.isEmpty()) {
-                timetables.add(faculty.findTimetable(teacher));
+                timetables.add(lessonService.findTeacherTimetable(Integer.parseInt(tid)));
                 title = String.format("Timetable for teacher %s", teacher.getName());
                 req.setAttribute("tid", tid);
             } else if (gid != null && !gid.isEmpty()) {
-                timetables.add(faculty.findTimetable(group));
+                timetables.add(lessonService.findGroupTimetable(Integer.parseInt(gid)));
                 title = String.format("Timetable for group %s", group.getName());
                 req.setAttribute("gid", gid);
             } else {
-                timetables = Timetable.findAll();
+                timetables = lessonService.findGroupTimetables();
             }
         }
 

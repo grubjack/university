@@ -1,7 +1,7 @@
 package com.grubjack.university.servlet;
 
-import com.grubjack.university.domain.Group;
-import com.grubjack.university.domain.Student;
+import com.grubjack.university.model.Group;
+import com.grubjack.university.model.Student;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -31,7 +31,7 @@ public class StudentServlet extends AbstractHttpServlet {
         List<Student> students = null;
 
         if (groupId != null) {
-            Group group = Group.findById(Integer.parseInt(groupId));
+            Group group = groupService.findById(Integer.parseInt(groupId));
             if (group != null) {
 
                 title = String.format("Students of %s group", group.getName());
@@ -42,22 +42,21 @@ public class StudentServlet extends AbstractHttpServlet {
 
                 } else if ("delete".equalsIgnoreCase(action)) {
                     if (studentId != null) {
-                        Student student = Student.findById(Integer.parseInt(studentId));
-                        group.deleteStudent(student);
+                        studentService.delete(Integer.parseInt(studentId));
                     }
 
                 } else if ("edit".equalsIgnoreCase(action)) {
                     forward = ADD_OR_EDIT;
                     if (studentId != null) {
-                        Student student = Student.findById(Integer.parseInt(studentId));
+                        Student student = studentService.findById(Integer.parseInt(studentId));
                         req.setAttribute("student", student);
                         title = "Edit student";
                     }
                 }
-                students = group.getStudents();
+                students = groupService.findStudents(Integer.parseInt(groupId));
             }
         } else {
-            students = Student.findAll();
+            students = studentService.findAll();
         }
 
         req.setAttribute("groupId", groupId);
@@ -76,19 +75,20 @@ public class StudentServlet extends AbstractHttpServlet {
         String title = "Students";
 
         if (groupId != null) {
-            Group group = Group.findById(Integer.parseInt(groupId));
+            Group group = groupService.findById(Integer.parseInt(groupId));
             if (group != null && firstname != null && !firstname.isEmpty() && lastname != null && !lastname.isEmpty()) {
 
                 Student student = new Student(firstname, lastname);
 
                 if (id == null || id.isEmpty()) {
-                    group.createStudent(student);
+                    student.setGroup(group);
+                    groupService.create(student, Integer.parseInt(groupId));
                 } else {
                     student.setId(Integer.parseInt(id));
-                    group.updateStudent(student);
+                    groupService.update(student, Integer.parseInt(groupId));
                 }
 
-                students = group.getStudents();
+                students = groupService.findStudents(Integer.parseInt(groupId));
                 title = String.format("Student of %s group", group.getName());
             }
         }

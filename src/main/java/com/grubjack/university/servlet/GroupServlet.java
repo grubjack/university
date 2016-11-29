@@ -1,7 +1,7 @@
 package com.grubjack.university.servlet;
 
-import com.grubjack.university.domain.Faculty;
-import com.grubjack.university.domain.Group;
+import com.grubjack.university.model.Faculty;
+import com.grubjack.university.model.Group;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -31,7 +31,7 @@ public class GroupServlet extends AbstractHttpServlet {
         List<Group> groups = null;
 
         if (facultyId != null) {
-            Faculty faculty = Faculty.findById(Integer.parseInt(facultyId));
+            Faculty faculty = facultyService.findById(Integer.parseInt(facultyId));
             if (faculty != null) {
 
                 title = String.format("Groups of %s faculty", faculty.getName());
@@ -42,23 +42,22 @@ public class GroupServlet extends AbstractHttpServlet {
 
                 } else if ("delete".equalsIgnoreCase(action)) {
                     if (groupId != null) {
-                        Group group = Group.findById(Integer.parseInt(groupId));
-                        faculty.deleteGroup(group);
+                        groupService.delete(Integer.parseInt(groupId));
                     }
 
                 } else if ("edit".equalsIgnoreCase(action)) {
                     forward = ADD_OR_EDIT;
                     if (groupId != null) {
-                        Group group = Group.findById(Integer.parseInt(groupId));
+                        Group group = groupService.findById(Integer.parseInt(groupId));
                         req.setAttribute("group", group);
                         title = "Edit group";
                     }
                 }
-                groups = faculty.getGroups();
+                groups = facultyService.findGroups(Integer.parseInt(facultyId));
             }
 
         } else {
-            groups = Group.findAll();
+            groups = groupService.findAll();
         }
 
         req.setAttribute("facultyId", facultyId);
@@ -77,18 +76,19 @@ public class GroupServlet extends AbstractHttpServlet {
         String title = "Groups";
 
         if (facultyId != null) {
-            Faculty faculty = Faculty.findById(Integer.parseInt(facultyId));
+            Faculty faculty = facultyService.findById(Integer.parseInt(facultyId));
             if (faculty != null && name != null && !name.isEmpty()) {
                 Group group = new Group(name);
 
                 if (id == null || id.isEmpty()) {
-                    faculty.createGroup(group);
+                    group.setFaculty(faculty);
+                    facultyService.create(group, Integer.parseInt(facultyId));
                 } else {
                     group.setId(Integer.parseInt(id));
-                    faculty.updateGroup(group);
+                    facultyService.update(group, Integer.parseInt(facultyId));
                 }
 
-                groups = faculty.getGroups();
+                groups = facultyService.findGroups(Integer.parseInt(facultyId));
                 title = String.format("Groups of %s faculty", faculty.getName());
             }
         }

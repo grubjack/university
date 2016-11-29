@@ -1,7 +1,7 @@
 package com.grubjack.university.servlet;
 
-import com.grubjack.university.domain.Department;
-import com.grubjack.university.domain.Faculty;
+import com.grubjack.university.model.Department;
+import com.grubjack.university.model.Faculty;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -31,7 +31,7 @@ public class DepartmentServlet extends AbstractHttpServlet {
         List<Department> departments = null;
 
         if (facultyId != null) {
-            Faculty faculty = Faculty.findById(Integer.parseInt(facultyId));
+            Faculty faculty = facultyService.findById(Integer.parseInt(facultyId));
             if (faculty != null) {
 
                 title = String.format("Departments of %s faculty", faculty.getName());
@@ -42,23 +42,22 @@ public class DepartmentServlet extends AbstractHttpServlet {
 
                 } else if ("delete".equalsIgnoreCase(action)) {
                     if (departmentId != null) {
-                        Department department = Department.findById(Integer.parseInt(departmentId));
-                        faculty.deleteDepartment(department);
+                        departmentService.delete(Integer.parseInt(departmentId));
                     }
 
                 } else if ("edit".equalsIgnoreCase(action)) {
                     forward = ADD_OR_EDIT;
                     if (departmentId != null) {
-                        Department department = Department.findById(Integer.parseInt(departmentId));
+                        Department department = departmentService.findById(Integer.parseInt(departmentId));
                         title = "Edit department";
                         req.setAttribute("department", department);
                     }
                 }
-                departments = faculty.getDepartments();
+                departments = facultyService.findDepartments(Integer.parseInt(facultyId));
             }
 
         } else {
-            departments = Department.findAll();
+            departments = departmentService.findAll();
         }
 
         req.setAttribute("facultyId", facultyId);
@@ -76,18 +75,19 @@ public class DepartmentServlet extends AbstractHttpServlet {
         String title = "Departments";
 
         if (facultyId != null) {
-            Faculty faculty = Faculty.findById(Integer.parseInt(facultyId));
+            Faculty faculty = facultyService.findById(Integer.parseInt(facultyId));
             if (faculty != null && name != null && !name.isEmpty()) {
                 Department department = new Department(name);
 
                 if (id == null || id.isEmpty()) {
-                    faculty.createDepartment(department);
+                    department.setFaculty(faculty);
+                    facultyService.create(department, Integer.parseInt(facultyId));
                 } else {
                     department.setId(Integer.parseInt(id));
-                    faculty.updateDepartment(department);
+                    facultyService.update(department, Integer.parseInt(facultyId));
                 }
 
-                departments = faculty.getDepartments();
+                departments = facultyService.findDepartments(Integer.parseInt(facultyId));
                 title = String.format("Departments of %s faculty", faculty.getName());
             }
         }

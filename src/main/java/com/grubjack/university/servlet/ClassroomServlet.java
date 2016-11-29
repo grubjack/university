@@ -1,6 +1,6 @@
 package com.grubjack.university.servlet;
 
-import com.grubjack.university.domain.Classroom;
+import com.grubjack.university.model.Classroom;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -25,14 +25,13 @@ public class ClassroomServlet extends AbstractHttpServlet {
 
         if ("delete".equalsIgnoreCase(action)) {
             if (roomId != null) {
-                Classroom room = Classroom.findById(Integer.parseInt(roomId));
-                university.deleteRoom(room);
-                req.setAttribute("classrooms", university.getRooms());
+                classroomService.delete(Integer.parseInt(roomId));
+                req.setAttribute("classrooms", classroomService.findAll());
             }
         } else if ("edit".equalsIgnoreCase(action)) {
             forward = ADD_OR_EDIT;
             if (roomId != null) {
-                Classroom room = Classroom.findById(Integer.parseInt(roomId));
+                Classroom room = classroomService.findById(Integer.parseInt(roomId));
                 req.setAttribute("classroom", room);
                 req.setAttribute("title", "Edit classroom");
             }
@@ -42,7 +41,7 @@ public class ClassroomServlet extends AbstractHttpServlet {
             req.setAttribute("title", "Create classroom");
         } else {
             forward = LIST;
-            req.setAttribute("classrooms", university.getRooms());
+            req.setAttribute("classrooms", classroomService.findAll());
         }
 
         req.getRequestDispatcher(forward).forward(req, resp);
@@ -59,13 +58,13 @@ public class ClassroomServlet extends AbstractHttpServlet {
             Classroom classroom = new Classroom(number, location, Integer.parseInt(capacity));
 
             if (id == null || id.isEmpty()) {
-                university.createRoom(classroom);
+                universityService.create(classroom);
             } else {
                 classroom.setId(Integer.parseInt(id));
-                university.updateRoom(classroom);
+                universityService.update(classroom);
             }
         }
-        req.setAttribute("classrooms", university.getRooms());
+        req.setAttribute("classrooms", classroomService.findAll());
         req.getRequestDispatcher(LIST).forward(req, resp);
     }
 }
