@@ -1,4 +1,4 @@
-package com.grubjack.university.controller;
+package com.grubjack.university.controller.rest;
 
 import com.grubjack.university.model.Classroom;
 import com.grubjack.university.service.ClassroomService;

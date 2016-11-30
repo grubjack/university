@@ -1,6 +1,7 @@
-package com.grubjack.university.controller;
+package com.grubjack.university.controller.rest;
 
 import com.grubjack.university.model.Lesson;
+import com.grubjack.university.model.Teacher;
 import com.grubjack.university.service.LessonService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
