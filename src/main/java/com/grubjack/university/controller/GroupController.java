@@ -53,7 +53,7 @@ public class GroupController {
     }
 
     @RequestMapping(value = "/edit", method = RequestMethod.GET)
-    public ModelAndView editPage(@RequestParam(value = "id") Integer id,
+    public ModelAndView edit(@RequestParam(value = "id") Integer id,
                                  @RequestParam(value = "fid") Integer facultyId) {
         ModelAndView modelAndView = new ModelAndView("group");
         modelAndView.addObject("group", groupService.findById(id));
@@ -63,14 +63,14 @@ public class GroupController {
     }
 
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
-    public ModelAndView editing(@ModelAttribute("group") Group group,
+    public ModelAndView edit(@ModelAttribute("group") Group group,
                                 @RequestParam(value = "fid") Integer facultyId) {
         facultyService.update(group, facultyId);
         return list(facultyId);
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.GET)
-    public ModelAndView addPage(@RequestParam(value = "fid") Integer facultyId) {
+    public ModelAndView create(@RequestParam(value = "fid") Integer facultyId) {
         ModelAndView modelAndView = new ModelAndView("group");
         modelAndView.addObject("group", new Group());
         modelAndView.addObject("facultyId", facultyId);
@@ -79,7 +79,7 @@ public class GroupController {
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public ModelAndView adding(@ModelAttribute("group") Group group,
+    public ModelAndView create(@ModelAttribute("group") Group group,
                                @RequestParam(value = "fid") Integer facultyId) {
         facultyService.create(group, facultyId);
         return list(facultyId);

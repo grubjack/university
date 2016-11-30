@@ -40,7 +40,7 @@ public class ClassroomController {
     }
 
     @RequestMapping(value = "/edit", method = RequestMethod.GET)
-    public ModelAndView editPage(@RequestParam(value = "id") Integer id) {
+    public ModelAndView edit(@RequestParam(value = "id") Integer id) {
         ModelAndView modelAndView = new ModelAndView("classroom");
         modelAndView.addObject("classroom", classroomService.findById(id));
         modelAndView.addObject("title", "Edit classroom");
@@ -48,13 +48,13 @@ public class ClassroomController {
     }
 
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
-    public ModelAndView editing(@ModelAttribute("classroom") Classroom classroom) {
+    public ModelAndView edit(@ModelAttribute("classroom") Classroom classroom) {
         universityService.update(classroom);
         return list();
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.GET)
-    public ModelAndView addPage() {
+    public ModelAndView create() {
         ModelAndView modelAndView = new ModelAndView("classroom");
         modelAndView.addObject("classroom", new Classroom());
         modelAndView.addObject("title", "Create classroom");
@@ -62,7 +62,7 @@ public class ClassroomController {
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public ModelAndView adding(@ModelAttribute("classroom") Classroom classroom) {
+    public ModelAndView create(@ModelAttribute("classroom") Classroom classroom) {
         universityService.create(classroom);
         return list();
     }

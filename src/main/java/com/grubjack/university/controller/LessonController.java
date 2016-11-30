@@ -117,7 +117,7 @@ public class LessonController {
     }
 
     @RequestMapping(value = "/edit", method = RequestMethod.GET)
-    public ModelAndView editPage(@RequestParam(value = "id") Integer id,
+    public ModelAndView edit(@RequestParam(value = "id") Integer id,
                                  @RequestParam(value = "gid", required = false) Integer groupId,
                                  @RequestParam(value = "sid", required = false) Integer studentId,
                                  @RequestParam(value = "tid", required = false) Integer teacherId,
@@ -145,7 +145,7 @@ public class LessonController {
     }
 
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
-    public ModelAndView editing(@ModelAttribute("lesson") Lesson lesson,
+    public ModelAndView edit(@ModelAttribute("lesson") Lesson lesson,
                                 @RequestParam(value = "gid", required = false) Integer groupId,
                                 @RequestParam(value = "sid", required = false) Integer studentId,
                                 @RequestParam(value = "tid", required = false) Integer teacherId,
@@ -156,7 +156,7 @@ public class LessonController {
 
 
     @RequestMapping(value = "/add", method = RequestMethod.GET)
-    public ModelAndView addPage(@RequestParam(value = "gid", required = false) Integer groupId,
+    public ModelAndView create(@RequestParam(value = "gid", required = false) Integer groupId,
                                 @RequestParam(value = "sid", required = false) Integer studentId,
                                 @RequestParam(value = "tid", required = false) Integer teacherId,
                                 @RequestParam(value = "fid", required = false) Integer facultyId,
@@ -234,7 +234,7 @@ public class LessonController {
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public ModelAndView adding(@ModelAttribute("lesson") Lesson lesson,
+    public ModelAndView create(@ModelAttribute("lesson") Lesson lesson,
                                @RequestParam(value = "gid", required = false) Integer groupId,
                                @RequestParam(value = "sid", required = false) Integer studentId,
                                @RequestParam(value = "tid", required = false) Integer teacherId,

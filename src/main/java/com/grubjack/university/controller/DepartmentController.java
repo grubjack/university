@@ -53,7 +53,7 @@ public class DepartmentController {
     }
 
     @RequestMapping(value = "/edit", method = RequestMethod.GET)
-    public ModelAndView editPage(@RequestParam(value = "id") Integer id,
+    public ModelAndView edit(@RequestParam(value = "id") Integer id,
                                  @RequestParam(value = "fid") Integer facultyId) {
         ModelAndView modelAndView = new ModelAndView("department");
         modelAndView.addObject("department", departmentService.findById(id));
@@ -63,14 +63,14 @@ public class DepartmentController {
     }
 
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
-    public ModelAndView editing(@ModelAttribute("department") Department department,
+    public ModelAndView edit(@ModelAttribute("department") Department department,
                                 @RequestParam(value = "fid") Integer facultyId) {
         facultyService.update(department, facultyId);
         return list(facultyId);
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.GET)
-    public ModelAndView addPage(@RequestParam(value = "fid") Integer facultyId) {
+    public ModelAndView create(@RequestParam(value = "fid") Integer facultyId) {
         ModelAndView modelAndView = new ModelAndView("department");
         modelAndView.addObject("department", new Department());
         modelAndView.addObject("facultyId", facultyId);
@@ -79,7 +79,7 @@ public class DepartmentController {
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public ModelAndView adding(@ModelAttribute("department") Department department,
+    public ModelAndView create(@ModelAttribute("department") Department department,
                                @RequestParam(value = "fid") Integer facultyId) {
         facultyService.create(department, facultyId);
         return list(facultyId);

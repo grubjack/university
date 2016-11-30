@@ -53,7 +53,7 @@ public class StudentController {
     }
 
     @RequestMapping(value = "/edit", method = RequestMethod.GET)
-    public ModelAndView editPage(@RequestParam(value = "id") Integer id,
+    public ModelAndView edit(@RequestParam(value = "id") Integer id,
                                  @RequestParam(value = "gid") Integer groupId) {
         ModelAndView modelAndView = new ModelAndView("student");
         modelAndView.addObject("student", studentService.findById(id));
@@ -63,14 +63,14 @@ public class StudentController {
     }
 
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
-    public ModelAndView editing(@ModelAttribute("student") Student student,
+    public ModelAndView edit(@ModelAttribute("student") Student student,
                                 @RequestParam(value = "gid") Integer groupId) {
         groupService.update(student, groupId);
         return list(groupId);
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.GET)
-    public ModelAndView addPage(@RequestParam(value = "gid") Integer groupId) {
+    public ModelAndView create(@RequestParam(value = "gid") Integer groupId) {
         ModelAndView modelAndView = new ModelAndView("student");
         modelAndView.addObject("student", new Student());
         modelAndView.addObject("groupId", groupId);
@@ -79,7 +79,7 @@ public class StudentController {
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public ModelAndView adding(@ModelAttribute("student") Student student,
+    public ModelAndView create(@ModelAttribute("student") Student student,
                                @RequestParam(value = "gid") Integer groupId) {
         groupService.create(student, groupId);
         return list(groupId);

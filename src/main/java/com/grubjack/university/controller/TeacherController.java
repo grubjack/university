@@ -53,7 +53,7 @@ public class TeacherController {
     }
 
     @RequestMapping(value = "/edit", method = RequestMethod.GET)
-    public ModelAndView editPage(@RequestParam(value = "id") Integer id,
+    public ModelAndView edit(@RequestParam(value = "id") Integer id,
                                  @RequestParam(value = "did") Integer departmentId) {
         ModelAndView modelAndView = new ModelAndView("teacher");
         Teacher teacher = teacherService.findById(id);
@@ -65,7 +65,7 @@ public class TeacherController {
     }
 
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
-    public ModelAndView editing(@ModelAttribute("teacher") Teacher teacher,
+    public ModelAndView edit(@ModelAttribute("teacher") Teacher teacher,
                                 @RequestParam(value = "did") Integer departmentId) {
         System.out.println("name=" + teacher.getName());
         departmentService.update(teacher, departmentId);
@@ -73,7 +73,7 @@ public class TeacherController {
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.GET)
-    public ModelAndView addPage(@RequestParam(value = "did") Integer departmentId) {
+    public ModelAndView create(@RequestParam(value = "did") Integer departmentId) {
         ModelAndView modelAndView = new ModelAndView("teacher");
         modelAndView.addObject("teacher", new Teacher());
         modelAndView.addObject("departmentId", departmentId);
@@ -82,7 +82,7 @@ public class TeacherController {
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public ModelAndView adding(@ModelAttribute("teacher") Teacher teacher,
+    public ModelAndView create(@ModelAttribute("teacher") Teacher teacher,
                                @RequestParam(value = "did") Integer departmentId) {
         departmentService.create(teacher, departmentId);
         return list(departmentId);
