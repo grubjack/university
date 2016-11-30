@@ -104,17 +104,4 @@ public class Lesson {
     public void setTimeOfDay(TimeOfDay timeOfDay) {
         this.timeOfDay = timeOfDay;
     }
-
-    @Override
-    public String toString() {
-        return "Lesson{" +
-                "id=" + id +
-                ", subject='" + subject + '\'' +
-                ", teacher=" + teacher.getName() +
-                ", group=" + group.getName() +
-                ", classroom=" + classroom.getNumber() +
-                ", dayOfWeek=" + dayOfWeek.toString() +
-                ", timeOfDay=" + timeOfDay.toString() +
-                '}';
-    }
 }
