@@ -36,7 +36,7 @@ public class DepartmentController {
         } else {
             Faculty faculty = facultyService.findById(facultyId);
             if (faculty != null) {
-                title = String.format("Groups of %s faculty", faculty.getName());
+                title = String.format("Departments of %s faculty", faculty.getName());
                 modelAndView.addObject("facultyId", facultyId);
                 modelAndView.addObject("departments", facultyService.findDepartments(facultyId));
             }
