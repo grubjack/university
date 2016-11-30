@@ -50,7 +50,7 @@ public class FacultyService implements BaseService<Faculty> {
     }
 
     public void update(Department department, int facultyId) {
-        if (department != null) {
+        if (department != null && !departmentDao.findAll().contains(department)) {
             department.setFaculty(facultyDao.find(facultyId));
             departmentDao.update(department, facultyId);
         }
@@ -65,7 +65,7 @@ public class FacultyService implements BaseService<Faculty> {
     }
 
     public void update(Group group, int facultyId) {
-        if (group != null) {
+        if (group != null && !groupDao.findAll().contains(group)) {
             group.setFaculty(facultyDao.find(facultyId));
             groupDao.update(group, facultyId);
         }

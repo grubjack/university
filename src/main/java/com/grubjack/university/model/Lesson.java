@@ -1,11 +1,8 @@
 package com.grubjack.university.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.grubjack.university.dao.LessonDao;
-import com.grubjack.university.servlet.AbstractHttpServlet;
+import com.grubjack.university.util.DayTimeAttributeConverter;
 
 import javax.persistence.*;
-import java.util.List;
 
 /**
  * Created by grubjack on 28.10.2016.
@@ -41,25 +38,14 @@ public class Lesson {
     @Column(name = "week_day")
     private DayOfWeek dayOfWeek;
 
-    @Convert(converter = DayTimeEnumConverter.class)
+    @Convert(converter = DayTimeAttributeConverter.class)
     @Column(name = "day_time")
     private TimeOfDay timeOfDay;
 
-    @Transient
-    private static LessonDao lessonDao;
-
-    @Transient
-    @JsonIgnore
-    private static List<Lesson> lessons;
-
     public Lesson() {
-        if (AbstractHttpServlet.getContext() != null) {
-            lessonDao = (LessonDao) AbstractHttpServlet.getContext().getBean("lessonDaoImpl");
-        }
     }
 
     public Lesson(String subject) {
-        this();
         this.subject = subject;
     }
 
@@ -119,4 +105,16 @@ public class Lesson {
         this.timeOfDay = timeOfDay;
     }
 
+    @Override
+    public String toString() {
+        return "Lesson{" +
+                "id=" + id +
+                ", subject='" + subject + '\'' +
+                ", teacher=" + teacher.getName() +
+                ", group=" + group.getName() +
+                ", classroom=" + classroom.getNumber() +
+                ", dayOfWeek=" + dayOfWeek.toString() +
+                ", timeOfDay=" + timeOfDay.toString() +
+                '}';
+    }
 }
