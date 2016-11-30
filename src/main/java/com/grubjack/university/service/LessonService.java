@@ -51,6 +51,7 @@ public class LessonService implements BaseService<Lesson> {
 
     public void create(Lesson lesson, int teacherId, int classroomId, int groupId) {
         if (lesson != null && lesson.getDayOfWeek() != null && lesson.getTimeOfDay() != null) {
+
             DayOfWeek day = lesson.getDayOfWeek();
             TimeOfDay time = lesson.getTimeOfDay();
 
@@ -70,11 +71,49 @@ public class LessonService implements BaseService<Lesson> {
         }
     }
 
-    public void update(Lesson lesson, int teacherId, int classroomId, int groupId) {
+    public void create(Lesson lesson) {
         if (lesson != null && lesson.getDayOfWeek() != null && lesson.getTimeOfDay() != null) {
 
-            Lesson oldLesson = lessonDao.find(lesson.getId());
+            DayOfWeek day = lesson.getDayOfWeek();
+            TimeOfDay time = lesson.getTimeOfDay();
 
+            Teacher teacher = lesson.getTeacher();
+            Classroom classroom = lesson.getClassroom();
+            Group group = lesson.getGroup();
+
+            if (teacher != null && classroom != null && group != null) {
+                if (classroomDao.findAvailable(day, time).contains(classroom) &&
+                        teacherDao.findAvailable(day, time).contains(teacher) &&
+                        groupDao.findAvailable(day, time).contains(group)) {
+                    lessonDao.create(lesson);
+                }
+            }
+        }
+    }
+
+    public void update(Lesson lesson) {
+        if (lesson != null) {
+            Lesson oldLesson = lessonDao.find(lesson.getId());
+            DayOfWeek day = lesson.getDayOfWeek();
+            TimeOfDay time = lesson.getTimeOfDay();
+
+
+            if (oldLesson != null && day != null && time != null) {
+
+                if ((!oldLesson.getClassroom().equals(lesson.getClassroom()) && !classroomDao.findAvailable(day, time).contains(lesson.getClassroom())) ||
+                        (!oldLesson.getGroup().equals(lesson.getGroup()) && !groupDao.findAvailable(day, time).contains(lesson.getGroup())) ||
+                        (!oldLesson.getTeacher().equals(lesson.getTeacher()) && !teacherDao.findAvailable(day, time).contains(lesson.getTeacher()))) {
+                    return;
+                }
+            }
+            lessonDao.update(lesson);
+        }
+    }
+
+    public void update(Lesson lesson, int teacherId, int classroomId, int groupId) {
+        if (lesson != null) {
+
+            Lesson oldLesson = lessonDao.find(lesson.getId());
             DayOfWeek day = lesson.getDayOfWeek();
             TimeOfDay time = lesson.getTimeOfDay();
 
@@ -82,23 +121,23 @@ public class LessonService implements BaseService<Lesson> {
             Classroom classroom = classroomDao.find(classroomId);
             Group group = groupDao.find(groupId);
 
-            if (oldLesson != null) {
-
-                if (!oldLesson.getClassroom().equals(classroom) && classroomDao.findAvailable(day, time).contains(classroom)) {
-                    lesson.setClassroom(classroom);
+            if (teacher != null && classroom != null && group != null) {
+                if (oldLesson != null && day != null && time != null) {
+                    if ((!oldLesson.getClassroom().equals(lesson.getClassroom()) && !classroomDao.findAvailable(day, time).contains(lesson.getClassroom())) ||
+                            (!oldLesson.getGroup().equals(lesson.getGroup()) && !groupDao.findAvailable(day, time).contains(lesson.getGroup())) ||
+                            (!oldLesson.getTeacher().equals(lesson.getTeacher()) && !teacherDao.findAvailable(day, time).contains(lesson.getTeacher()))) {
+                        return;
+                    }
                 }
-
-                if (!oldLesson.getTeacher().equals(teacher) && teacherDao.findAvailable(day, time).contains(teacher)) {
-                    lesson.setTeacher(teacher);
-                }
-
-                if (!oldLesson.getGroup().equals(group) && groupDao.findAvailable(day, time).contains(group)) {
-                    lesson.setGroup(group);
-                }
+                lesson.setClassroom(classroom);
+                lesson.setGroup(group);
+                lesson.setTeacher(teacher);
                 lessonDao.update(lesson);
             }
+
         }
     }
+
 
     public List<Timetable> findGroupTimetables() {
         List<Timetable> result = new ArrayList<>();

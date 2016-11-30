@@ -26,7 +26,7 @@ public class UniversityService {
     }
 
     public void update(Classroom classroom) {
-        if (classroom != null) {
+        if (classroom != null && !classroomDao.findAll().contains(classroom)) {
             classroomDao.update(classroom);
         }
     }
@@ -38,7 +38,7 @@ public class UniversityService {
     }
 
     public void update(Faculty faculty) {
-        if (faculty != null) {
+        if (faculty != null && !facultyDao.findAll().contains(faculty)) {
             facultyDao.update(faculty);
         }
     }
