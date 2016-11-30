@@ -9,28 +9,22 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
-<head>
-    <title>${title}</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="shortcut icon" href="images/icon.png">
-</head>
+<jsp:include page="fragments/head.jsp"/>
 <body>
 
 
 <c:choose>
-    <c:when test="${facultyId !=null}">
-        <c:set value="groups?fid=${facultyId}" var="action"/>
+    <c:when test="${group.id == 0}">
+        <c:set value="group/add?fid=${facultyId}" var="action"/>
     </c:when>
     <c:otherwise>
-        <c:set value="groups" var="action"/>
+        <c:set value="group/edit?id=${group.id}&fid=${facultyId}" var="action"/>
     </c:otherwise>
 </c:choose>
 
 
 <form action="${action}" method="post">
     <ul class="form-style-1">
-        <input type="hidden" name="fid" value="${fn:escapeXml(facultyId)}"/>
-        <input type="hidden" name="id" value="${fn:escapeXml(group.id)}"/>
         <li>
             <h2>${title}</h2>
         </li>
@@ -40,7 +34,7 @@
         </li>
         <li>
             <c:choose>
-                <c:when test="${group.id == null}">
+                <c:when test="${group.id == 0}">
                     <input type="submit" value="Create"/>&nbsp;
                 </c:when>
                 <c:otherwise>

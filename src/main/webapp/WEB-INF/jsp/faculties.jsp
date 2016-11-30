@@ -1,20 +1,15 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title>List of Faculties</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="shortcut icon" href="images/icon.png">
-</head>
+<jsp:include page="fragments/head.jsp"/>
 <body>
 <p><a href="${pageContext.request.contextPath}/index.html" class="button">Home page</a></p>
 
-<h1>Faculties</h1>
+<h1>${title}</h1>
 
-<form action="search" method="post">
-    <input type="hidden" name="entity" value="faculty"/>
+<form action="faculty/search" method="post">
     <ul class="search">
         <li>
             <input type="text" name="name" placeholder="Name"/>
@@ -26,7 +21,7 @@
 </form>
 
 <p>
-    <a href="faculties?action=create" class="button">Add Faculty</a>
+    <a href="faculty/add" class="button">Add Faculty</a>
 </p>
 <table>
     <thead>
@@ -42,12 +37,12 @@
     <c:forEach var="faculty" items="${faculties}">
         <tr>
             <td>${faculty.name}</td>
-            <td><a href="groups?fid=${faculty.id}">show</a></td>
-            <td><a href="departments?fid=${faculty.id}">show</a></td>
-            <td><a href="lessons?fid=${faculty.id}">show</a></td>
+            <td><a href="group/list?fid=${faculty.id}">show</a></td>
+            <td><a href="department/list?fid=${faculty.id}">show</a></td>
+            <td><a href="lesson/list?fid=${faculty.id}">show</a></td>
             <td>
-                <a href="faculties?action=edit&id=${faculty.id}">Edit</a><br/>
-                <a href="faculties?action=delete&id=${faculty.id}">Delete</a><br/>
+                <a href="faculty/edit?id=${faculty.id}">Edit</a><br/>
+                <a href="faculty/delete?id=${faculty.id}">Delete</a><br/>
             </td>
         </tr>
     </c:forEach>

@@ -1,24 +1,25 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title>${title}</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="shortcut icon" href="images/icon.png">
+<jsp:include page="fragments/head.jsp"/>
 </head>
 <body>
 <p><a href="${pageContext.request.contextPath}/index.html" class="button">Home page</a></p>
-<p><a href="${pageContext.request.contextPath}/groups" class="button">Groups</a></p>
+<p><a href="${pageContext.request.contextPath}/group/list" class="button">Groups</a></p>
 
 <h1>${title}</h1>
 
-<form action="search" method="post">
-    <c:if test="${groupId !=null}">
-        <input type="hidden" name="gid" value="${groupId}"/>
-    </c:if>
-    <input type="hidden" name="entity" value="student"/>
+<c:choose>
+    <c:when test="${groupId != null}">
+        <c:set value="student/search?gid=${groupId}" var="action"/>
+    </c:when>
+    <c:otherwise>
+        <c:set value="student/search" var="action"/>
+    </c:otherwise>
+</c:choose>
+
+
+<form action="${action}" method="post">
     <ul class="search">
         <li>
             <input type="text" name="name" placeholder="Name"/>
@@ -31,7 +32,7 @@
 
 <c:if test="${groupId != null}">
     <p>
-        <a href="students?action=create&gid=${groupId}" class="button">Add Student</a>
+        <a href="student/add?gid=${groupId}" class="button">Add Student</a>
     </p>
 </c:if>
 <table>
@@ -50,11 +51,11 @@
         <tr>
             <td>${student.lastName}</td>
             <td>${student.firstName}</td>
-            <td><a href="lessons?sid=${student.id}">show</a></td>
+            <td><a href="lesson/list?sid=${student.id}">show</a></td>
             <c:if test="${groupId != null}">
                 <td>
-                    <a href="students?gid=${groupId}&action=edit&id=${student.id}">Edit</a><br/>
-                    <a href="students?gid=${groupId}&action=delete&id=${student.id}">Delete</a><br/>
+                    <a href="student/edit?id=${student.id}&gid=${groupId}">Edit</a><br/>
+                    <a href="student/delete?id=${student.id}&gid=${groupId}">Delete</a><br/>
                 </td>
             </c:if>
         </tr>

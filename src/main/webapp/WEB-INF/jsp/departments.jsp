@@ -2,23 +2,24 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title>${title}</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="shortcut icon" href="images/icon.png">
-</head>
+<jsp:include page="fragments/head.jsp"/>
 <body>
 <p><a href="${pageContext.request.contextPath}/index.html" class="button">Home page</a></p>
-<p><a href="${pageContext.request.contextPath}/faculties" class="button">Faculties</a></p>
+<p><a href="${pageContext.request.contextPath}/faculty/list" class="button">Faculties</a></p>
 
 <h1>${title}</h1>
 
-<form action="search" method="post">
-    <c:if test="${facultyId !=null}">
-        <input type="hidden" name="fid" value="${facultyId}"/>
-    </c:if>
-    <input type="hidden" name="entity" value="department"/>
+<c:choose>
+    <c:when test="${facultyId != null}">
+        <c:set value="department/search?fid=${facultyId}" var="action"/>
+    </c:when>
+    <c:otherwise>
+        <c:set value="department/search" var="action"/>
+    </c:otherwise>
+</c:choose>
+
+
+<form action="${action}" method="post">
     <ul class="search">
         <li>
             <input type="text" name="name" placeholder="Name"/>
@@ -31,7 +32,7 @@
 
 <c:if test="${facultyId != null}">
     <p>
-        <a href="departments?action=create&fid=${facultyId}" class="button">Add Department</a>
+        <a href="department/add?fid=${facultyId}" class="button">Add Department</a>
     </p>
 </c:if>
 <table>
@@ -46,11 +47,11 @@
     <tbody>
     <c:forEach var="department" items="${departments}">
         <tr>
-            <td><a href="teachers?did=${department.id}">${department.name}</a></td>
+            <td><a href="teacher/list?did=${department.id}">${department.name}</a></td>
             <c:if test="${facultyId != null}">
                 <td>
-                    <a href="departments?fid=${facultyId}&action=edit&id=${department.id}">Edit</a><br/>
-                    <a href="departments?fid=${facultyId}&action=delete&id=${department.id}">Delete</a><br/>
+                    <a href="department/edit?id=${department.id}&fid=${facultyId}">Edit</a><br/>
+                    <a href="department/delete?id=${department.id}&fid=${facultyId}">Delete</a><br/>
                 </td>
             </c:if>
         </tr>

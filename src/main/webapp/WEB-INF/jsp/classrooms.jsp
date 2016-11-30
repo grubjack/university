@@ -2,18 +2,13 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title>List of Classrooms</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="shortcut icon" href="images/icon.png">
-</head>
+<jsp:include page="fragments/head.jsp"/>
 <body>
 <p><a href="${pageContext.request.contextPath}/index.html" class="button">Home page</a></p>
 
-<h1>Classrooms</h1>
+<h1>${title}</h1>
 <p>
-    <a href="classrooms?action=create" class="button">Add Classroom</a>
+    <a href="classroom/add" class="button">Add Classroom</a>
 </p>
 <table>
     <thead>
@@ -31,8 +26,8 @@
             <td>${classroom.location}</td>
             <td>${classroom.capacity}</td>
             <td>
-                <a href="classrooms?action=edit&id=${classroom.id}">Edit</a><br/>
-                <a href="classrooms?action=delete&id=${classroom.id}">Delete</a><br/>
+                <a href="classroom/edit?id=${classroom.id}">Edit</a><br/>
+                <a href="classroom/delete?id=${classroom.id}">Delete</a><br/>
             </td>
         </tr>
     </c:forEach>

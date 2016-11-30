@@ -2,23 +2,24 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title>${title}</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="shortcut icon" href="images/icon.png">
-</head>
+<jsp:include page="fragments/head.jsp"/>
 <body>
 <p><a href="${pageContext.request.contextPath}/index.html" class="button">Home page</a></p>
-<p><a href="${pageContext.request.contextPath}/departments" class="button">Departments</a></p>
+<p><a href="${pageContext.request.contextPath}/department/list" class="button">Departments</a></p>
 
 <h1>${title}</h1>
 
-<form action="search" method="post">
-    <c:if test="${departmentId !=null}">
-        <input type="hidden" name="did" value="${departmentId}"/>
-    </c:if>
-    <input type="hidden" name="entity" value="teacher"/>
+<c:choose>
+    <c:when test="${departmentId != null}">
+        <c:set value="teacher/search?did=${departmentId}" var="action"/>
+    </c:when>
+    <c:otherwise>
+        <c:set value="teacher/search" var="action"/>
+    </c:otherwise>
+</c:choose>
+
+
+<form action="${action}" method="post">
     <ul class="search">
         <li>
             <input type="text" name="name" placeholder="Name"/>
@@ -31,7 +32,7 @@
 
 <c:if test="${departmentId != null}">
     <p>
-        <a href="teachers?action=create&did=${departmentId}" class="button">Add Teacher</a>
+        <a href="teacher/add?did=${departmentId}" class="button">Add Teacher</a>
     </p>
 </c:if>
 <table>
@@ -52,11 +53,11 @@
             <td>${teacher.lastName}</td>
             <td>${teacher.firstName}</td>
             <td>${teacher.salary}</td>
-            <td><a href="lessons?tid=${teacher.id}">show</a></td>
+            <td><a href="lesson/list?tid=${teacher.id}">show</a></td>
             <c:if test="${departmentId != null}">
                 <td>
-                    <a href="teachers?did=${departmentId}&action=edit&id=${teacher.id}">Edit</a><br/>
-                    <a href="teachers?did=${departmentId}&action=delete&id=${teacher.id}">Delete</a><br/>
+                    <a href="teacher/edit?id=${teacher.id}&did=${departmentId}">Edit</a><br/>
+                    <a href="teacher/delete?id=${teacher.id}&did=${departmentId}">Delete</a><br/>
                 </td>
             </c:if>
         </tr>
