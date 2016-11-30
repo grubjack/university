@@ -31,6 +31,10 @@
         <appender-ref ref="FILE_DEBUG"/>
     </logger>
 
+    <logger name="org.springframework.web"
+            level="debug">
+        <appender-ref ref="STDOUT"/>
+    </logger>
 
     <root level="error">
         <appender-ref ref="FILE_ERROR"/>
