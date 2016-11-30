@@ -193,3 +193,11 @@ a:hover.button, a:active.button {
     -moz-box-shadow: none;
     -webkit-box-shadow: none;
 }
+
+.disabled {
+    border: 1px solid #999;
+    color: #333;
+    opacity: 0.5;
+    pointer-events: none;
+    cursor: not-allowed;
+}
