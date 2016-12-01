@@ -28,6 +28,7 @@
 
         <!--Spring-->
         <spring.version>4.3.4.RELEASE</spring.version>
+        <spring-data-jpa.version>1.10.5.RELEASE</spring-data-jpa.version>
 
         <!--Hibernate-->
         <hibernate.version>5.2.4.Final</hibernate.version>
@@ -137,6 +138,12 @@
                     <artifactId>commons-logging</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-jpa</artifactId>
+            <version>${spring-data-jpa.version}</version>
         </dependency>
 
         <!--Hibernate -->
