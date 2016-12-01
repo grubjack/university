@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by grubjack on 30.11.2016.
  */
-@Transactional
+@Transactional(readOnly = true)
 public interface TeacherRepository extends JpaRepository<Teacher, Integer> {
 
     List<Teacher> findAllByOrderByLastNameAscFirstNameAsc();

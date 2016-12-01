@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by grubjack on 30.11.2016.
  */
-@Transactional
+@Transactional(readOnly = true)
 public interface LessonRepository extends JpaRepository<Lesson, Integer> {
 
     List<Lesson> findAllByOrderByDayOfWeekAscTimeOfDayAsc();

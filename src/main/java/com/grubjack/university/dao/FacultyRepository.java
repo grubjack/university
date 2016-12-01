@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by grubjack on 30.11.2016.
  */
-@Transactional
+@Transactional(readOnly = true)
 public interface FacultyRepository extends JpaRepository<Faculty, Integer> {
 
     List<Faculty> findAllByOrderByName();

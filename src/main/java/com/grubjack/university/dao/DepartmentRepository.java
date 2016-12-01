@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by grubjack on 30.11.2016.
  */
-@Transactional
+@Transactional(readOnly = true)
 public interface DepartmentRepository extends JpaRepository<Department, Integer> {
 
     List<Department> findByFacultyIdOrderByName(int facultyId);
