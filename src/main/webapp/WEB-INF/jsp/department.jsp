@@ -26,7 +26,7 @@
         </li>
         <li>
             <c:choose>
-                <c:when test="${department.id == null}">
+                <c:when test="${department.id == 0}">
                     <input type="submit" value="Create"/>&nbsp;
                 </c:when>
                 <c:otherwise>
