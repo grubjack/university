@@ -97,7 +97,7 @@ public class GroupController {
             if (faculty != null) {
                 title = String.format("Groups of %s faculty", faculty.getName());
                 modelAndView.addObject("facultyId", facultyId);
-                modelAndView.addObject("departments", facultyService.findDepartmentsByName(name, facultyId));
+                modelAndView.addObject("groups", facultyService.findGroupsByName(name, facultyId));
             }
         }
         modelAndView.addObject("title", title);
