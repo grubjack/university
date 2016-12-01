@@ -5,7 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <jsp:include page="fragments/head.jsp"/>
 <body>
-<p><a href="${pageContext.request.contextPath}/index.html" class="button">Home page</a></p>
+<p><a href="${pageContext.request.contextPath}/" class="button">Home page</a></p>
 
 <h1>${title}</h1>
 

@@ -1,11 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>University</title>
-    <link rel="stylesheet" href="resources/css/style.css">
-    <link rel="shortcut icon" href="resources/images/icon.png">
-</head>
+<html>
+<jsp:include page="fragments/head.jsp"/>
 <body>
 <a href="faculty/list" class="button">Faculties</a></p>
 <a href="classroom/list" class="button">Classrooms</a></p>

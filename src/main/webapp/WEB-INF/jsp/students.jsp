@@ -4,7 +4,7 @@
 <jsp:include page="fragments/head.jsp"/>
 </head>
 <body>
-<p><a href="${pageContext.request.contextPath}/index.html" class="button">Home page</a></p>
+<p><a href="${pageContext.request.contextPath}/" class="button">Home page</a></p>
 <p><a href="${pageContext.request.contextPath}/group/list" class="button">Groups</a></p>
 
 <h1>${title}</h1>
