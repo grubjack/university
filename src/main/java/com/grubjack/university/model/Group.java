@@ -8,9 +8,15 @@ import java.util.List;
 /**
  * Created by grubjack on 28.10.2016.
  */
+@NamedQueries({
+        @NamedQuery(name = "Group.findAvailableByDayAndTime", query = "SELECT g FROM Group g WHERE g.id NOT IN ( SELECT lg.id FROM Lesson l INNER JOIN l.group lg WHERE l.dayOfWeek = ?1 AND l.timeOfDay = ?2 ) ORDER BY g.name"),
+        @NamedQuery(name = "Group.findGroupsByName", query = "SELECT g FROM Group g WHERE LOWER(g.name) LIKE CONCAT('%',LOWER(?1),'%') ORDER BY g.name"),
+        @NamedQuery(name = "Group.findGroupsByNameAndFaculty", query = "SELECT g FROM Group g WHERE g.faculty.id = ?2 AND LOWER(g.name) LIKE CONCAT('%',LOWER(?1),'%') ORDER BY g.name")
+})
 @Entity
 @Table(name = "groups", uniqueConstraints = {@UniqueConstraint(columnNames = "name", name = "groups_unique_name_idx")})
 public class Group {
+
     @Id
     @SequenceGenerator(name = "global_seq", sequenceName = "global_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "global_seq")

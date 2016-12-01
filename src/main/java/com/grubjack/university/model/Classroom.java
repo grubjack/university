@@ -1,12 +1,13 @@
 package com.grubjack.university.model;
 
 import javax.persistence.*;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Created by grubjack on 28.10.2016.
  */
+@NamedQueries({
+        @NamedQuery(name = "Classroom.findAvailableByDayAndTime", query = "SELECT c FROM Classroom c WHERE c.id NOT IN (SELECT r.id FROM Lesson l INNER JOIN l.classroom r WHERE l.dayOfWeek = ?1 AND l.timeOfDay = ?2) ORDER BY c.number")
+})
 @Entity
 @Table(name = "classrooms", uniqueConstraints = {@UniqueConstraint(columnNames = "number", name = "classrooms_unique_number_idx")})
 public class Classroom {

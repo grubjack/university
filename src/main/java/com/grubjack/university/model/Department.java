@@ -8,6 +8,10 @@ import java.util.List;
 /**
  * Created by grubjack on 28.10.2016.
  */
+@NamedQueries({
+        @NamedQuery(name = "Department.findDepartmentsByName", query = "SELECT d FROM Department d WHERE LOWER(d.name) LIKE CONCAT('%',LOWER(?1),'%') ORDER BY d.name"),
+        @NamedQuery(name = "Department.findDepartmentsByNameAndFaculty", query = "SELECT d FROM Department d WHERE d.faculty.id = ?2 AND LOWER(d.name) LIKE CONCAT('%',LOWER(?1),'%') ORDER BY d.name")
+})
 @Entity
 @Table(name = "departments", uniqueConstraints = {@UniqueConstraint(columnNames = "name", name = "faculties_unique_name_idx")})
 public class Department {

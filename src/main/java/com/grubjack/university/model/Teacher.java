@@ -7,6 +7,11 @@ import javax.persistence.*;
 /**
  * Created by grubjack on 28.10.2016.
  */
+@NamedQueries({
+        @NamedQuery(name = "Teacher.findAvailableByDayAndTime", query = "SELECT t FROM Teacher t WHERE t.id NOT IN (SELECT lt.id FROM Lesson l INNER JOIN l.teacher lt WHERE l.dayOfWeek = ?1 AND l.timeOfDay = ?2) ORDER BY t.lastName,t.firstName"),
+        @NamedQuery(name = "Teacher.findTeachersByName", query = "SELECT t FROM Teacher t WHERE LOWER(t.firstName) LIKE  CONCAT('%',LOWER(?1),'%') OR LOWER(t.lastName) LIKE CONCAT('%',LOWER(?1),'%') ORDER BY t.lastName, t.firstName"),
+        @NamedQuery(name = "Teacher.findTeachersByNameAndDepartment", query = "SELECT t FROM Teacher t WHERE t.department.id = ?2 AND (LOWER(t.firstName) LIKE CONCAT('%',LOWER(?1),'%') OR LOWER(t.lastName) LIKE CONCAT('%',LOWER(?1),'%')) ORDER BY t.lastName,t.firstName")
+})
 @Entity
 @Table(name = "teachers")
 public class Teacher extends Person {
