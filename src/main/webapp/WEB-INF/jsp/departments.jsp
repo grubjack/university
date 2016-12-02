@@ -2,9 +2,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
-<jsp:include page="fragments/head.jsp"/>
+<jsp:include page="fragments/headTag.jsp"/>
 <body>
-<p><a href="${pageContext.request.contextPath}/" class="button">Home page</a></p>
+<jsp:include page="fragments/bodyHeader.jsp"/>
 <p><a href="${pageContext.request.contextPath}/faculty/list" class="button">Faculties</a></p>
 
 <h1>${title}</h1>

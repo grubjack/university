@@ -1,10 +1,10 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html xmlns="http://www.w3.org/1999/xhtml">
-<jsp:include page="fragments/head.jsp"/>
+<jsp:include page="fragments/headTag.jsp"/>
 </head>
 <body>
-<p><a href="${pageContext.request.contextPath}/" class="button">Home page</a></p>
+<jsp:include page="fragments/bodyHeader.jsp"/>
 <p><a href="${pageContext.request.contextPath}/group/list" class="button">Groups</a></p>
 
 <h1>${title}</h1>

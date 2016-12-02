@@ -1,8 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
-<jsp:include page="fragments/head.jsp"/>
+<jsp:include page="fragments/headTag.jsp"/>
 <body>
+<jsp:include page="fragments/bodyHeader.jsp"/>
 <a href="faculty/list" class="button">Faculties</a></p>
 <a href="classroom/list" class="button">Classrooms</a></p>
 <a href="department/list" class="button">Departments</a></p>

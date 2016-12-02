@@ -1,12 +1,12 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
-<jsp:include page="fragments/head.jsp"/>
+<jsp:include page="fragments/headTag.jsp"/>
 <body>
-<p><a href="${pageContext.request.contextPath}/" class="button">Home page</a></p>
-
+<jsp:include page="fragments/bodyHeader.jsp"/>
 <h1>${title}</h1>
 
 <form action="faculty/search" method="post">
